@@ -254,7 +254,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('empresas.tomador.index') }}">
                             <i class="fa-regular fa-user espaco menu-icon" style="color:#00464D;"></i>
-                            <span class="menu-title">Clientes</span>
+                            <span class="menu-title">Client Flow</span>
                         </a>
                     </li>
 
