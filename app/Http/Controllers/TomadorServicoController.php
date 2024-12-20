@@ -16,15 +16,29 @@ class TomadorServicoController extends Controller
     public function index(Request $request)
     {
 
-        $query = TomadorServico::query();
+        // Captura os parâmetros de filtro
+        $situacao = $request->input('situacao');
+        $status = $request->input('status');
+        $condicao = $request->input('condicao');
 
-        // Filtro por situação, se fornecido
-        if ($request->filled('situacao')) {
-            $query->where('situacao', $request->situacao);
+        // Inicia a query
+        $tomadores = TomadorServico::query();
+
+        // Aplica os filtros dinamicamente
+        if ($situacao) {
+            $tomadores->where('situacao', $situacao);
         }
 
-        // Ordenar alfabeticamente por razão social
-        $clientes = $query->orderBy('razao_social', 'asc')->paginate(10);
+        if ($status) {
+            $tomadores->where('status', $status);
+        }
+
+        if ($condicao) {
+            $tomadores->where('condicao', $condicao);
+        }
+
+        // Ordena alfabeticamente por nome (ou ajuste para a coluna que deseja)
+        $clientes = $tomadores->orderBy('nome_fantasia')->paginate(10);
 
         return view('empresas.tomador.index', compact('clientes'));
     }
@@ -33,7 +47,18 @@ class TomadorServicoController extends Controller
     {
         $tomador = TomadorServico::with('socios', 'documentos')->findOrFail($tomadorservico);
 
-        return view('empresas.tomador.show', compact('tomador'));
+        $socios = $tomador->socios;
+
+        return view('empresas.tomador.show', compact('tomador', 'socios'));
+    }
+
+    public function documentos($tomadorservico)
+    {
+        $tomador = TomadorServico::with('socios', 'documentos')->findOrFail($tomadorservico);
+
+        $documentos = $tomador->documentos;
+
+        return view('empresas.tomador.documentos', compact('tomador', 'documentos'));
     }
 
     public function create()
@@ -210,7 +235,7 @@ class TomadorServicoController extends Controller
                 'numero',
                 'complemento',
             ]),
-            ['empresa_id' => 1, 'password' => Hash::make('123456a', ['rounds' => 12])]
+            ['empresa_id' => 1, 'password' => Hash::make('123456a', ['rounds' => 12]), 'condicao' => 'abertura de empresa']
         ));
 
         // Processar e salvar os sócios
@@ -224,11 +249,13 @@ class TomadorServicoController extends Controller
                     foreach ($socio['documentos'] as $documento) {
                         if ($documento->isValid()) {
                             // Fazer upload do arquivo
+                            $nomeArquivo = $documento->getClientOriginalName();
                             $caminho = $documento->store('documentos_socios', 'public'); // Salva no diretório "documentos_socios"
 
                             // Salvar o documento na tabela "socios_documentos"
                             $novoSocio->documentos()->create([
                                 'caminho' => $caminho,
+                                'descricao' => $nomeArquivo
                             ]);
                         }
                     }
@@ -297,7 +324,7 @@ class TomadorServicoController extends Controller
                 'numero',
                 'complemento',
             ]),
-            ['empresa_id' => 1, 'password' => Hash::make('123456a', ['rounds' => 12])]
+            ['empresa_id' => 1, 'password' => Hash::make('123456a', ['rounds' => 12]), 'situacao' => $request->situacao, 'condicao' => $request->condicao]
         ));
 
 
@@ -307,11 +334,14 @@ class TomadorServicoController extends Controller
             foreach ($request->file('documentos_empresa') as $file) {
                 if ($file->isValid()) {
                     // Salva no diretório "documentos_empresa" no disco "public"
+                    $nomeArquivo = $file->getClientOriginalName();
+
                     $path = $file->store('documentos_empresa', 'public');
                     // Salva o documento na tabela "documentos"
                     Documento::create([
                         'tomador_servico_id' => $tomador->id,
                         'path' => $path, // Caminho do arquivo armazenado
+                        'descricao' => $nomeArquivo,
                     ]);
                 }
             }
@@ -328,11 +358,13 @@ class TomadorServicoController extends Controller
                     foreach ($socio['documentos'] as $documento) {
                         if ($documento->isValid()) {
                             // Fazer upload do arquivo
+                            $nomeArquivo = $documento->getClientOriginalName();
                             $caminho = $documento->store('documentos_socios', 'public'); // Salva no diretório "documentos_socios"
 
                             // Salvar o documento na tabela "socios_documentos"
                             $novoSocio->documentos()->create([
                                 'caminho' => $caminho,
+                                'descricao' => $nomeArquivo,
                             ]);
                         }
                     }

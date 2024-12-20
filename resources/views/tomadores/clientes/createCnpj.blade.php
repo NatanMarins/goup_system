@@ -1,16 +1,26 @@
 @extends('tomadores.layout.admin')
 
 @section('content')
-    <!-- Cabeçalho -->
-    <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
-        <div>
-            <h3 class="fw-bold mb-3">Cadastrar Novo Cliente | CNPJ</h3>
+  
+<!-- Cabeçalho -->
+<div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2">
+    <div>
+        <h4 class="fw-bold">Cadastrar Novo Cliente | CNPJ</h4>
+    </div>
+    <!-- botao -->
+    <div class="ms-md-auto py-2 py-md-0">
+        <div class="btn-group" role="group" aria-label="Basic example">
+            <a href="{{ route('tomadores.clientes.createCpf') }}" class="btn btn btn-secondary btn-sm" title="Cliente CPF">
+                <i class="fa-solid fa-plus"></i> CPF
+            </a>
         </div>
     </div>
-    <!-- Cabeçalho -->
+    <!-- botao -->
+</div>
+<!-- Cabeçalho -->
 
     <!-- COnteudo -->
-    <div class="row">
+    <div class="row pt-3">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body">

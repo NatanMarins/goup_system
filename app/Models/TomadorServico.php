@@ -58,6 +58,9 @@ class TomadorServico extends Authenticatable
         'numero',
         'password',
         'last_login_at',
+        'situacao',
+        'condicao',
+        'status',
     ];
 
 

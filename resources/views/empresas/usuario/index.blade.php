@@ -1,20 +1,23 @@
 @extends('empresas.layout.admin')
 
 @section('content')
-    <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
-        <div>
-            <h3 class="fw-bold mb-3">Usuários {{ $empresa->nome }}</h3>
-        </div>
-        <!-- botao -->
-        <div class="ms-md-auto py-2 py-md-0">
-            <div class="btn-group" role="group" aria-label="Basic example">
-                <a href="{{ route('empresas.usuario.create') }}" class="btn btn-secondary btn-sm" title="Cadastrar Colaborador">
-                    <i class="fa-solid fa-plus"></i>
-                </a>
-            </div>
-        </div>
-        <!-- botao -->
+
+ <!-- Cabeçalho -->
+ <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
+    <div>
+        <h4><strong>Usuários</strong> <br /><small>{{ $empresa->nome }}</small></h4>
     </div>
+    <!-- botao -->
+    <div class="ms-md-auto py-2 py-md-0">
+        <div class="btn-group" role="group" aria-label="Basic example">
+            <a href="{{ route('empresas.usuario.create') }}" class="btn btn-primary btn-sm" title="Cadastrar Usuário">
+                <i class="fas fa-user-plus fa-plus"></i>
+            </a>
+        </div>
+    </div>
+    <!-- botao -->
+</div>
+<!-- Cabeçalho -->
 
     @if ($usuarios->isEmpty())
         <div class="alert alert-warning" role="alert">
@@ -35,11 +38,11 @@
                             <div class="col-md-12 col-lg-12">
                                 <!--Inserir o COnteudo da página -->
                                 <div class="table-responsive">
-                                    <table class="table table-striped table-bordered table-hover mt-3">
-                                        <thead class="thead-dark">
+                                    <table class="table table-striped table-bordered table-hover">
+                                        <thead class="table-success">
                                             <tr>
-                                                <th scope="col">Foto</th>
-                                                <th scope="col">Nome</th>
+                                                <th scope="col" style="width:5%"></th>
+                                                <th scope="col">Cliente</th>
                                                 <th scope="col">E-mail</th>
                                                 <th scope="col"></th>
                                             </tr>
@@ -62,20 +65,18 @@
                                                     </td>
                                                     <td>{{ $usuario->name }}</td>
                                                     <td>{{ $usuario->email }}</td>
-                                                    <td style="width:200px" class="text-center">
+
+                                                    <td class="text-center" style="width:5%">
                                                         <div class="btn-group" role="group" aria-label="Basic example">
-                                                            <a href="{{ route('empresas.usuario.show', ['usuario' => $usuario->id]) }}"
-                                                                class="btn btn-secondary btn-sm" title="Visualizar Usuário">
-                                                                <i class="fa-regular fa-eye"></i>
+                                                            <a href="{{ route('empresas.usuario.show', ['usuario' => $usuario->id]) }}" class="btn btn btn-primary btn-sm" title="Visualizar Usuário">
+                                                                <i class="fa-solid fa-eye btn-icon-append"></i>
                                                             </a>
-                                                        </div>
-                                                        <div class="btn-group" role="group" aria-label="Basic example">
-                                                            <a href="{{ route('empresas.usuario.edit', ['usuario' => $usuario->id]) }}"
-                                                                class="btn btn-secondary btn-sm" title="Editar Usuário"> <i
-                                                                    class="fa-solid fa-edit"></i>
+                                                            <a href="{{ route('empresas.usuario.edit', ['usuario' => $usuario->id]) }}" class="btn btn btn-primary btn-sm" title="Editar Usuário">
+                                                                <i class="fa-solid fa-edit btn-icon-append"></i>
                                                             </a>
                                                         </div>
                                                     </td>
+
                                                 </tr>
                                             @endforeach
                                         </tbody>

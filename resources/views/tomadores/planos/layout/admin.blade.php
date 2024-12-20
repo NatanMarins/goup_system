@@ -236,31 +236,51 @@
 
         <script>
             document.getElementById('cep').addEventListener('blur', function() {
-                        let cep = this.value.replace(/\D/g, ''); // Remove caracteres não numéricos
+                let cep = this.value.replace(/\D/g, ''); // Remove caracteres não numéricos
 
-                        if (cep.length === 8) { // Verifica se o CEP tem 8 dígitos
-                            fetch(https: //viacep.com.br/ws/${cep}/json/)
-                                .then(response => response.json())
-                                .then(data => {
-                                    if (!data.erro) {
-                                        // Preenche os campos de endereço com os dados retornados
-                                        document.getElementById('logradouro').value = data.logradouro;
-                                        document.getElementById('bairro').value = data.bairro;
-                                        document.getElementById('cidade').value = data.localidade;
-                                        document.getElementById('estado').value = data.uf;
-                                    } else {
-                                        alert('CEP não encontrado.');
-                                    }
-                                })
-                                .catch(error => {
-                                    console.error('Erro ao buscar o CEP:', error);
-                                    alert('Erro ao buscar o CEP. Tente novamente.');
-                                });
-                            }
-                            else {
-                                alert('CEP inválido. Digite um CEP com 8 números.');
-                            }
-                        });
+                if (cep.length !== 8) { // Verifica se o CEP tem 8 dígitos (uso !== para ser mais estrito)
+                    alert('CEP inválido. Digite um CEP com 8 números.');
+                    limparCamposEndereco(); // Limpa os campos
+                    return; // Importante: sai da função para evitar a requisição
+                }
+
+                fetch(`https://viacep.com.br/ws/${cep}/json/`) // URL corrigida (sem espaço extra)
+                    .then(response => {
+                        if (!response.ok) { // Verifica se a resposta foi bem-sucedida (status 2xx)
+                            throw new Error(
+                            `Erro na requisição: Status ${response.status}`); // Lança um erro com o status
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.erro) { // Verifica se o CEP não foi encontrado
+                            alert('CEP não encontrado.');
+                            limparCamposEndereco(); // Limpa os campos
+                        } else {
+                            // Preenche os campos de endereço com os dados retornados
+                            document.getElementById('logradouro').value = data.logradouro;
+                            document.getElementById('bairro').value = data.bairro;
+                            document.getElementById('cidade').value = data.localidade;
+                            document.getElementById('estado').value = data.uf;
+                            // Preenche o campo complemento, caso exista na resposta
+                            document.getElementById('complemento').value = data.complemento || '';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erro ao buscar o CEP:', error);
+                        alert(
+                        'Erro ao buscar o CEP. Verifique sua conexão e tente novamente.'); // Mensagem mais informativa
+                        limparCamposEndereco(); // Limpa os campos em caso de erro na requisição
+                    });
+            });
+
+            function limparCamposEndereco() {
+                document.getElementById('logradouro').value = '';
+                document.getElementById('bairro').value = '';
+                document.getElementById('cidade').value = '';
+                document.getElementById('estado').value = '';
+                document.getElementById('complemento').value = '';
+            }
         </script>
 
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

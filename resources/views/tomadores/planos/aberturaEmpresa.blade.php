@@ -106,7 +106,7 @@
 
                             <div class="row">
                                 <div class="col-md-12 mb-4 pt-5 text-center">
-                                    <button type="submit" class="themeBtn">Salvar Abertura de Empresa</button>
+                                    <button type="submit" class="themeBtn enviar">Salvar Abertura de Empresa</button>
                                 </div>
                             </div>
                         </form>
@@ -118,60 +118,62 @@
 
     <script>
         let socioCount = 0;
-    
+
         // Função para aplicar máscaras
         function applyMasks() {
             $('.cpf').mask('000.000.000-00');
             $('.cep').mask('00000-000');
             $('.telefone').mask('(00) 00000-0000');
         }
-    
+
         // Função para reorganizar os IDs após remoção de um sócio
         function reorganizeSocios() {
             const socios = $('#socios-container .card'); // Seleciona todos os cards de sócios
             socioCount = 0;
-    
-            socios.each(function (index) {
+
+            socios.each(function(index) {
                 socioCount++;
                 const newId = socioCount;
-    
+
                 // Atualiza o ID do card
                 $(this).attr('id', `socio-${newId}`);
                 $(this).find('.card-header h5').text(`Sócio ${newId}`);
-                $(this).find('.card-header button').attr('id', `minimize-socio-${newId}`).off('click').on('click', function () {
-                    $(`#body-socio-${newId}`).toggle();
-                });
+                $(this).find('.card-header button').attr('id', `minimize-socio-${newId}`).off('click').on('click',
+                    function() {
+                        $(`#body-socio-${newId}`).toggle();
+                    });
                 $(this).find('.card-body').attr('id', `body-socio-${newId}`);
-    
+
                 // Atualiza IDs e Names dos inputs dentro do card
-                $(this).find('input, label').each(function () {
+                $(this).find('input, label').each(function() {
                     const originalAttr = $(this).attr('for') || $(this).attr('id') || $(this).attr('name');
                     if (originalAttr) {
-                        const newAttr = originalAttr.replace(/\d+/, newId); // Substitui o número pelo novo ID
+                        const newAttr = originalAttr.replace(/\d+/,
+                            newId); // Substitui o número pelo novo ID
                         $(this).attr('for', newAttr).attr('id', newAttr).attr('name', newAttr);
                     }
                 });
-    
+
                 // Atualiza o botão de remoção
-                $(this).find('.btn-danger').off('click').on('click', function () {
+                $(this).find('.btn-danger').off('click').on('click', function() {
                     removeSocio(newId);
                 });
             });
         }
-    
+
         // Função para remover sócio
         function removeSocio(id) {
             $(`#socio-${id}`).remove(); // Remove o formulário do sócio
             reorganizeSocios(); // Reorganiza os IDs
         }
-    
-        $(document).ready(function () {
+
+        $(document).ready(function() {
             applyMasks(); // Aplicar máscaras nos campos iniciais
-    
+
             // Evento para adicionar um novo sócio
-            $('#add-socio-btn').click(function () {
+            $('#add-socio-btn').click(function() {
                 socioCount++;
-    
+
                 // Template para Formulário de Sócio
                 let socioForm = `
                     <div class="card mt-4" id="socio-${socioCount}">
@@ -258,39 +260,72 @@
                         </div>
                     </div>
                 `;
-    
+
                 $('#socios-container').append(socioForm);
                 applyMasks(); // Aplicar máscaras nos novos campos
             });
-    
-            // Delegação de evento para busca de CEP
-            $(document).on('blur', '.cep', function () {
+
+            let requestsEmAndamento = {}; // Objeto para controlar as requisições em andamento
+
+            $(document).on('blur', '.cep', function() {
                 const cepInput = $(this);
-                const socioId = cepInput.attr('id').split('-')[1]; // Extrair ID do sócio
-                const cep = cepInput.val().replace(/\D/g, ''); // Remove caracteres não numéricos
-    
-                if (cep.length === 8) {
-                    fetch(`https://viacep.com.br/ws/${cep}/json/`)
-                        .then(response => response.json())
-                        .then(data => {
-                            if (!data.erro) {
-                                $(`#logradouro-${socioId}`).val(data.logradouro);
-                                $(`#bairro-${socioId}`).val(data.bairro);
-                                $(`#cidade-${socioId}`).val(data.localidade);
-                                $(`#estado-${socioId}`).val(data.uf);
-                            } else {
-                                alert('CEP não encontrado.');
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Erro ao buscar o CEP:', error);
-                            alert('Erro ao buscar o CEP. Tente novamente.');
-                        });
-                } else {
-                    alert('CEP inválido. Digite um CEP com 8 números.');
+                const socioId = cepInput.attr('id').split('-')[1];
+                let cep = cepInput.val().replace(/\D/g, '');
+
+                if (cep.length !== 8) {
+                    alert('CEP inválido. Digite um CEP com 8 dígitos.');
+                    limparCamposEndereco(socioId);
+                    return;
                 }
+
+                // Verifica se já existe uma requisição para este CEP
+                if (requestsEmAndamento[cep]) {
+                    return; // Se sim, ignora a nova requisição
+                }
+
+                requestsEmAndamento[cep] = true; // Marca que uma requisição está em andamento para este CEP
+
+                cepInput.prop('disabled', true);
+                cepInput.addClass('carregando');
+                $(`#cep-${socioId}`).addClass('carregando'); //adicionado para o cep do socio
+
+                fetch(`https://viacep.com.br/ws/${cep}/json/`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Erro na requisição: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.erro) {
+                            alert('CEP não encontrado.');
+                            limparCamposEndereco(socioId);
+                        } else {
+                            $(`#logradouro-${socioId}`).val(data.logradouro);
+                            $(`#bairro-${socioId}`).val(data.bairro);
+                            $(`#cidade-${socioId}`).val(data.localidade);
+                            $(`#estado-${socioId}`).val(data.uf);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erro ao buscar o CEP:', error);
+                        alert('Erro ao buscar o CEP. Tente novamente mais tarde.');
+                        limparCamposEndereco(socioId);
+                    })
+                    .finally(() => {
+                        cepInput.prop('disabled', false);
+                        cepInput.removeClass('carregando');
+                        $(`#cep-${socioId}`).removeClass('carregando'); //removido para o cep do socio
+                        delete requestsEmAndamento[cep]; // Remove a marcação de requisição em andamento
+                    });
             });
+
+            function limparCamposEndereco(socioId) {
+                $(`#logradouro-${socioId}`).val('');
+                $(`#bairro-${socioId}`).val('');
+                $(`#cidade-${socioId}`).val('');
+                $(`#estado-${socioId}`).val('');
+            }
         });
     </script>
-
 @endsection

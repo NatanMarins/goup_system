@@ -6,7 +6,7 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>GoUp-System</title>
+    <title>Go Up-System</title>
     <!-- base:css -->
 
     <link href="{{ asset('css/style.css.map') }}" rel="stylesheet">
@@ -27,16 +27,50 @@
 
 </head>
 
+<style>
+    
+    .user-row {
+        padding: 10px;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-right: 15px;
+    }
+
+    .user-details strong {
+        color: #00464D;
+    }
+
+    .user-last-login {
+        color: #6c757d;
+    }
+   
+    
+</style>
+
 <body>
     <div class="container-scroller">
         <!-- partial:partials/_navbar.html -->
         <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
             <div class="navbar-brand-wrapper d-flex justify-content-center">
                 <div class="navbar-brand-inner-wrapper d-flex justify-content-between align-items-center w-100">
-                    <a class="navbar-brand brand-logo" href="{{ route('tomadores.dashboard.dashboard') }}"><img
-                            src="{{ asset('imagens/logo.svg') }}" alt="Logo da Empresa"></a>
+                    <a class="navbar-brand brand-logo logo" href="{{ route('tomadores.dashboard.dashboard') }}"><img
+                            src="{{ asset('https://www.dinerb.com.br/goup/wp-content/uploads/2024/12/2-1.png') }}" alt="Logo da Empresa"></a>
                     <a class="navbar-brand brand-logo-mini" href="{{ route('tomadores.dashboard.dashboard') }}"><img
-                            src="{{ asset('imagens/logo-mini.svg') }}" alt="Logo da Empresa"></a>
+                            src="{{ asset('https://www.dinerb.com.br/goup/wp-content/uploads/2024/12/3-1.png') }}" alt="Logo da Empresa"></a>
                     <button class="navbar-toggler navbar-toggler align-self-center" type="button"
                         data-toggle="minimize">
                         <i class="fa-solid fa-bars mx-0"></i>
@@ -46,52 +80,40 @@
             <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
                 <ul class="navbar-nav me-lg-2">
                     <li class="nav-item nav-profile dropdown">
-                        <a class="nav-link" href="#" data-bs-toggle="dropdown" id="profileDropdown">
-                            @if (Auth::check())
-                                <div class="avatar-lg">
-                                    <img src="{{ Auth::user()->foto_perfil ? asset('storage/' . Auth::user()->foto_perfil) : asset('imagens/default-avatar.png') }}"
-                                        alt="Foto de perfil" class="avatar-img rounded">
+                        
+                        <!-- Usuário  -->
+                        <div class="user-row">
+                            <div class="user-info">
+                                @if (Auth::check())
+                                <img src="{{ Auth::user()->foto_perfil ? asset('storage/' . Auth::user()->foto_perfil) : asset('imagens/default-avatar.png') }}" alt="Avatar" class="user-avatar">
+                                @endif
+                                <div class="user-details  pt-2">
+                                    <strong>{{ auth()->user()->name }}</strong>
+                                    <div class="user-last-login">
+                                        @if (Auth::user()->last_login_at)
+                                        <p>Último login: {{ Auth::user()->last_login_at->diffForHumans() }}</p>
+                                        @else
+                                            <p class="texto">Você ainda não fez login anteriormente.</p>
+                                        @endif
+                                    </div>
                                 </div>
-                                <span class="nav-profile-name">
-                                    {{ auth()->user()->name }}
-                                </span>
-                            @endif
-
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right navbar-dropdown"
-                            aria-labelledby="profileDropdown">
-                            <a class="dropdown-item" href="{{ route('holdings.profile.show') }}">
-                                <i class="fa-solid fa-user"></i>
-                                Meu Perfil
-                            </a>
-                            <a class="dropdown-item" href="{{ route('holdings.holding_profile.show') }}">
-                                <i class="fa-solid fa-store"></i>
-                                Perfil Empresa
-                            </a>
-                            <a class="dropdown-item" href="{{ route('login.destroy') }}">
-                                <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                                Sair
-                            </a>
+                            </div>
                         </div>
-                    </li>
-                    <li class="nav-item nav-user-status dropdown">
-                        @if (Auth::user()->last_login_at)
-                            <p>Último login: {{ Auth::user()->last_login_at->diffForHumans() }}</p>
-                        @else
-                            <p>Você ainda não fez login anteriormente.</p>
-                        @endif
+                        <!-- Usuário  -->
                     </li>
                 </ul>
                 <ul class="navbar-nav navbar-nav-right">
+                    <!-- data-->                    
                     <li class="nav-item nav-date dropdown">
                         <a class="nav-link d-flex justify-content-center align-items-center" href="javascript:;">
-                            <h6 class="date mb-0">Hoje : {{ now()->format('d/m/Y') }}</h6>
-                            <i class="typcn "></i> <i class="fa-regular fa-calendar-days"></i>
+                            <h6 class="date mb-0">{{ now()->format('d/m/Y') }}</h6>
+                            <i class="typcn "></i> <i class="fa-regular far fa-calendar-alt"></i>
                         </a>
                     </li>
+                    <!-- data-->                    
+                    <!-- mensagens-->
                     <li class="nav-item dropdown">
-                        <a class="nav-link count-indicator dropdown-toggle d-flex justify-content-center align-items-center"
-                            id="messageDropdown" href="#" data-bs-toggle="dropdown">
+                        <a class="nav-link count-indicator dropdown-toggle d-flex justify-content-center align-items-center" title="Mensagens"   id="messageDropdown" href="#" data-bs-toggle="dropdown">
                             <i class="fa-regular fa-envelope mx-0"></i>
                             <span class="count"></span>
                         </a>
@@ -100,8 +122,7 @@
                             <p class="mb-0 fw-normal float-start dropdown-header">Mensagens</p>
                             <a class="dropdown-item preview-item">
                                 <div class="preview-thumbnail">
-                                    <img src="{{ asset('imagens/faces/face4.jpg') }}" alt="nome da pessoa"
-                                        class="profile-pic">
+                                    <img src="{{ asset('imagens/faces/face4.jpg') }}" alt="nome da pessoa"  class="profile-pic">
                                 </div>
                                 <div class="preview-item-content flex-grow">
                                     <h6 class="preview-subject ellipsis fw-normal">David Grey
@@ -113,14 +134,14 @@
                             </a>
                         </div>
                     </li>
+                    <!-- mensagens-->                    
+                    <!-- notificacoes -->                    
                     <li class="nav-item dropdown me-0">
-                        <a class="nav-link count-indicator dropdown-toggle d-flex align-items-center justify-content-center"
-                            id="notificationDropdown" href="#" data-bs-toggle="dropdown">
+                        <a class="nav-link count-indicator dropdown-toggle d-flex align-items-center justify-content-center" title="Notificações"  id="notificationDropdown" href="#" data-bs-toggle="dropdown">
                             <i class="fa-regular fa-bell mx-0"></i>
                             <span class="count"></span>
                         </a>
-                        <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list"
-                            aria-labelledby="notificationDropdown">
+                        <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list"  aria-labelledby="notificationDropdown">
                             <p class="mb-0 fw-normal float-start dropdown-header">Notificações</p>
                             <a class="dropdown-item preview-item">
                                 <div class="preview-thumbnail">
@@ -138,6 +159,30 @@
 
                         </div>
                     </li>
+                    <!-- notificacoes -->
+                    <!-- perfil -->
+                    <li class="nav-item dropdown me-0">
+                        <a class="nav-link count-indicator dropdown-toggle d-flex align-items-center justify-content-center" title="Perfil"  id="notificationDropdown" href="{{ route('holdings.profile.show') }}">
+                            <i class="fa-regular fas fa-user-cog mx-0" style="color: #00464D;"></i>
+                        </a>
+                    </li>
+                    <!-- perfil -->
+
+                    <!-- perfil empresa-->
+                    <li class="nav-item dropdown me-0">
+                        <a class="nav-link count-indicator dropdown-toggle d-flex align-items-center justify-content-center" title="Perfil da Empresa"  id="notificationDropdown" href="{{ route('holdings.holding_profile.show') }}">
+                            <i class="fa-regular far fa-building mx-0" style="color: #00464D;"></i>
+                        </a>
+                    </li>
+                    <!-- perfil empresa -->
+
+                    <!-- Sair-->
+                    <li class="nav-item dropdown me-0">
+                        <a class="nav-link count-indicator dropdown-toggle d-flex align-items-center justify-content-center" title="Sair do Sistema"  id="notificationDropdown" href="{{ route('login.destroy') }}">
+                            <i class="fa-regular fas fa-sign-out-alt mx-0" style="color: #00464D;"></i>
+                        </a>
+                    </li>
+                    <!-- Sair -->
                 </ul>
                 <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button"
                     data-toggle="offcanvas">
@@ -164,15 +209,16 @@
             <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
                 <ul class="navbar-nav me-lg-2">
                     <li class="nav-item ms-0">
-                        <h4 class="mb-0">Dashboard</h4>
+                        <h4 class="mb-0">GO UP Contabilidade Online</h4>
                     </li>
+                     <!-- 
                     <li class="nav-item">
                         <div class="d-flex align-items-baseline">
                             <p class="mb-0">Home</p>
                             &nbsp;<small><i class="fa-solid fa-arrow-right"></i></small> &nbsp;
                             <p class="mb-0"> Dahboard</p>
                         </div>
-                    </li>
+                    </li> -->
                 </ul>
                 <ul class="navbar-nav navbar-nav-right">
                     <li class="nav-item nav-search d-none d-md-block me-0">
@@ -195,8 +241,8 @@
             <nav class="sidebar sidebar-offcanvas" id="sidebar">
                 <ul class="nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('holdings.dashboard.dashboard') }}">
-                            <i class="fa-solid fa-chart-line espaco menu-icon" style="color:#FF914D;"></i>
+                        <a class="nav-link" href="{{ route('tomadores.dashboard.dashboard') }}">
+                            <i class="fa-solid fa-chart-line espaco menu-icon" style="color:#01c592;"></i>
                             <span class="menu-title">Dashboard</span>
                             <div class="badge badge-danger">new</div>
                         </a>
@@ -204,7 +250,7 @@
 
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('tomadores.clientes.index') }}">
-                            <i class="fa-solid fa-chart-line espaco menu-icon" style="color:#FF914D;"></i>
+                            <i class="fa-solid fa-users espaco menu-icon" style="color:#01c592;"></i>
                             <span class="menu-title">Clientes</span>
                         </a>
                     </li>
@@ -212,7 +258,7 @@
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="collapse" href="#auth" aria-expanded="false"
                             aria-controls="auth">
-                            <i class="fa-regular fa-user espaco menu-icon" style="color:#FF914D;"></i>
+                            <i class="fa-regular fas fa-dollar-sign espaco menu-icon" style="color:#01c592;"></i>
                             <span class="menu-title">Assinatura</span>
                             <i class="menu-arrow"></i>
                         </a>
@@ -270,7 +316,7 @@
                     -->
                     <li class="nav-item">
                         <a class="nav-link" href="../../../docs/documentation.html">
-                            <i class="fa-regular fa-file espaco menu-icon" style="color:#FF914D;"></i>
+                            <i class="fa-regular fas fa-file-alt espaco menu-icon" style="color:#01c592;"></i>
                             <span class="menu-title">Documentação</span>
                         </a>
                     </li>

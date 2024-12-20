@@ -3,7 +3,29 @@
 @section('content')
     <x-alert />
 
-    <div class="container mt-5">
+
+<!-- Cabeçalho -->
+ <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2">
+    <div>
+        <h4><strong>Usuário</strong> <br /><small>{{ $empresa->nome }}</small></h4>
+    </div>
+    <!-- botao -->
+    <div class="ms-md-auto py-2 py-md-0">
+        <div class="btn-group" role="group" aria-label="Basic example">
+            <a href="{{ route('empresas.usuario.create') }}" class="btn btn-primary btn-sm" title="Cadastrar Usuário">
+                <i class="fa-solid fas fa-user-plus"></i>
+            </a>
+            <a href="{{ route('empresas.usuario.index') }}" class="btn btn-primary btn-sm" title="Listar Usuários">
+                <i class="fa-solid fa-list"></i>
+            </a>
+        </div>
+    </div>
+    <!-- botao -->
+</div>
+<!-- Cabeçalho -->
+     
+
+    <div class="container mt-2">
         <div class="row">
             <div class="col-md-4">
                 <!-- Foto de Perfil -->
@@ -57,7 +79,7 @@
                                         method="POST">
                                         @csrf
                                         @method('delete')
-                                        <button type="submit" class="btn btn-secondary btn-sm" title="Excluir Produto"
+                                        <button type="submit" class="btn btn-primary btn-sm" title="Excluir Produto"
                                             onclick="return confirm('Deseja excluir o item permanentemente?')"><i
                                                 class="fa-solid fa-trash"></i></button>
                                     </form>
@@ -81,21 +103,24 @@
                                         readonly>
                                 </div>
                             </div>
-
                         </form>
 
                         <div class="row pt-4">
                             <div class="col-md-12">
                                 <div class="text-center">
-                                    <a href="{{ route('empresas.usuario.edit', ['usuario' => $user->id]) }}">
-                                        <button class="btn btn-secondary">Editar Perfil</button>
-                                    </a>
-                                    <a href="{{ route('empresas.usuario.edit-password', ['usuario' => $user->id]) }}">
-                                        <button class="btn btn-secondary">Alterar Senha</button>
-                                    </a>
+                                    <div class="d-flex gap-3">
+                                        <a href="{{ route('empresas.usuario.edit', ['usuario' => $user->id]) }}" class="btn btn-primary btn-sm">
+                                            <i class="fa-solid fas fa-user-edit btn-icon-append"></i> Editar Perfil
+                                        </a>
+                
+                                        <a href="{{ route('empresas.usuario.edit-password', ['usuario' => $user->id]) }}" class="btn btn-primary btn-sm">
+                                            <i class="fa-solid fas fa-edit btn-icon-append"></i> Alterar Senha
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                       
                     </div>
                 </div>
             </div>

@@ -38,8 +38,8 @@ class Socio extends Model
         return $this->hasMany(SociosDocumento::class);
     }
 
-    public function tomador()
-    {
-        return $this->belongsTo(TomadoresAbertura::class, 'tomadores_abertura_id');
-    }
+    //public function tomador()
+    //{
+        //return $this->belongsTo(TomadoresAbertura::class, 'tomadores_abertura_id');
+    //}
 }

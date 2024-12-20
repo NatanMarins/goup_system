@@ -9,10 +9,12 @@ use App\Http\Controllers\HoldingUserController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PagSeguroController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SocioController;
 use App\Http\Controllers\TarefaController;
 use App\Http\Controllers\TomadorServicoController;
 use App\Http\Controllers\UsuarioController;
 use App\Models\HoldingUser;
+use App\Models\Socio;
 use App\Models\TomadorServico;
 use Illuminate\Support\Facades\Route;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
@@ -137,6 +139,12 @@ Route::group(['middleware' => 'auth:web,holding,tomador'], function () {
     Route::get('/empresas/edit-tomador-servico/{tomadorservico}', [TomadorServicoController::class, 'edit'])->name('empresas.tomador.edit');
     Route::put('/empresas/update-tomador-servico/{tomadorservico}', [TomadorServicoController::class, 'update'])->name('empresas.tomador.update');
     Route::delete('/empresas/destroy-tomador-servico/{tomadorservico}', [TomadorServicoController::class, 'destroy'])->name('empresas.tomador.destroy');
+    Route::get('/empresas/tomador-documentos/{tomadorservico}', [TomadorServicoController::class, 'documentos'])->name('empresas.tomador.documentos');
+
+
+    // Sócios
+    Route::get('/empresas/tomadores/sociosShow/{tomadorservico}/{socio}', [SocioController::class, 'sociosShow'])->name('empresas.tomador.sociosShow');
+    Route::get('/empresas/tomadores/sociosIndex/{tomadorservico}/{socio}/documentos', [SocioController::class, 'sociosDocumentos'])->name('empresas.tomador.sociosDocumentos');
 
 
 

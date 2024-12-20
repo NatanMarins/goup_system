@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GoUp-System</title>
+    <title>Go Up-System</title>
     <link rel="stylesheet" href="styles.css">
     <script defer src="script.js"></script>
 
@@ -57,12 +57,13 @@
 .login-container {
     display: flex;
     height: 100vh;
+    
 }
 
 /* Lateral da imagem */
 .image-section {
     flex: 1;
-    background: #0d454c url('https://via.placeholder.com/800x600') no-repeat center center/cover;
+    background: #0d454c url('https://www.dinerb.com.br/goup/wp-content/uploads/2024/12/1.jpg') no-repeat center center/cover;
 }
 
 /* Lateral do formulário */
@@ -71,7 +72,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #eef0f4;
+    background-color: #0d454c;
     padding: 20px;
 }
 
@@ -201,12 +202,10 @@
         <div class="form-section">
             <div class="login-card">
                 <div class="brand-logo text-center">
-                    <img src="" alt="Logo da Empresa">
+                    <img src="https://www.dinerb.com.br/goup/wp-content/uploads/2023/09/goup-logo.png" alt="Logo da Empresa">
                 </div>
 
                 <x-alert />
-                <h2>Bem-vindo</h2>
-
                 <form action="{{ route('login.process') }}" method="POST" class="pt-3">
                     @csrf
                     @method('POST')

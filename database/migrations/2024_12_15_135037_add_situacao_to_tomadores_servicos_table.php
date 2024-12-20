@@ -12,9 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('tomadores_servicos', function (Blueprint $table) {
-            $table->enum('situacao', ['adimplente', 'inadimplente', 'abandono de carrinho', 'abertura de empresa'])
+            $table->enum('situacao', ['adimplente', 'inadimplente'])
                   ->default('adimplente')
                   ->after('nome_fantasia');
+
+            $table->enum('condicao', ['cliente regular', 'abandono de carrinho', 'abertura de empresa'])->default('cliente regular');
         });
     }
 
@@ -25,6 +27,7 @@ return new class extends Migration
     {
         Schema::table('tomadores_servicos', function (Blueprint $table) {
             $table->dropColumn('situacao');
+            $table->dropColumn('condicao');
         });
     }
 };
