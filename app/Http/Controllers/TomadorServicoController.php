@@ -19,29 +19,10 @@ class TomadorServicoController extends Controller
     public function index(Request $request)
     {
 
-        // Captura os parâmetros de filtro
-        $situacao = $request->input('situacao');
-        $status = $request->input('status');
-        $condicao = $request->input('condicao');
-
-        // Inicia a query
-        $tomadores = TomadorServico::query();
-
-        // Aplica os filtros dinamicamente
-        if ($situacao) {
-            $tomadores->where('situacao', $situacao);
-        }
-
-        if ($status) {
-            $tomadores->where('status', $status);
-        }
-
-        if ($condicao) {
-            $tomadores->where('condicao', $condicao);
-        }
+        $tomadores = TomadorServico::where('empresa_id', Auth::user()->empresa_id)->simplePaginate(10);
 
         // Ordena alfabeticamente por nome (ou ajuste para a coluna que deseja)
-        $clientes = $tomadores->orderBy('nome_fantasia')->paginate(10);
+        $clientes = $tomadores;
 
         return view('empresas.tomador.index', compact('clientes'));
     }
