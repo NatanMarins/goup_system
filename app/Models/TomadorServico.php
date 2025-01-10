@@ -96,5 +96,10 @@ class TomadorServico extends Authenticatable
     {
         return $this->belongsToMany(Socio::class, 'socio_tomador');
     }
+
+    public function pagamento()
+    {
+        return $this->hasOne(TomadoresPagamento::class, 'tomador_servico_id');
+    }
 }
 

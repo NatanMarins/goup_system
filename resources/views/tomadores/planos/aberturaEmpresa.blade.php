@@ -50,6 +50,12 @@
                                     <input type="text" class="form-control" id="email" name="email" required>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <label for="telefone" class="form-label">Telefone</label>
+                                    <input type="text" class="form-control" id="telefone" name="telefone" required>
+                                </div>
+                            </div>
 
                             <h5 class="mt-4 borda">Endereço</h5>
 

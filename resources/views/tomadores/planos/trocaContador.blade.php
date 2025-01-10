@@ -3,7 +3,76 @@
 @section('content')
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 
-    <div class="container mt-5">
+<style>
+
+.pricing-container {
+  display: flex;
+  gap: 20px;
+  align-items: flex-end;
+}
+
+.pricing-card {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
+  width: 320px;
+  border: 1px solid #d4edda;
+  cursor: pointer;
+}
+
+.pricing-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.featured {
+  transform: translateY(-30px);
+  border: 2px solid #22856A;
+  background: linear-gradient(135deg, #e8f5e9, #ffffff);
+}
+
+.featured:hover {
+  transform: translateY(-40px);
+}
+
+.pricing-card.selected {
+  border-color: #22856A;
+  transform: translateY(-15px) scale(1.05);
+}
+
+/* Typography */
+h3 {
+  margin: 0;
+  font-size: 24px;
+  color: #22856A;
+}
+
+.price {
+  font-size: 36px;
+  margin: 10px 0;
+  color: #01464d;
+}
+
+/* List Styles */
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+}
+
+ul li {
+  margin: 10px 0;
+  color: #555;
+}
+
+
+</style>
+
+
+    <div class="container mt-5 mb-5">
         <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12">
                 <h1 class="mb-5 pt-2 titulo">Troca de Contador</h1>
@@ -58,17 +127,23 @@
                                     <input type="text" class="form-control" id="email" name="email"
                                         value="{{ old('email') }}" required>
                                 </div>
+                            
+                                <div class="col-md-4 mb-2">
+                                    <label for="telefone" class="form-label">Telefone</label>
+                                    <input type="text" class="form-control" id="telefone" name="telefone"
+                                        value="{{ old('telefone') }}" required>
+                                </div>
                             </div>
 
                             <h5 class="mt-4 borda">Endereço</h5>
 
                             <div class="row pt-2">
-                                <div class="col-md-4 mb-3">
+                                <div class="col-md-2 mb-3">
                                     <label for="cep" class="form-label">CEP</label>
                                     <input type="text" class="form-control" id="cep" name="cep"
                                         value="{{ old('cep') }}" required>
                                 </div>
-                                <div class="col-md-4 mb-3">
+                                <div class="col-md-2 mb-3">
                                     <label for="estado" class="form-label">Estado</label>
                                     <input type="text" class="form-control" id="estado" name="estado"
                                         value="{{ old('estado') }}" required>
@@ -78,14 +153,14 @@
                                     <input type="text" class="form-control" id="cidade" name="cidade"
                                         value="{{ old('cidade') }}" required>
                                 </div>
-                            </div>
-                            <div class="row">
                                 <div class="col-md-4 mb-3">
                                     <label for="bairro" class="form-label">Bairro</label>
                                     <input type="text" class="form-control" id="bairro" name="bairro"
                                         value="{{ old('bairro') }}" required>
                                 </div>
-                                <div class="col-md-4 mb-3">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8 mb-3">
                                     <label for="logradouro" class="form-label">Logradouro</label>
                                     <input type="text" class="form-control" id="logradouro" name="logradouro"
                                         value="{{ old('logradouro') }}" required>
@@ -113,23 +188,116 @@
                                         name="documentos_empresa[]" multiple>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-12 text-center">
-                                    <h3 class="mt-4">Dados dos Sócios</h3>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12 mb-4 text-right">
-                                    <button type="button" class="themeBtn btn-block " id="add-socio-btn">Adicionar
-                                        Sócio</button>
-                                </div>
-                            </div>
 
+                            
+                            <div class="row">
+                                <div class="col-8 align-self-start">
+                                    <h5 class="mt-4 borda">Dados dos Sócios</h5>
+                                </div>
+
+                                <div class="col-4 align-self-end text-right">
+                                    <button type="button" class="themeBtn btn-block" id="add-socio-btn">Adicionar Sócio</button>
+                                </div>
+                            </div>
+                            
                             <hr />
 
                             <div id="socios-container">
                                 <!-- Formulários Dinâmicos para Sócios serão adicionados aqui -->
                             </div>
+
+                            <!-- Escolha de Plano e pagamento -->
+                            <h5 class="mt-4 borda">Escolha de Plano</h5>
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+
+                                    <div class="pricing-container pt-5">
+                                        <div class="pricing-card" onclick="selectCard(this)">
+                                            <h3 class="pb-2">Empreendedor</h3>
+                                            <small>Simples Nacional</small>
+                                            <p>Ideal para o empreendedor que está começando e busca os serviços básicos de contabilidade digital para manter sua empresa em dia.</p>
+                                            <p class="price">R$ 9,99</p>
+                                            <p><small>Valor Anual: R$ 99,99</small></p>
+                                            <ul>
+                                                <li>Abertura de Empresa Grátis*</li>
+                                                <li>Atendimento Telefônico</li>
+                                                <li>Emissão de Boleto</li>
+                                            </ul>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="plano"
+                                                    value="empreendedor" id="empreendedor">
+                                                <label class="form-check-label" for="empreendedor">
+                                                    Selecionar
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div class="pricing-card featured" onclick="selectCard(this)">
+                                            <h3 class="pb-2">Visionário</h3>
+                                            <small>Simples Nacional</small>
+                                            <p>Ideal para empresas que estão em crescimento e buscam uma contabilidade que ajude a dar mais visão estratégica e controle financeiro, sem perder simplicidade.</p>
+                                            <p class="price">R$ 19,99</p>
+                                            <p><small>Valor Anual: R$ 199,99</small></p>
+                                            <ul>
+                                                <li>Abertura de Empresa Grátis*</li>
+                                                <li>Atendimento Telefônico</li>
+                                                <li>Emissão de Boleto</li>
+                                            </ul>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="plano"
+                                                    value="visionario" id="visionario">
+                                                <label class="form-check-label" for="visionario">
+                                                    Selecionar
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div class="pricing-card" onclick="selectCard(this)">
+                                            <h3 class="pb-2">Líder</h3>
+                                            <small>Simples Nacional</small>
+                                            <p>Oferece todos os recursos e serviços possíveis, adequado ao empreendedor que quer otimizar todos os processos contábeis e focar no crescimento e sucesso do seu negócio.</p>
+                                            <p class="price">R$ 29,99</p>
+                                            <p><small>Valor Anual: R$ 299,99</small></p>
+                                            <ul>
+                                                <li>Abertura de Empresa Grátis*</li>
+                                                <li>Atendimento Telefônico</li>
+                                                <li>Emissão de Boleto</li>
+                                            </ul>
+                                            <div class="form-check">
+                                                <input class="form-check-input"  type="radio" name="plano" value="lider" id="lider">
+                                                <label class="form-check-label" for="lider">
+                                                    Selecionar
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+
+                            <!-- Escolha de Plano e pagamento -->
+                            <h5 class="mt-4 borda">Pagamento</h5>
+
+                            <div class="row">
+                                <div class="col-md-3 mb-2">
+                                    <label for="billingType" class="form-label">Forma de Pagamento</label>
+                                    <select name="billingType" id="billingType" class="form-select" required>
+                                        <option value="BOLETO">Boleto</option>
+                                        <option value="CREDIT_CARD">Cartão de Crédito</option>
+                                        <option value="PIX">PIX</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-3 mb-2">
+                                    <label for="cycle" class="form-label">Ciclo</label>
+                                    <select name="cycle" id="cycle" class="form-select" required>
+                                        <option value="YEARLY">Anual</option>
+                                        <option value="MONTHLY">Mensal</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                           
 
                             <div class="row">
                                 <div class="col-md-12 mb-4 pt-5 text-center">
@@ -289,22 +457,22 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-8 mb-3">
                                     <label for="email-${socioCount}" class="form-label">E-mail</label>
                                     <input type="email" class="form-control" id="email-${socioCount}" name="socios[${socioCount}][email]" required>
                                 </div>
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-4 mb-3">
                                     <label for="telefone-${socioCount}" class="form-label">Telefone</label>
                                     <input type="text" class="form-control telefone" id="telefone-${socioCount}" name="socios[${socioCount}][telefone]" required>
                                 </div>
                             </div>
                             <h5 class="mt-4">Endereço</h5>
                             <div class="row">
-                                <div class="col-md-4 mb-3">
+                                <div class="col-md-2 mb-3">
                                     <label for="cep-${socioCount}" class="form-label">CEP</label>
                                     <input type="text" class="form-control cep" id="cep-${socioCount}" name="socios[${socioCount}][cep]" required>
                                 </div>
-                                <div class="col-md-4 mb-3">
+                                <div class="col-md-2 mb-3">
                                     <label for="estado-${socioCount}" class="form-label">Estado</label>
                                     <input type="text" class="form-control" id="estado-${socioCount}" name="socios[${socioCount}][estado]" required>
                                 </div>
@@ -312,17 +480,17 @@
                                     <label for="cidade-${socioCount}" class="form-label">Cidade</label>
                                     <input type="text" class="form-control" id="cidade-${socioCount}" name="socios[${socioCount}][cidade]" required>
                                 </div>
-                            </div>
-                            <div class="row">
                                 <div class="col-md-4 mb-3">
                                     <label for="bairro-${socioCount}" class="form-label">Bairro</label>
                                     <input type="text" class="form-control" id="bairro-${socioCount}" name="socios[${socioCount}][bairro]" required>
                                 </div>
-                                <div class="col-md-4 mb-3">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-10 mb-3">
                                     <label for="logradouro-${socioCount}" class="form-label">Logradouro</label>
                                     <input type="text" class="form-control" id="logradouro-${socioCount}" name="socios[${socioCount}][logradouro]" required>
                                 </div>
-                                <div class="col-md-4 mb-3">
+                                <div class="col-md-2 mb-3">
                                     <label for="numero-${socioCount}" class="form-label">Número</label>
                                     <input type="text" class="form-control" id="numero-${socioCount}" name="socios[${socioCount}][numero]" required>
                                 </div>

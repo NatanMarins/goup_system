@@ -6,10 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Models\Documento;
 use App\Models\Socio;
 use App\Models\TomadoresAbertura;
+use App\Models\TomadoresPagamento;
 use App\Models\TomadorServico;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use GuzzleHttp\Client;
 
 class TomadorServicoController extends Controller
 {
@@ -183,6 +186,7 @@ class TomadorServicoController extends Controller
             'razao_social3' => 'required|string|max:255',
             'nome_fantasia' => 'required|string|max:255',
             'email' => 'required|string|email',
+            'telefone' => 'required',
             'cep' => 'required',
             'logradouro' => 'required',
             'numero' => 'required',
@@ -227,6 +231,7 @@ class TomadorServicoController extends Controller
                 'razao_social3',
                 'nome_fantasia',
                 'email',
+                'telefone',
                 'cep',
                 'estado',
                 'cidade',
@@ -268,9 +273,9 @@ class TomadorServicoController extends Controller
 
     public function trocaContador()
     {
+        $tomadorservico = TomadorServico::all();
 
-
-        return view('tomadores.planos.trocaContador');
+        return view('tomadores.planos.trocaContador', compact('tomadorservico'));
     }
 
     public function storeTroca(Request $request)
@@ -283,6 +288,7 @@ class TomadorServicoController extends Controller
             'inscricao_municipal' => 'required|string|max:255',
             'inscricao_estadual' => 'required|string|max:255',
             'email' => 'required|string|email',
+            'telefone' => 'required',
             'cep' => 'required',
             'logradouro' => 'required',
             'numero' => 'required',
@@ -316,6 +322,7 @@ class TomadorServicoController extends Controller
                 'inscricao_estadual',
                 'nome_fantasia',
                 'email',
+                'telefone',
                 'cep',
                 'estado',
                 'cidade',
@@ -345,7 +352,7 @@ class TomadorServicoController extends Controller
                     ]);
                 }
             }
-        }
+        }        
 
         // Processar e salvar os sócios
         if ($request->has('socios')) {
@@ -372,7 +379,185 @@ class TomadorServicoController extends Controller
             }
         }
 
+        // Cadastrar informações na tabela tomadores_pagamento
+        $paymentCiclo = $request->cycle;
+
+        if ($request->plano == 'lider') {
+            if ($paymentCiclo == 'YEARLY') {
+                $valor = 299.99;
+                $descricao = 'Plano Líder';
+            } else {
+                $valor = 29.99;
+                $descricao = 'Plano Líder';
+            }           
+        } elseif ($request->plano == 'visionario') {
+            if ($paymentCiclo == 'YEARLY') {
+                $valor = 199.99;
+                $descricao = 'Plano Visionário';
+            } else {
+                $valor = 19.99;
+                $descricao = 'Plano Visionário';
+            }
+        } elseif ($request->plano == 'empreendedor') {
+            if ($paymentCiclo == 'YEARLY') {
+                $valor = 99.99;
+                $descricao = 'Plano Empreendedor';
+            } else {
+                $valor = 9.99;
+                $descricao = 'Plano Empreendedor';
+            }
+        }
+
+        TomadoresPagamento::create([
+            'tomador_servico_id' => $tomador->id,
+            'billingType' => $request->billingType,
+            'value' => $valor,
+            'nextDueDate' => Carbon::now()->addDay()->format('Y-m-d'), // Adiciona 1 dia à data atual,
+            'cycle' => $paymentCiclo,
+            'description' => $descricao,
+        ]);
+
+
+
+        // Enviar os dados para a API do Asaas
+        $asaasResponse = $this->createCustomer($request);
+
+        // Verificar se a API respondeu com sucesso
+        $responseData = $asaasResponse->getData(); // Obtém os dados decodificados
+        if (isset($responseData->status) && $responseData->status === 'success') {
+            // Chamar a função para buscar o cliente pela API
+            $this->getCustomerByCpfCnpj($request, $tomador);
+        }
+
+        // Após criar o tomador e salvar as informações na tabela "tomadores_pagamento"
+        $billingType = $request->billingType; // Ex: "CREDIT_CARD"
+        $cycle = $request->cycle; // Ex: "WEEKLY"
+        $customerId = $tomador->codigo_cliente; // ID do cliente no Asaas
+        $value = $valor; // Valor definido baseado no plano
+        $nextDueDate = Carbon::now()->addDay()->format('Y-m-d'); // Data de vencimento
+        $description = $descricao; // Descrição do plano
+
+        // Chama a função para criar a assinatura
+        $subscriptionResponse = $this->createSubscription($billingType, $cycle, $customerId, $value, $nextDueDate, $description);
+
+        if (isset($subscriptionResponse['error'])) {
+            return redirect()->back()->with('error', 'Erro ao criar a assinatura: ' . $subscriptionResponse['error']);
+        }
+
+        // Assinatura criada com sucesso
+        return redirect()->back()->with('success', 'Cliente e assinatura criados com sucesso!');
+
         // Retornar sucesso
         return redirect()->back()->with('success', 'Cadastro realizado com sucesso!');
+    }
+
+
+    private function createCustomer(Request $request)
+    {
+        $client = new Client();
+
+        $body = [
+            'name' => $request->nome_fantasia,
+            'cpfCnpj' => $request->cnpj,
+            'email' => $request->email,
+            'mobilePhone' => $request->telefone,
+            'postalCode' => $request->cep,
+        ];
+
+        try {
+            $response = $client->request('POST', 'https://sandbox.asaas.com/api/v3/customers', [
+                'headers' => [
+                    'accept' => 'application/json',
+                    'access_token' => env('ASAAS_ACCESS_TOKEN'),
+                    'content-type' => 'application/json',
+                ],
+                'json' => $body,
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'data' => json_decode($response->getBody()->getContents(), true),
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+
+    private function getCustomerByCpfCnpj(Request $request, $tomador)
+    {
+        $cpfCnpj = $request->cnpj; // Captura o CPF ou CNPJ enviado na requisição
+
+        if (!$cpfCnpj) {
+            return response()->json(['status' => 'error', 'message' => 'CPF ou CNPJ não informado.'], 400);
+        }
+
+        $client = new Client();
+
+        try {
+            // Fazendo a requisição GET na API do Asaas
+            $response = $client->request('GET', 'https://sandbox.asaas.com/api/v3/customers', [
+                'headers' => [
+                    'accept' => 'application/json',
+                    'access_token' => env('ASAAS_ACCESS_TOKEN'), // Use o token configurado no .env
+                ],
+                'query' => ['cpfCnpj' => $cpfCnpj], // Passa o CPF ou CNPJ como parâmetro de consulta
+            ]);
+
+            $responseBody = json_decode($response->getBody()->getContents(), true);
+
+            // Verifica se a API retornou um cliente válido
+            if (isset($responseBody['data']) && count($responseBody['data']) > 0) {
+                $customer = $responseBody['data'][0]; // Pega o primeiro cliente retornado
+                $customerId = $customer['id'];
+
+                // Salva o ID na tabela tomadores_servicos
+                $tomador->codigo_cliente = $customerId;
+                $tomador->save();
+
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Cliente encontrado e cadastrado com sucesso!',
+                    'data' => [
+                        'codigo_cliente' => $customerId,
+                    ],
+                ]);
+            } else {
+                return response()->json(['status' => 'error', 'message' => 'Cliente não encontrado.'], 404);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    private function createSubscription($billingType, $cycle, $customerId, $value, $nextDueDate, $description)
+    {
+        $client = new Client();
+
+        try {
+            $response = $client->request('POST', 'https://sandbox.asaas.com/api/v3/subscriptions', [
+                'json' => [ // Define os dados no formato JSON
+                    'billingType' => $billingType,
+                    'cycle' => $cycle,
+                    'customer' => $customerId, // ID do cliente no Asaas
+                    'value' => $value, // Valor da assinatura
+                    'nextDueDate' => $nextDueDate, // Data de vencimento
+                    'description' => $description, // Descrição da assinatura
+                ],
+                'headers' => [
+                    'accept' => 'application/json',
+                    'access_token' => env('ASAAS_ACCESS_TOKEN'),
+                    'content-type' => 'application/json',
+                ],
+            ]);
+
+            return json_decode($response->getBody(), true); // Retorna o JSON como array associativo
+        } catch (\Exception $e) {
+            // Trate possíveis erros
+            return ['error' => $e->getMessage()];
+        }
     }
 }
