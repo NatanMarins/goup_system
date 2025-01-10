@@ -318,7 +318,7 @@ ul li {
                                             aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        Deseja confirmar o pagamento?
+                                        Deseja confirmar Operação?
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-danger"
