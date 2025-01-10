@@ -297,7 +297,17 @@ ul li {
                                 </div>
                             </div>
 
-                           
+                            <!-- Politicas -->
+                            <h5 class="mt-4 borda">Diretrizes</h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <div class="btn-group" role="group" aria-label="Basic outlined example">
+                                        <a href="https://www.dinerb.com.br/goup/politica-de-privacidade/" target="_blank" type="button" class="btn btn-outline-secondary">Política de Privacidade</a>
+                                        <a href="https://www.dinerb.com.br/goup/termo-de-uso/" type="button" target="_blank" class="btn btn-outline-secondary">Termos e Condições de Uso</a>
+                                      </div>
+                                </div>
+                            </div>
+                            <p><small><i>* Ao continuar, você declara que leu e concorda com os Termos de Uso e a Política de Privacidade.</i></small></p>
 
                             <div class="row">
                                 <div class="col-md-12 mb-4 pt-5 text-center">
