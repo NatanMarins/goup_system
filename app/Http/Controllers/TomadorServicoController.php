@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Assinatura;
 use App\Models\Documento;
 use App\Models\Socio;
 use App\Models\TomadoresAbertura;
@@ -18,13 +19,31 @@ class TomadorServicoController extends Controller
 {
     public function index(Request $request)
     {
+        // Inicia a query base
+        $query = TomadorServico::query();
 
-        $tomadores = TomadorServico::where('empresa_id', Auth::user()->empresa_id)->simplePaginate(10);
+        // Aplica filtros se enviados no request
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
 
-        // Ordena alfabeticamente por nome (ou ajuste para a coluna que deseja)
-        $clientes = $tomadores;
+        if ($request->filled('condicao')) {
+            $query->where('condicao', $request->condicao);
+        }
 
-        return view('empresas.tomador.index', compact('clientes'));
+        if ($request->filled('situacao')) {
+            $query->where('situacao', $request->situacao);
+        }
+
+        if ($request->filled('nome')) {
+            $query->where('nome_fantasia', 'like', '%' . $request->nome . '%');
+        }
+
+        // Ordena e carrega os resultados
+        $clientes = $query->orderBy('nome_fantasia', 'asc')->paginate(10); // com paginação
+
+        // Retorna a view com os dados e os filtros ativos
+        return view('empresas.tomador.index', compact('clientes', 'request'));
     }
 
     public function show($tomadorservico)
@@ -256,7 +275,24 @@ class TomadorServicoController extends Controller
     {
         $tomadorservico = TomadorServico::all();
 
-        return view('tomadores.planos.trocaContador', compact('tomadorservico'));
+        $assinaturas = Assinatura::all();
+
+        foreach ($assinaturas as $assinatura) {
+            if ($assinatura->planos == 'Empreendedor') {
+                $empreendedorMensal = $assinatura->valor_mensal;
+                $empreendedorAnual = $assinatura->valor_anual;
+            }
+            if ($assinatura->planos == 'Visionário') {
+                $visionarioMensal = $assinatura->valor_mensal;
+                $visionarioAnual = $assinatura->valor_anual;
+            }
+            if ($assinatura->planos == 'Líder') {
+                $liderMensal = $assinatura->valor_mensal;
+                $liderAnual = $assinatura->valor_anual;
+            }
+        }
+
+        return view('tomadores.planos.trocaContador', compact('tomadorservico', 'empreendedorMensal', 'empreendedorAnual', 'visionarioMensal', 'visionarioAnual', 'liderMensal', 'liderAnual'));
     }
 
     public function storeTroca(Request $request)
@@ -333,7 +369,7 @@ class TomadorServicoController extends Controller
                     ]);
                 }
             }
-        }        
+        }
 
         // Processar e salvar os sócios
         if ($request->has('socios')) {
@@ -370,7 +406,7 @@ class TomadorServicoController extends Controller
             } else {
                 $valor = 29.99;
                 $descricao = 'Plano Líder';
-            }           
+            }
         } elseif ($request->plano == 'visionario') {
             if ($paymentCiclo == 'YEARLY') {
                 $valor = 199.99;
@@ -426,10 +462,7 @@ class TomadorServicoController extends Controller
         }
 
         // Assinatura criada com sucesso
-        return redirect()->back()->with('success', 'Cliente e assinatura criados com sucesso!');
-
-        // Retornar sucesso
-        return redirect()->back()->with('success', 'Cadastro realizado com sucesso!');
+        return redirect()->route('tomadores.planos.welcomeVideo')->with('success', 'Cliente e assinatura criados com sucesso!');
     }
 
 

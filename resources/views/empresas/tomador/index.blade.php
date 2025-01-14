@@ -9,6 +9,54 @@
     </div>
     <!-- Cabeçalho -->
 
+    <form action="{{ route('empresas.tomador.index') }}" method="GET" class="mb-4">
+        <div class="row">
+            <!-- Filtro por Status -->
+            <div class="col-md-3">
+                <label for="status" class="form-label">Status</label>
+                <select name="status" id="status" class="form-control">
+                    <option value="">Todos</option>
+                    <option value="ativo" {{ request('status') == 'ativo' ? 'selected' : '' }}>Ativo</option>
+                    <option value="inativo" {{ request('status') == 'inativo' ? 'selected' : '' }}>Inativo</option>
+                </select>
+            </div>
+
+            <!-- Filtro por Condição -->
+            <div class="col-md-3">
+                <label for="condicao" class="form-label">Condição</label>
+                <select name="condicao" id="condicao" class="form-control">
+                    <option value="">Todas</option>
+                    <option value="cliente_regular" {{ request('condicao') == 'cliente regular' ? 'selected' : '' }}>Cliente Regular</option>
+                    <option value="abandono_de_carrinho" {{ request('condicao') == 'abandono de carrinho' ? 'selected' : '' }}>Abandono de Carrinho</option>
+                    <option value="abertura_de_empresa" {{ request('condicao') == 'abertura de empresa' ? 'selected' : '' }}>Abertura de Empresa</option>
+                </select>
+            </div>
+
+            <!-- Filtro por Situação -->
+            <div class="col-md-3">
+                <label for="situacao" class="form-label">Situação</label>
+                <select name="situacao" id="situacao" class="form-control">
+                    <option value="">Todas</option>
+                    <option value="inadimplente" {{ request('situacao') == 'inadimplente' ? 'selected' : '' }}>Inadimplente</option>
+                    <option value="adimplente" {{ request('situacao') == 'adimplente' ? 'selected' : '' }}>Adimplente</option>
+                </select>
+            </div>
+
+            <!-- Campo de Busca -->
+            <div class="col-md-3">
+                <label for="nome" class="form-label">Nome</label>
+                <input type="text" name="nome" id="nome" class="form-control" value="{{ request('nome') }}"
+                    placeholder="Digite o nome">
+            </div>
+
+            <!-- Botão de Buscar -->
+            <div class="col-md-12 mt-3">
+                <button type="submit" class="btn btn-primary">Filtrar</button>
+                <a href="{{ route('empresas.tomador.index') }}" class="btn btn-secondary">Limpar Filtros</a>
+            </div>
+        </div>
+    </form>
+
 
 
     <!-- COnteudo -->
@@ -18,7 +66,7 @@
                 <div class="card-body">
                     <!--Inserir o COnteudo da página -->
                     <!-- COnteudo -->
-                    
+
                 </div>
                 <!-- COnteudo -->
 

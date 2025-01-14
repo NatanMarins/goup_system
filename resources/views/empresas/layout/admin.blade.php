@@ -266,6 +266,13 @@
                     </li>
 
                     <li class="nav-item">
+                        <a class="nav-link" href="{{ route('empresas.assinatura.configuracao') }}">
+                            <i class="fa-regular fas fa-users espaco menu-icon" style="color:#00464D;"></i>
+                            <span class="menu-title">Assinaturas</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
                         <a class="nav-link" href="../../../docs/documentation.html">
                             <i class="fa-regular fa-file-alt espaco menu-icon" style="color:#00464D;"></i>
                             <span class="menu-title">Documentação</span>

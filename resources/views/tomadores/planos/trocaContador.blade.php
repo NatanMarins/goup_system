@@ -3,74 +3,70 @@
 @section('content')
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 
-<style>
+    <style>
+        .pricing-container {
+            display: flex;
+            gap: 20px;
+            align-items: flex-end;
+        }
 
-.pricing-container {
-  display: flex;
-  gap: 20px;
-  align-items: flex-end;
-}
+        .pricing-card {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
+            width: 320px;
+            border: 1px solid #d4edda;
+            cursor: pointer;
+        }
 
-.pricing-card {
-  background: #ffffff;
-  padding: 20px;
-  border-radius: 12px;
-  text-align: center;
-  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
-  width: 320px;
-  border: 1px solid #d4edda;
-  cursor: pointer;
-}
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
 
-.pricing-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-}
+        .featured {
+            transform: translateY(-30px);
+            border: 2px solid #22856A;
+            background: linear-gradient(135deg, #e8f5e9, #ffffff);
+        }
 
-.featured {
-  transform: translateY(-30px);
-  border: 2px solid #22856A;
-  background: linear-gradient(135deg, #e8f5e9, #ffffff);
-}
+        .featured:hover {
+            transform: translateY(-40px);
+        }
 
-.featured:hover {
-  transform: translateY(-40px);
-}
+        .pricing-card.selected {
+            border-color: #22856A;
+            transform: translateY(-15px) scale(1.05);
+        }
 
-.pricing-card.selected {
-  border-color: #22856A;
-  transform: translateY(-15px) scale(1.05);
-}
+        /* Typography */
+        h3 {
+            margin: 0;
+            font-size: 24px;
+            color: #22856A;
+        }
 
-/* Typography */
-h3 {
-  margin: 0;
-  font-size: 24px;
-  color: #22856A;
-}
+        .price {
+            font-size: 36px;
+            margin: 10px 0;
+            color: #01464d;
+        }
 
-.price {
-  font-size: 36px;
-  margin: 10px 0;
-  color: #01464d;
-}
+        /* List Styles */
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
 
-/* List Styles */
-ul {
-  list-style: none;
-  padding: 0;
-  margin: 20px 0;
-}
-
-ul li {
-  margin: 10px 0;
-  color: #555;
-}
-
-
-</style>
-
+        ul li {
+            margin: 10px 0;
+            color: #555;
+        }
+    </style>
 
     <div class="container mt-5 mb-5">
         <div class="row">
@@ -127,7 +123,7 @@ ul li {
                                     <input type="text" class="form-control" id="email" name="email"
                                         value="{{ old('email') }}" required>
                                 </div>
-                            
+
                                 <div class="col-md-4 mb-2">
                                     <label for="telefone" class="form-label">Telefone</label>
                                     <input type="text" class="form-control" id="telefone" name="telefone"
@@ -189,17 +185,18 @@ ul li {
                                 </div>
                             </div>
 
-                            
+
                             <div class="row">
                                 <div class="col-8 align-self-start">
                                     <h5 class="mt-4 borda">Dados dos Sócios</h5>
                                 </div>
 
                                 <div class="col-4 align-self-end text-right">
-                                    <button type="button" class="themeBtn btn-block" id="add-socio-btn">Adicionar Sócio</button>
+                                    <button type="button" class="themeBtn btn-block" id="add-socio-btn">Adicionar
+                                        Sócio</button>
                                 </div>
                             </div>
-                            
+
                             <hr />
 
                             <div id="socios-container">
@@ -215,9 +212,10 @@ ul li {
                                         <div class="pricing-card" onclick="selectCard(this)">
                                             <h3 class="pb-2">Empreendedor</h3>
                                             <small>Simples Nacional</small>
-                                            <p>Ideal para o empreendedor que está começando e busca os serviços básicos de contabilidade digital para manter sua empresa em dia.</p>
-                                            <p class="price">R$ 9,99</p>
-                                            <p><small>Valor Anual: R$ 99,99</small></p>
+                                            <p>Ideal para o empreendedor que está começando e busca os serviços básicos de
+                                                contabilidade digital para manter sua empresa em dia.</p>
+                                            <p class="price">R$ {{ $empreendedorMensal }}</p>
+                                            <p><small>Valor Anual: R$ {{ $empreendedorAnual }}</small></p>
                                             <ul>
                                                 <li>Abertura de Empresa Grátis*</li>
                                                 <li>Atendimento Telefônico</li>
@@ -235,9 +233,11 @@ ul li {
                                         <div class="pricing-card featured" onclick="selectCard(this)">
                                             <h3 class="pb-2">Visionário</h3>
                                             <small>Simples Nacional</small>
-                                            <p>Ideal para empresas que estão em crescimento e buscam uma contabilidade que ajude a dar mais visão estratégica e controle financeiro, sem perder simplicidade.</p>
-                                            <p class="price">R$ 19,99</p>
-                                            <p><small>Valor Anual: R$ 199,99</small></p>
+                                            <p>Ideal para empresas que estão em crescimento e buscam uma contabilidade que
+                                                ajude a dar mais visão estratégica e controle financeiro, sem perder
+                                                simplicidade.</p>
+                                            <p class="price">R$ {{ $visionarioMensal }}</p>
+                                            <p><small>Valor Anual: R$ {{ $visionarioAnual }}</small></p>
                                             <ul>
                                                 <li>Abertura de Empresa Grátis*</li>
                                                 <li>Atendimento Telefônico</li>
@@ -255,23 +255,26 @@ ul li {
                                         <div class="pricing-card" onclick="selectCard(this)">
                                             <h3 class="pb-2">Líder</h3>
                                             <small>Simples Nacional</small>
-                                            <p>Oferece todos os recursos e serviços possíveis, adequado ao empreendedor que quer otimizar todos os processos contábeis e focar no crescimento e sucesso do seu negócio.</p>
-                                            <p class="price">R$ 29,99</p>
-                                            <p><small>Valor Anual: R$ 299,99</small></p>
+                                            <p>Oferece todos os recursos e serviços possíveis, adequado ao empreendedor que
+                                                quer otimizar todos os processos contábeis e focar no crescimento e sucesso
+                                                do seu negócio.</p>
+                                            <p class="price">R$ {{ $liderMensal }}</p>
+                                            <p><small>Valor Anual: R$ {{ $liderAnual }}</small></p>
                                             <ul>
                                                 <li>Abertura de Empresa Grátis*</li>
                                                 <li>Atendimento Telefônico</li>
                                                 <li>Emissão de Boleto</li>
                                             </ul>
                                             <div class="form-check">
-                                                <input class="form-check-input"  type="radio" name="plano" value="lider" id="lider">
+                                                <input class="form-check-input" type="radio" name="plano"
+                                                    value="lider" id="lider">
                                                 <label class="form-check-label" for="lider">
                                                     Selecionar
                                                 </label>
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
                             </div>
 
@@ -302,12 +305,16 @@ ul li {
                             <div class="row">
                                 <div class="col-md-6 mb-2">
                                     <div class="btn-group" role="group" aria-label="Basic outlined example">
-                                        <a href="https://www.dinerb.com.br/goup/politica-de-privacidade/" target="_blank" type="button" class="btn btn-outline-secondary">Política de Privacidade</a>
-                                        <a href="https://www.dinerb.com.br/goup/termo-de-uso/" type="button" target="_blank" class="btn btn-outline-secondary">Termos e Condições de Uso</a>
-                                      </div>
+                                        <a href="https://www.dinerb.com.br/goup/politica-de-privacidade/" target="_blank"
+                                            type="button" class="btn btn-outline-secondary">Política de Privacidade</a>
+                                        <a href="https://www.dinerb.com.br/goup/termo-de-uso/" type="button"
+                                            target="_blank" class="btn btn-outline-secondary">Termos e Condições de
+                                            Uso</a>
+                                    </div>
                                 </div>
                             </div>
-                            <p><small><i>* Ao continuar, você declara que leu e concorda com os Termos de Uso e a Política de Privacidade.</i></small></p>
+                            <p><small><i>* Ao continuar, você declara que leu e concorda com os Termos de Uso e a Política
+                                        de Privacidade.</i></small></p>
 
                             <div class="row">
                                 <div class="col-md-12 mb-4 pt-5 text-center">

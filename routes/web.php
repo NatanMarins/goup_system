@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AssinaturaController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmpresaController;
@@ -29,6 +30,7 @@ Route::get('/tomadores/contratacao-abertura', [TomadorServicoController::class, 
 Route::post('/tomadores/contratacao-abertura-store', [TomadorServicoController::class, 'storeAbertura'])->name('tomadores.planos.storeAbertura');
 Route::get('/tomadores/contratacao-troca-contador', [TomadorServicoController::class, 'trocaContador'])->name('tomadores.planos.trocaContador');
 Route::post('/tomadores/contratacao-troca-store', [TomadorServicoController::class, 'storeTroca'])->name('tomadores.planos.storeTroca');
+Route::get('/tomadores/boas-vindas', [TomadorServicoController::class, 'welcomeVideo'])->name('tomadores.planos.welcomeVideo');
 
 
 // Login
@@ -145,6 +147,10 @@ Route::group(['middleware' => 'auth:web,holding,tomador'], function () {
     // Sócios
     Route::get('/empresas/tomadores/sociosShow/{tomadorservico}/{socio}', [SocioController::class, 'sociosShow'])->name('empresas.tomador.sociosShow');
     Route::get('/empresas/tomadores/sociosIndex/{tomadorservico}/{socio}/documentos', [SocioController::class, 'sociosDocumentos'])->name('empresas.tomador.sociosDocumentos');
+
+    // Assinaturas
+    Route::get('/empresas/configuracao-assinatura', [AssinaturaController::class, 'config'])->name('empresas.assinatura.configuracao');
+    Route::post('/empresas/update', [AssinaturaController::class, 'update'])->name('empresas.assinatura.update');
 
 
 
