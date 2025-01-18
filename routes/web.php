@@ -12,6 +12,7 @@ use App\Http\Controllers\PagSeguroController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SocioController;
 use App\Http\Controllers\TarefaController;
+use App\Http\Controllers\TomadorPerfilController;
 use App\Http\Controllers\TomadorServicoController;
 use App\Http\Controllers\UsuarioController;
 use App\Models\HoldingUser;
@@ -176,5 +177,8 @@ Route::group(['middleware' => 'auth:web,holding,tomador'], function () {
     // Planos
     Route::get('/tomadores/planos', [TomadorServicoController::class, 'planos'])->name('tomadores.planos.index');
     
-
+    // Perfil
+    Route::get('/tomadores/show-profile', [TomadorPerfilController::class, 'showTomador'])->name('tomadores.profile.show');
+    Route::put('tomadores/update-password', [TomadorPerfilController::class, 'updatePassword'])->name('tomadores.profile.update-password');
+    Route::get('/tomadores/adicionar-documentos', [TomadorPerfilController::class, 'addDocumentos'])->name('tomadores.profile.addDocumentos');
 });

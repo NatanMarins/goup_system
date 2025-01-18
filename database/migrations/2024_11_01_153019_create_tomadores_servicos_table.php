@@ -29,7 +29,7 @@ return new class extends Migration
             $table->string('complemento')->nullable();
             $table->date('data_abertura')->nullable();
             $table->string('inscricao_municipal')->nullable();
-            $table->enum('status', ['ativo', 'inativo'])->default('ativo');
+            $table->enum('status', ['ativo', 'inativo', 'pendente'])->default('ativo');
             $table->enum('natureza_juridica', ['MEI', 'EI', 'Ltda.', 'SS', 'SA', 'SLU'])->default('MEI');
             $table->enum('regime_tributario', ['Simples Nacional', 'Lucro Presumido', 'Lucro Real'])->default('Simples Nacional');
             $table->string('cnae')->nullable();

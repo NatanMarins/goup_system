@@ -84,11 +84,8 @@
                         <!-- Usuário  -->
                         <div class="user-row">
                             <div class="user-info">
-                                @if (Auth::check())
-                                <img src="{{ Auth::user()->foto_perfil ? asset('storage/' . Auth::user()->foto_perfil) : asset('imagens/default-avatar.png') }}" alt="Avatar" class="user-avatar">
-                                @endif
                                 <div class="user-details  pt-2">
-                                    <strong>{{ auth()->user()->name }}</strong>
+                                    <strong>{{ auth()->user()->nome_fantasia }}</strong>
                                     <div class="user-last-login">
                                         @if (Auth::user()->last_login_at)
                                         <p>Último login: {{ Auth::user()->last_login_at->diffForHumans() }}</p>
@@ -162,19 +159,11 @@
                     <!-- notificacoes -->
                     <!-- perfil -->
                     <li class="nav-item dropdown me-0">
-                        <a class="nav-link count-indicator dropdown-toggle d-flex align-items-center justify-content-center" title="Perfil"  id="notificationDropdown" href="{{ route('holdings.profile.show') }}">
+                        <a class="nav-link count-indicator dropdown-toggle d-flex align-items-center justify-content-center" title="Perfil"  id="notificationDropdown" href="{{ route('tomadores.profile.show') }}">
                             <i class="fa-regular fas fa-user-cog mx-0" style="color: #00464D;"></i>
                         </a>
                     </li>
                     <!-- perfil -->
-
-                    <!-- perfil empresa-->
-                    <li class="nav-item dropdown me-0">
-                        <a class="nav-link count-indicator dropdown-toggle d-flex align-items-center justify-content-center" title="Perfil da Empresa"  id="notificationDropdown" href="{{ route('holdings.holding_profile.show') }}">
-                            <i class="fa-regular far fa-building mx-0" style="color: #00464D;"></i>
-                        </a>
-                    </li>
-                    <!-- perfil empresa -->
 
                     <!-- Sair-->
                     <li class="nav-item dropdown me-0">

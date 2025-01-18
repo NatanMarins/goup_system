@@ -171,15 +171,31 @@ class TomadorServicoController extends Controller
 
     public function aberturaEmpresa()
     {
+        $tomadorservico = TomadorServico::all();
 
-        return view('tomadores.planos.aberturaEmpresa');
+        $assinaturas = Assinatura::all();
+
+        foreach ($assinaturas as $assinatura) {
+            if ($assinatura->planos == 'Empreendedor') {
+                $empreendedorMensal = $assinatura->valor_mensal;
+                $empreendedorAnual = $assinatura->valor_anual;
+            }
+            if ($assinatura->planos == 'Visionário') {
+                $visionarioMensal = $assinatura->valor_mensal;
+                $visionarioAnual = $assinatura->valor_anual;
+            }
+            if ($assinatura->planos == 'Líder') {
+                $liderMensal = $assinatura->valor_mensal;
+                $liderAnual = $assinatura->valor_anual;
+            }
+        }
+
+
+        return view('tomadores.planos.aberturaEmpresa', compact('tomadorservico', 'empreendedorMensal', 'empreendedorAnual', 'visionarioMensal', 'visionarioAnual', 'liderMensal', 'liderAnual'));
     }
 
     public function storeAbertura(Request $request)
     {
-
-        //dd($request->all());
-
         $request->validate([
             'razao_social' => 'required|string|max:255',
             'razao_social2' => 'required|string|max:255',
@@ -187,6 +203,8 @@ class TomadorServicoController extends Controller
             'nome_fantasia' => 'required|string|max:255',
             'email' => 'required|string|email',
             'telefone' => 'required',
+            'responsavel' => 'required',
+            'cpf_responsavel' => 'required',
             'cep' => 'required',
             'logradouro' => 'required',
             'numero' => 'required',
@@ -194,27 +212,17 @@ class TomadorServicoController extends Controller
             'cidade' => 'required',
             'estado' => 'required',
             'complemento' => 'nullable',
-
-            'socios.*.nome' => 'required|string|max:255',
-            'socios.*.identidade' => 'required|string|max:20',
-            'socios.*.cpf' => 'required|string|max:14',
-            'socios.*.estado_civil' => 'required|string|max:50',
-            'socios.*.profissao' => 'required|string|max:100',
-            'socios.*.cep' => 'required|string|max:10',
-            'socios.*.estado' => 'required|string|max:2',
-            'socios.*.cidade' => 'required|string|max:100',
-            'socios.*.bairro' => 'required|string|max:100',
-            'socios.*.logradouro' => 'required|string|max:255',
-            'socios.*.numero' => 'required|string|max:10',
-            'socios.*.complemento' => 'nullable|string|max:255',
-            'socios.*.documentos' => 'nullable|array',
-            'socios.*.documentos.*' => 'nullable|file|mimes:jpg,jpeg,png,pdf,txt',
         ], [
             // Mensagens de erro
             'razao_social.required' => 'O campo Razão social 1 é obrigatório.',
             'razao_social2.required' => 'O campo Razão social 2 é obrigatório.',
             'razao_social3.required' => 'O campo Razão social 3 é obrigatório.',
             'nome_fantasia.required' => 'O campo Nome Fantasia é obrigatório.',
+            'email.required' => 'O campo Nome E-mail é obrigatório.',
+            'email.email' => 'Informe um E-Mail válido.',
+            'telefone.required' => 'O campo Nome Telefone é obrigatório.',
+            'responsavel.required' => 'O campo Nome Responsável é obrigatório.',
+            'cpf_responsavel.required' => 'O campo CPF é obrigatório.',
             'cep.required' => 'O campo CEP é obrigatório.',
             'logradouro.required' => 'O campo Logradouro é obrigatório.',
             'numero.required' => 'O campo Número é obrigatório.',
@@ -232,6 +240,8 @@ class TomadorServicoController extends Controller
                 'nome_fantasia',
                 'email',
                 'telefone',
+                'responsavel',
+                'cpf_responsavel',
                 'cep',
                 'estado',
                 'cidade',
@@ -240,35 +250,154 @@ class TomadorServicoController extends Controller
                 'numero',
                 'complemento',
             ]),
-            ['empresa_id' => 1, 'password' => Hash::make('123456a', ['rounds' => 12]), 'condicao' => 'abertura de empresa']
+            ['empresa_id' => 1, 'password' => Hash::make('123456a', ['rounds' => 12])]
         ));
 
-        // Processar e salvar os sócios
-        if ($request->has('socios')) {
-            foreach ($request->socios as $socio) {
-                // Criar o sócio e associá-lo ao tomador
-                $novoSocio = $tomador->socios()->create($socio);
+        // Cadastrar informações na tabela tomadores_pagamento
+        $paymentCiclo = $request->cycle;
 
-                // Processar os documentos do sócio, caso existam
-                if (isset($socio['documentos']) && is_array($socio['documentos'])) {
-                    foreach ($socio['documentos'] as $documento) {
-                        if ($documento->isValid()) {
-                            // Fazer upload do arquivo
-                            $nomeArquivo = $documento->getClientOriginalName();
-                            $caminho = $documento->store('documentos_socios', 'public'); // Salva no diretório "documentos_socios"
-
-                            // Salvar o documento na tabela "socios_documentos"
-                            $novoSocio->documentos()->create([
-                                'caminho' => $caminho,
-                                'descricao' => $nomeArquivo
-                            ]);
-                        }
-                    }
-                }
+        if ($request->plano == 'lider') {
+            if ($paymentCiclo == 'YEARLY') {
+                $valor = 299.99;
+                $descricao = 'Plano Líder';
+            } else {
+                $valor = 29.99;
+                $descricao = 'Plano Líder';
+            }
+        } elseif ($request->plano == 'visionario') {
+            if ($paymentCiclo == 'YEARLY') {
+                $valor = 199.99;
+                $descricao = 'Plano Visionário';
+            } else {
+                $valor = 19.99;
+                $descricao = 'Plano Visionário';
+            }
+        } elseif ($request->plano == 'empreendedor') {
+            if ($paymentCiclo == 'YEARLY') {
+                $valor = 99.99;
+                $descricao = 'Plano Empreendedor';
+            } else {
+                $valor = 9.99;
+                $descricao = 'Plano Empreendedor';
             }
         }
 
-        return redirect()->back()->with('success', 'Cadastro realizado com sucesso!');
+        TomadoresPagamento::create([
+            'tomador_servico_id' => $tomador->id,
+            'billingType' => $request->billingType,
+            'value' => $valor,
+            'nextDueDate' => Carbon::now()->addDay()->format('Y-m-d'), // Adiciona 1 dia à data atual,
+            'cycle' => $paymentCiclo,
+            'description' => $descricao,
+        ]);
+
+        // Enviar os dados para a API do Asaas
+        $asaasResponse = $this->createCustomerAbertura($request);
+
+        // Verificar se a API respondeu com sucesso
+        $responseData = $asaasResponse->getData(); // Obtém os dados decodificados
+        if (isset($responseData->status) && $responseData->status === 'success') {
+            // Chamar a função para buscar o cliente pela API
+            $this->getCustomerByCpfCnpjAbertura($request, $tomador);
+        }
+
+        // Após criar o tomador e salvar as informações na tabela "tomadores_pagamento"
+        $billingType = $request->billingType; // Ex: "CREDIT_CARD"
+        $cycle = $request->cycle; // Ex: "WEEKLY"
+        $customerId = $tomador->codigo_cliente; // ID do cliente no Asaas
+        $value = $valor; // Valor definido baseado no plano
+        $nextDueDate = Carbon::now()->addDay()->format('Y-m-d'); // Data de vencimento
+        $description = $descricao; // Descrição do plano
+
+        // Chama a função para criar a assinatura
+        $subscriptionResponse = $this->createSubscription($billingType, $cycle, $customerId, $value, $nextDueDate, $description);
+
+        if (isset($subscriptionResponse['error'])) {
+            return redirect()->back()->with('error', 'Erro ao criar a assinatura: ' . $subscriptionResponse['error']);
+        }
+
+        // Assinatura criada com sucesso
+        return redirect()->route('tomadores.planos.welcomeVideo')->with('success', 'Cliente e assinatura criados com sucesso!');
+    }
+
+    private function createCustomerAbertura(Request $request)
+    {
+        $client = new Client();
+
+        $body = [
+            'name' => $request->nome_fantasia,
+            'cpfCnpj' => $request->cpf_responsavel,
+            'email' => $request->email,
+            'mobilePhone' => $request->telefone,
+            'postalCode' => $request->cep,
+        ];
+
+        try {
+            $response = $client->request('POST', 'https://sandbox.asaas.com/api/v3/customers', [
+                'headers' => [
+                    'accept' => 'application/json',
+                    'access_token' => env('ASAAS_ACCESS_TOKEN'),
+                    'content-type' => 'application/json',
+                ],
+                'json' => $body,
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'data' => json_decode($response->getBody()->getContents(), true),
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    private function getCustomerByCpfCnpjAbertura(Request $request, $tomador)
+    {
+        $cpfCnpj = $request->cpf_responsavel; // Captura o CPF ou CNPJ enviado na requisição
+
+        if (!$cpfCnpj) {
+            return response()->json(['status' => 'error', 'message' => 'CPF ou CNPJ não informado.'], 400);
+        }
+
+        $client = new Client();
+
+        try {
+            // Fazendo a requisição GET na API do Asaas
+            $response = $client->request('GET', 'https://sandbox.asaas.com/api/v3/customers', [
+                'headers' => [
+                    'accept' => 'application/json',
+                    'access_token' => env('ASAAS_ACCESS_TOKEN'), // Use o token configurado no .env
+                ],
+                'query' => ['cpfCnpj' => $cpfCnpj], // Passa o CPF ou CNPJ como parâmetro de consulta
+            ]);
+
+            $responseBody = json_decode($response->getBody()->getContents(), true);
+
+            // Verifica se a API retornou um cliente válido
+            if (isset($responseBody['data']) && count($responseBody['data']) > 0) {
+                $customer = $responseBody['data'][0]; // Pega o primeiro cliente retornado
+                $customerId = $customer['id'];
+
+                // Salva o ID na tabela tomadores_servicos
+                $tomador->codigo_cliente = $customerId;
+                $tomador->save();
+
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Cliente encontrado e cadastrado com sucesso!',
+                    'data' => [
+                        'codigo_cliente' => $customerId,
+                    ],
+                ]);
+            } else {
+                return response()->json(['status' => 'error', 'message' => 'Cliente não encontrado.'], 404);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+        }
     }
 
     public function trocaContador()
@@ -301,9 +430,9 @@ class TomadorServicoController extends Controller
         $request->validate([
             'razao_social' => 'required|string|max:255',
             'nome_fantasia' => 'required|string|max:255',
-            'cnpj' => 'required',
-            'inscricao_municipal' => 'required|string|max:255',
-            'inscricao_estadual' => 'required|string|max:255',
+            'cnpj' => 'required|cnpj',
+            'inscricao_municipal' => 'nullable|string|max:255',
+            'inscricao_estadual' => 'nullable|string|max:255',
             'email' => 'required|string|email',
             'telefone' => 'required',
             'cep' => 'required',
@@ -313,21 +442,6 @@ class TomadorServicoController extends Controller
             'cidade' => 'required',
             'estado' => 'required',
             'complemento' => 'nullable',
-            'documentos_empresa.*' => 'nullable|file|mimes:jpg,jpeg,png,pdf,txt',
-
-            'socios.*.nome' => 'required|string|max:255',
-            'socios.*.identidade' => 'required|string|max:20',
-            'socios.*.cpf' => 'required|string|max:14',
-            'socios.*.estado_civil' => 'required|string|max:50',
-            'socios.*.profissao' => 'required|string|max:100',
-            'socios.*.cep' => 'required|string|max:10',
-            'socios.*.estado' => 'required|string|max:2',
-            'socios.*.cidade' => 'required|string|max:100',
-            'socios.*.bairro' => 'required|string|max:100',
-            'socios.*.logradouro' => 'required|string|max:255',
-            'socios.*.numero' => 'required|string|max:10',
-            'socios.*.complemento' => 'nullable|string|max:255',
-            'socios.*.documentos.*' => 'nullable|file|mimes:jpg,jpeg,png,pdf,txt',
         ]);
 
         // Criar o tomador de serviço principal
@@ -348,53 +462,8 @@ class TomadorServicoController extends Controller
                 'numero',
                 'complemento',
             ]),
-            ['empresa_id' => 1, 'password' => Hash::make('123456a', ['rounds' => 12]), 'situacao' => $request->situacao, 'condicao' => $request->condicao]
+            ['empresa_id' => 1, 'password' => Hash::make('123456a', ['rounds' => 12])]
         ));
-
-
-        // Upload dos documentos da empresa
-        if ($request->hasFile('documentos_empresa')) {
-
-            foreach ($request->file('documentos_empresa') as $file) {
-                if ($file->isValid()) {
-                    // Salva no diretório "documentos_empresa" no disco "public"
-                    $nomeArquivo = $file->getClientOriginalName();
-
-                    $path = $file->store('documentos_empresa', 'public');
-                    // Salva o documento na tabela "documentos"
-                    Documento::create([
-                        'tomador_servico_id' => $tomador->id,
-                        'path' => $path, // Caminho do arquivo armazenado
-                        'descricao' => $nomeArquivo,
-                    ]);
-                }
-            }
-        }
-
-        // Processar e salvar os sócios
-        if ($request->has('socios')) {
-            foreach ($request->socios as $socio) {
-                // Criar o sócio e associá-lo ao tomador
-                $novoSocio = $tomador->socios()->create($socio);
-
-                // Processar os documentos do sócio, caso existam
-                if (isset($socio['documentos']) && is_array($socio['documentos'])) {
-                    foreach ($socio['documentos'] as $documento) {
-                        if ($documento->isValid()) {
-                            // Fazer upload do arquivo
-                            $nomeArquivo = $documento->getClientOriginalName();
-                            $caminho = $documento->store('documentos_socios', 'public'); // Salva no diretório "documentos_socios"
-
-                            // Salvar o documento na tabela "socios_documentos"
-                            $novoSocio->documentos()->create([
-                                'caminho' => $caminho,
-                                'descricao' => $nomeArquivo,
-                            ]);
-                        }
-                    }
-                }
-            }
-        }
 
         // Cadastrar informações na tabela tomadores_pagamento
         $paymentCiclo = $request->cycle;
@@ -573,5 +642,11 @@ class TomadorServicoController extends Controller
             // Trate possíveis erros
             return ['error' => $e->getMessage()];
         }
+    }
+
+    public function welcomeVideo()
+    {
+        return view('tomadores.planos.welcomeVideo');
+        
     }
 }

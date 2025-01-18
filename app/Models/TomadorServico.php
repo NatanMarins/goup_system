@@ -31,6 +31,8 @@ class TomadorServico extends Authenticatable
         'razao_social3',
         'cnpj',
         'telefone',
+        'responsavel',
+        'cpf_responsavel',
         'site',
         'email',
         'nome_fantasia',
