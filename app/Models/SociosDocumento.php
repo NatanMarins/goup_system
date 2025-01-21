@@ -10,6 +10,7 @@ class SociosDocumento extends Model
     use HasFactory;
 
     protected $fillable = [
+        'tipo',
         'caminho',
         'descricao',
         'socio_id',

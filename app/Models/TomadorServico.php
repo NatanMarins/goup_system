@@ -96,7 +96,7 @@ class TomadorServico extends Authenticatable
 
     public function socios()
     {
-        return $this->belongsToMany(Socio::class, 'socio_tomador');
+        return $this->hasMany(Socio::class);
     }
 
     public function pagamento()

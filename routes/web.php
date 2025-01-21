@@ -143,6 +143,7 @@ Route::group(['middleware' => 'auth:web,holding,tomador'], function () {
     Route::put('/empresas/update-tomador-servico/{tomadorservico}', [TomadorServicoController::class, 'update'])->name('empresas.tomador.update');
     Route::delete('/empresas/destroy-tomador-servico/{tomadorservico}', [TomadorServicoController::class, 'destroy'])->name('empresas.tomador.destroy');
     Route::get('/empresas/tomador-documentos/{tomadorservico}', [TomadorServicoController::class, 'documentos'])->name('empresas.tomador.documentos');
+    Route::delete('/empresas/excluir-documentos/{tomadorservico}', [TomadorServicoController::class, 'destroyDocumento'])->name('empresas.tomador.documentosDestroy');
 
 
     // Sócios
@@ -181,4 +182,9 @@ Route::group(['middleware' => 'auth:web,holding,tomador'], function () {
     Route::get('/tomadores/show-profile', [TomadorPerfilController::class, 'showTomador'])->name('tomadores.profile.show');
     Route::put('tomadores/update-password', [TomadorPerfilController::class, 'updatePassword'])->name('tomadores.profile.update-password');
     Route::get('/tomadores/adicionar-documentos', [TomadorPerfilController::class, 'addDocumentos'])->name('tomadores.profile.addDocumentos');
+    Route::post('/tomadores/store-documentos', [TomadorPerfilController::class, 'storeDocumentos'])->name('tomadores.profile.storeDocumentos');
+    Route::get('/tomadores/edit-profile', [TomadorPerfilController::class, 'editTomador'])->name('tomadores.profile.edit');
+    Route::put('/tomadores/update-profile/{tomador}', [TomadorPerfilController::class, 'updateTomador'])->name('tomadores.profile.update');
+    Route::get('tomadores/adicionar_socio', [TomadorPerfilController::class, 'addSocio'])->name('tomadores.profile.addSocios');
+    Route::post('tomadores/store_socio', [TomadorPerfilController::class, 'storeSocio'])->name('tomadores.profile.storeSocios');
 });

@@ -231,6 +231,10 @@
 
                 // Máscara para CEP
                 $('#cep').mask('00000-000');
+
+                // Mascara para RG
+                $('.identidade').mask('000.000.000-0');
+
             });
         </script>
 

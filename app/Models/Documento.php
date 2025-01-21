@@ -10,6 +10,7 @@ class Documento extends Model
     use HasFactory;
 
     protected $fillable = [
+        'tipo',
         'path',
         'descricao',
         'tomador_servico_id',

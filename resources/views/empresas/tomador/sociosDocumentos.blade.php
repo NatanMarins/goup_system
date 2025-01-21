@@ -40,9 +40,9 @@
                                 <thead>
                                     <tr>	
                                         <th scope="col"  style="width: 5%"> </th>
+                                        <th scope="col"  style="width: 5%">Tipo</th>
                                         <th scope="col"  class="fw-bold ">Descrição</th>
                                         <th scope="col"  class="fw-bold">Size</th>
-                                        <th scope="col"  class="fw-bold">Última modificação</th>
                                         <th scope="col" style="width: 5%"></th>
                                     </tr>
                                 </thead>
@@ -50,9 +50,8 @@
                                     @forelse($documentos as $documento)
                                         <tr>
                                             <td class=""> <i class="fa-solid fas fa-file-alt" style='font-size:25px; color:#01c592;'></i></td>
+                                            <td> {{ $documento->tipo }}</td>
                                             <td> {{ $documento->descricao }}</td>
-                                            <td> 42 MB</td>
-                                            <td> 10/10/2024</td>
                                             <td>
                                                 <a href="{{ asset('storage/' . $documento->caminho) }}" target="_blank"  class="btn btn btn-primary btn-sm" title="Baixar">
                                                     <i class="fa-solid fas fa-download btn-icon-append"></i>
@@ -74,33 +73,4 @@
         </div>
     </div>
 </div>
-
-<div class="row">
-    <div class="col-sm-12">
-        <div class="card mb-4">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <!-- Formulário de Upload -->
-                        <h4>Fazer Upload de Novos Documentos</h4>
-                        <form method="POST" enctype="multipart/form-data">
-                            @csrf
-                            <div class="form-group pt-3">
-                                <label for="documentos">Selecionar Documentos</label>
-                                <input type="file" name="documentos[]" class="form-control @error('documentos') is-invalid @enderror"  multiple required>
-                                @error('documentos')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <button type="submit" class="btn btn-primary mt-3">Enviar Documentos</button>
-                        </form>
-                        <!-- Formulário de Upload -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-   
-
 @endsection

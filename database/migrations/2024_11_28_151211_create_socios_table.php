@@ -13,12 +13,13 @@ return new class extends Migration
     {
         Schema::create('socios', function (Blueprint $table) {
             $table->id(); // Chave primária
+            $table->foreignId('tomador_servico_id')->constrained('tomadores_servicos')->onDelete('cascade'); // Chave estrangeira para tomadores
             $table->string('nome');
             $table->string('identidade');
             $table->string('estado_civil');
             $table->string('profissao');
-            $table->string('cpf')->unique();
-            $table->string('email')->unique();
+            $table->string('cpf');
+            $table->string('email');
             $table->string('telefone')->nullable();
             $table->string('numero');
             $table->string('logradouro');
@@ -29,24 +30,6 @@ return new class extends Migration
             $table->string('complemento')->nullable();
             $table->timestamps();
         });
-
-        // Tabela intermediária para o relacionamento muitos-para-muitos
-        Schema::create('socio_tomador', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('socio_id');
-            $table->unsignedBigInteger('tomador_servico_id');
-            $table->timestamps();
-
-            $table->foreign('socio_id')
-                ->references('id')
-                ->on('socios')
-                ->onDelete('cascade');
-
-            $table->foreign('tomador_servico_id')
-                ->references('id')
-                ->on('tomadores_servicos')
-                ->onDelete('cascade');
-        });
     }
 
     /**
@@ -54,7 +37,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('socio_tomador');
         Schema::dropIfExists('socios');
     }
 };

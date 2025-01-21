@@ -2,208 +2,155 @@
 
 @section('content')
     <style>
-        .popup-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
         }
 
-        .popup-content {
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            width: 90%;
-            max-width: 500px;
-            text-align: center;
-            position: relative;
-        }
-
-        .popup-content h5 {
+        .upload-container {
             margin-bottom: 20px;
         }
 
-        .upload-area {
-            border: 2px dashed #ccc;
+        .file-drop-zone {
+            border: 2px dashed #aaa;
             padding: 20px;
-            border-radius: 8px;
-            background: #f9f9f9;
+            border-radius: 10px;
+            text-align: center;
             cursor: pointer;
+            color: #555;
+            transition: 0.2s;
         }
 
-        .upload-area.dragover {
-            background: #e0f7fa;
+        .file-drop-zone:hover {
+            background-color: #f8f8f8;
         }
 
-        .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            cursor: pointer;
-            font-size: 18px;
-            font-weight: bold;
-            color: #999;
+        .file-names {
+            margin-top: 10px;
+            list-style: none;
+            padding: 0;
         }
 
-        .file-list {
+        .file-names li {
+            margin-bottom: 5px;
+        }
+
+        .file-names li.invalid {
+            color: red;
+        }
+
+        button {
             margin-top: 20px;
-            text-align: left;
-            max-height: 150px;
-            overflow-y: auto;
-            border: 1px solid #ccc;
-            padding: 10px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
             border-radius: 5px;
+            cursor: pointer;
         }
 
-        .file-list p {
-            margin: 5px 0;
+        button:hover {
+            background-color: #0056b3;
         }
     </style>
 
-    <div class="container">
-        <h3>Envio de Documentos</h3>
-        <button class="btn btn-primary" data-popup="identidadePopup">Identidade</button>
-        <button class="btn btn-primary" data-popup="cpfPopup">CPF</button>
-        <button class="btn btn-primary" data-popup="comprovantePopup">Comprovante de Residência</button>
-    </div>
+    <h2>Envio de Documentos</h2>
 
-    <!-- Popup Template -->
-    <div class="popup-overlay" id="identidadePopup">
-        <div class="popup-content">
-            <span class="close-btn" data-close>&times;</span>
-            <h5>Enviar Identidade</h5>
-            <div class="upload-area" id="uploadIdentidade">Arraste o arquivo ou clique aqui para selecionar</div>
-            <div class="file-list" id="fileListIdentidade"></div>
-            <button class="btn btn-primary" id="submitIdentidade">Enviar Arquivos</button>
-        </div>
-    </div>
+    <form id="uploadForm" action="{{ route('tomadores.profile.storeDocumentos') }}" method="POST"
+        enctype="multipart/form-data">
+        @csrf
+        @method('POST')
 
-    <div class="popup-overlay" id="cpfPopup">
-        <div class="popup-content">
-            <span class="close-btn" data-close>&times;</span>
-            <h5>Enviar CPF</h5>
-            <div class="upload-area" id="uploadCpf">Arraste o arquivo ou clique aqui para selecionar</div>
-            <div class="file-list" id="fileListCpf"></div>
-            <button class="btn btn-primary" id="submitCpf">Enviar Arquivos</button>
+        <!-- Contrato Social -->
+        <div class="upload-container">
+            <label>Contrato Social:</label>
+            <div class="file-drop-zone" data-field="contrato_social">
+                Arraste e solte os arquivos aqui ou clique para selecionar.
+                <input type="file" name="contrato_social[]" multiple hidden>
+            </div>
+            <ul class="file-names" id="contrato_social_files"></ul>
         </div>
-    </div>
 
-    <div class="popup-overlay" id="comprovantePopup">
-        <div class="popup-content">
-            <span class="close-btn" data-close>&times;</span>
-            <h5>Enviar Comprovante de Residência</h5>
-            <div class="upload-area" id="uploadComprovante">Arraste o arquivo ou clique aqui para selecionar</div>
-            <div class="file-list" id="fileListComprovante"></div>
-            <button class="btn btn-primary" id="submitComprovante">Enviar Arquivos</button>
+        <!-- Alvará de Funcionamento -->
+        <div class="upload-container">
+            <label>Alvará de Funcionamento:</label>
+            <div class="file-drop-zone" data-field="alvara_funcionamento">
+                Arraste e solte os arquivos aqui ou clique para selecionar.
+                <input type="file" name="alvara_funcionamento[]" multiple hidden>
+            </div>
+            <ul class="file-names" id="alvara_funcionamento_files"></ul>
         </div>
-    </div>
+
+        <!-- Inscrição Estadual -->
+        <div class="upload-container">
+            <label>Inscrição Estadual:</label>
+            <div class="file-drop-zone" data-field="inscricao_estadual">
+                Arraste e solte os arquivos aqui ou clique para selecionar.
+                <input type="file" name="inscricao_estadual[]" multiple hidden>
+            </div>
+            <ul class="file-names" id="inscricao_estadual_files"></ul>
+        </div>
+
+        <!-- Botão de envio -->
+        <button type="submit">Enviar Documentos</button>
+    </form>
 
     <script>
-        const setupPopup = (uploadAreaId, fileListId, submitButtonId, endpoint) => {
-            const uploadArea = document.getElementById(uploadAreaId);
-            const fileList = document.getElementById(fileListId);
-            const submitButton = document.getElementById(submitButtonId);
-            let files = [];
+        // Configuração: tipos de arquivos permitidos
+        const allowedFileTypes = ['application/pdf', 'image/jpeg', 'image/png'];
 
-            // Exibir arquivos na lista
-            const updateFileList = () => {
-                fileList.innerHTML = '';
-                files.forEach((file, index) => {
-                    const fileElement = document.createElement('p');
-                    fileElement.textContent = `${index + 1}. ${file.name}`;
-                    fileList.appendChild(fileElement);
-                });
-            };
+        // Manipular zonas de arrastar e soltar
+        const dropZones = document.querySelectorAll('.file-drop-zone');
 
-            // Drag-and-drop funcionalidade
-            uploadArea.addEventListener('dragover', (event) => {
-                event.preventDefault();
-                uploadArea.classList.add('dragover');
+        dropZones.forEach(zone => {
+            const input = zone.querySelector('input');
+            const fileList = document.getElementById(`${zone.dataset.field}_files`);
+            const allFiles = new DataTransfer(); // Armazena todos os arquivos selecionados no campo
+
+            // Abrir seletor de arquivos ao clicar na zona
+            zone.addEventListener('click', () => input.click());
+
+            // Adicionar arquivos ao soltar
+            zone.addEventListener('dragover', e => {
+                e.preventDefault();
+                zone.style.backgroundColor = '#f8f8f8';
             });
 
-            uploadArea.addEventListener('dragleave', () => {
-                uploadArea.classList.remove('dragover');
+            zone.addEventListener('dragleave', () => {
+                zone.style.backgroundColor = 'white';
             });
 
-            uploadArea.addEventListener('drop', (event) => {
-                event.preventDefault();
-                uploadArea.classList.remove('dragover');
-                files = Array.from(event.dataTransfer.files);
-                updateFileList();
+            zone.addEventListener('drop', e => {
+                e.preventDefault();
+                zone.style.backgroundColor = 'white';
+                handleFiles(e.dataTransfer.files, input, fileList, allFiles);
             });
 
-            // Click para selecionar arquivos
-            uploadArea.addEventListener('click', () => {
-                const fileInput = document.createElement('input');
-                fileInput.type = 'file';
-                fileInput.multiple = true;
-                fileInput.click();
-
-                fileInput.addEventListener('change', () => {
-                    files = Array.from(fileInput.files);
-                    updateFileList();
-                });
-            });
-
-            // Enviar arquivos para o backend
-            submitButton.addEventListener('click', async () => {
-                if (files.length === 0) {
-                    alert('Nenhum arquivo selecionado!');
-                    return;
-                }
-
-                const formData = new FormData();
-                files.forEach((file) => {
-                    formData.append('files[]', file);
-                });
-
-                try {
-                    const response = await fetch(endpoint, {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
-                                .content,
-                        },
-                        body: formData,
-                    });
-
-                    if (response.ok) {
-                        alert('Arquivos enviados com sucesso!');
-                        files = [];
-                        updateFileList();
-                    } else {
-                        const errorData = await response.json();
-                        alert('Erro ao enviar arquivos: ' + errorData.message);
-                    }
-                } catch (error) {
-                    console.error('Erro:', error);
-                    alert('Erro inesperado ao enviar os arquivos.');
-                }
-            });
-        };
-
-        // Configurar popups
-        setupPopup('uploadIdentidade', 'fileListIdentidade', 'submitIdentidade', '/upload/identidade');
-        setupPopup('uploadCpf', 'fileListCpf', 'submitCpf', '/upload/cpf');
-        setupPopup('uploadComprovante', 'fileListComprovante', 'submitComprovante', '/upload/comprovante');
-
-        // Abrir e fechar popups
-        document.querySelectorAll('[data-popup]').forEach((button) => {
-            button.addEventListener('click', () => {
-                const popupId = button.getAttribute('data-popup');
-                document.getElementById(popupId).style.display = 'flex';
+            // Adicionar arquivos ao selecionar
+            input.addEventListener('change', () => {
+                handleFiles(input.files, input, fileList, allFiles);
             });
         });
 
-        document.querySelectorAll('[data-close]').forEach((closeBtn) => {
-            closeBtn.addEventListener('click', () => {
-                closeBtn.closest('.popup-overlay').style.display = 'none';
+        // Função para processar arquivos
+        function handleFiles(files, input, fileList, allFiles) {
+            Array.from(files).forEach(file => {
+                const listItem = document.createElement('li');
+                listItem.textContent = file.name;
+
+                if (allowedFileTypes.includes(file.type)) {
+                    allFiles.items.add(file); // Adicionar ao DataTransfer global
+                    listItem.classList.add('valid');
+                } else {
+                    listItem.classList.add('invalid');
+                    listItem.textContent += ' - Tipo de arquivo inválido!';
+                }
+
+                fileList.appendChild(listItem); // Adicionar à lista visível
             });
-        });
+
+            // Atualizar input com todos os arquivos acumulados
+            input.files = allFiles.files;
+        }
     </script>
 @endsection

@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Storage;
 
 class TomadorServicoController extends Controller
 {
@@ -57,12 +58,32 @@ class TomadorServicoController extends Controller
 
     public function documentos($tomadorservico)
     {
-        $tomador = TomadorServico::with('socios', 'documentos')->findOrFail($tomadorservico);
+        $tomador = TomadorServico::with('documentos')->findOrFail($tomadorservico);
 
-        $documentos = $tomador->documentos;
-
-        return view('empresas.tomador.documentos', compact('tomador', 'documentos'));
+        return view('empresas.tomador.documentos', compact('tomador'));
     }
+
+    public function destroyDocumento($id)
+{
+    try {
+        // Encontre o documento pelo ID
+        $documento = Documento::findOrFail($id);
+
+        // Exclua o arquivo físico do storage
+        if (Storage::exists($documento->path)) {
+            Storage::delete($documento->path);
+        }
+
+        // Exclua o registro no banco de dados
+        $documento->delete();
+
+        // Redirecione com sucesso
+        return redirect()->back()->with('success', 'Documento excluído com sucesso.');
+    } catch (\Exception $e) {
+        // Redirecione com erro
+        return redirect()->back()->with('error', 'Erro ao excluir documento: ' . $e->getMessage());
+    }
+}
 
     public function create()
     {

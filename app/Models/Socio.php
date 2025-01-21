@@ -10,6 +10,7 @@ class Socio extends Model
     use HasFactory;
 
     protected $fillable = [
+        'tomador_servico_id',
         'nome',
         'identidade',
         'cpf',
@@ -26,10 +27,10 @@ class Socio extends Model
         'telefone',
     ];
 
-    // Relacionamento muitos-para-muitos com TomadorServico
+    // Relacionamento um-para-muitos com tomadores
     public function tomadores()
     {
-        return $this->belongsToMany(TomadorServico::class, 'socio_tomador');
+        return $this->hasMany(TomadorServico::class);
     }
 
     // Relacionamento um-para-muitos com SociosDocumentos

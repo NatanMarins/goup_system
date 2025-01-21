@@ -37,93 +37,166 @@
         }
     </style>
 
-    <div class="container mt-5">
+    <x-alert />
 
-        <x-alert />
+    @if (is_null($tomador->cnpj))
 
-        <h1>Dados do Tomador</h1>
+        <!-- Tomador Abertura de Empresa -->
 
-        <div class="mb-3">
-            <button class="btn btn-primary" id="alterarSenhaBtn">Alterar Senha</button>
-            <a href="#">
-                <button class="btn btn-secondary">Adicionar Sócios</button>
-            </a>
-            <a href="{{ route('tomadores.profile.addDocumentos') }}">
-                <button class="btn btn-info">Adicionar Documentos</button>
-            </a>
-            <a href="#">
-                <button class="btn btn-success">Atualizar Dados</button>
-            </a>
+        <div class="container mt-5">
+
+            <h1>Dados do Tomador</h1>
+
+            <div class="mb-3">
+                <button class="btn btn-primary" id="alterarSenhaBtn">Alterar Senha</button>
+                <a href="{{ route('tomadores.profile.addSocios') }}">
+                    <button class="btn btn-secondary">Adicionar Sócios</button>
+                </a>
+            </div>
+
+            <div class="card p-3 mb-4">
+                <h5>Informações do Tomador</h5>
+
+                <form>
+                    <label>Responsável</label>
+                    <input type="text" class="form-control" value="{{ $tomador->responsavel }}" disabled readonly>
+
+                    <label>CPF Responsável</label>
+                    <input type="text" class="form-control" value="{{ $tomador->cpf_responsavel }}" disabled readonly>
+
+                    <label for="">Razao Social 1</label>
+                    <input type="text" class="form-control" value="{{ $tomador->razao_social }}" disabled readonly>
+
+                    <label for="">Razao Social 2</label>
+                    <input type="text" class="form-control" value="{{ $tomador->razao_social2 }}" disabled readonly>
+
+                    <label for="">Razao Social 3</label>
+                    <input type="text" class="form-control" value="{{ $tomador->razao_social3 }}" disabled readonly>
+
+                    <label for="">Email</label>
+                    <input type="text" class="form-control" value="{{ $tomador->email }}" disabled readonly>
+
+                    <label for="">Telefone</label>
+                    <input type="text" class="form-control" value="{{ $tomador->telefone }}" disabled readonly>
+
+                    <label for="">CEP</label>
+                    <input type="text" class="form-control" value="{{ $tomador->cep }}" disabled readonly>
+
+                    <label for="">Estado</label>
+                    <input type="text" class="form-control" value="{{ $tomador->estado }}" disabled readonly>
+
+                    <label for="">Cidade</label>
+                    <input type="text" class="form-control" value="{{ $tomador->cidade }}" disabled readonly>
+
+                    <label for="">Bairro</label>
+                    <input type="text" class="form-control" value="{{ $tomador->bairro }}" disabled readonly>
+
+                    <label for="">Logradouro</label>
+                    <input type="text" class="form-control" value="{{ $tomador->logradouro }}" disabled readonly>
+
+                    <label for="">Número</label>
+                    <input type="text" class="form-control" value="{{ $tomador->numero }}" disabled readonly>
+
+                    <label for="">Complemento</label>
+                    <input type="text" class="form-control" value="{{ $tomador->complemento }}" disabled readonly>
+                </form>
+            </div>
         </div>
+    @else
+        <!-- Tomador Cliente Regular -->
 
-        <div class="card p-3 mb-4">
-            <h5>Informações do Tomador</h5>
+        <div class="container mt-5">
 
-            <form>
-                <label>Nome Fantasia</label>
-                <input type="text" class="form-control" value="{{ $tomador->nome_fantasia }}" disabled readonly>
+            <h1>Dados do Tomador</h1>
 
-                <label for="">Razao Social</label>
-                <input type="text" class="form-control" value="{{ $tomador->razao_social }}" disabled readonly>
+            <div class="mb-3">
+                <button class="btn btn-primary" id="alterarSenhaBtn">Alterar Senha</button>
+                <a href="{{ route('tomadores.profile.addSocios') }}">
+                    <button class="btn btn-secondary">Adicionar Sócios</button>
+                </a>
+                <a href="{{ route('tomadores.profile.addDocumentos') }}">
+                    <button class="btn btn-info">Adicionar Documentos</button>
+                </a>
+                <a href="{{ route('tomadores.profile.edit') }}">
+                    <button class="btn btn-success">Atualizar Dados</button>
+                </a>
+            </div>
 
-                <label for="">CNPJ</label>
-                <input type="text" class="form-control" value="{{ $tomador->cnpj }}" disabled readonly>
+            <div class="card p-3 mb-4">
+                <h5>Informações do Tomador</h5>
 
-                <label for="">Inscrição Estadual</label>
-                <input type="text" class="form-control" value="{{ $tomador->inscricao_estadual }}" disabled readonly>
+                <form>
+                    <label>Nome Fantasia</label>
+                    <input type="text" class="form-control" value="{{ $tomador->nome_fantasia }}" disabled readonly>
 
-                <label for="">Inscrição Municipal</label>
-                <input type="text" class="form-control" value="{{ $tomador->inscricao_municipal }}" disabled readonly>
+                    <label for="">Razao Social</label>
+                    <input type="text" class="form-control" value="{{ $tomador->razao_social }}" disabled readonly>
 
-                <label for="">Natureza Juridica</label>
-                <input type="text" class="form-control" value="{{ $tomador->natureza_juridica }}" disabled readonly>
+                    <label for="">CNPJ</label>
+                    <input type="text" class="form-control" value="{{ $tomador->cnpj }}" disabled readonly>
 
-                <label for="">Regime Tributario</label>
-                <input type="text" class="form-control" value="{{ $tomador->regime_tributario }}" disabled readonly>
+                    <label for="">Inscrição Estadual</label>
+                    <input type="text" class="form-control" value="{{ $tomador->inscricao_estadual }}" disabled
+                        readonly>
 
-                <label for="">Capital Social</label>
-                <input type="text" class="form-control" value="{{ $tomador->capital_social }}" disabled readonly>
+                    <label for="">Inscrição Municipal</label>
+                    <input type="text" class="form-control" value="{{ $tomador->inscricao_municipal }}" disabled
+                        readonly>
 
-                <label for="">CNAE</label>
-                <input type="text" class="form-control" value="{{ $tomador->cnae }}" disabled readonly>
+                    <label for="">Natureza Juridica</label>
+                    <input type="text" class="form-control" value="{{ $tomador->natureza_juridica }}" disabled readonly>
 
-                <label for="">Data Abertura</label>
-                <input type="text" class="form-control" value="{{ $tomador->data_abertura }}" disabled readonly>
+                    <label for="">Regime Tributario</label>
+                    <input type="text" class="form-control" value="{{ $tomador->regime_tributario }}" disabled
+                        readonly>
 
-                <label for="">Código Tributação</label>
-                <input type="text" class="form-control" value="{{ $tomador->codigo_tributacao }}" disabled readonly>
+                    <label for="">Capital Social</label>
+                    <input type="text" class="form-control" value="{{ $tomador->capital_social }}" disabled readonly>
 
-                <label for="">Email</label>
-                <input type="text" class="form-control" value="{{ $tomador->email }}" disabled readonly>
+                    <label for="">CNAE</label>
+                    <input type="text" class="form-control" value="{{ $tomador->cnae }}" disabled readonly>
 
-                <label for="">Telefone</label>
-                <input type="text" class="form-control" value="{{ $tomador->telefone }}" disabled readonly>
+                    <label for="">Data Abertura</label>
+                    <input type="date" class="form-control" value="{{ $tomador->data_abertura }}" disabled readonly>
 
-                <label for="">CEP</label>
-                <input type="text" class="form-control" value="{{ $tomador->cep }}" disabled readonly>
+                    <label for="">Código Tributação</label>
+                    <input type="text" class="form-control" value="{{ $tomador->codigo_tributacao }}" disabled
+                        readonly>
 
-                <label for="">Estado</label>
-                <input type="text" class="form-control" value="{{ $tomador->estado }}" disabled readonly>
+                    <label for="">Email</label>
+                    <input type="text" class="form-control" value="{{ $tomador->email }}" disabled readonly>
 
-                <label for="">Cidade</label>
-                <input type="text" class="form-control" value="{{ $tomador->cidade }}" disabled readonly>
+                    <label for="">Telefone</label>
+                    <input type="text" class="form-control" value="{{ $tomador->telefone }}" disabled readonly>
 
-                <label for="">Bairro</label>
-                <input type="text" class="form-control" value="{{ $tomador->bairro }}" disabled readonly>
+                    <label for="">CEP</label>
+                    <input type="text" class="form-control" value="{{ $tomador->cep }}" disabled readonly>
 
-                <label for="">Logradouro</label>
-                <input type="text" class="form-control" value="{{ $tomador->logradouro }}" disabled readonly>
+                    <label for="">Estado</label>
+                    <input type="text" class="form-control" value="{{ $tomador->estado }}" disabled readonly>
 
-                <label for="">Número</label>
-                <input type="text" class="form-control" value="{{ $tomador->numero }}" disabled readonly>
+                    <label for="">Cidade</label>
+                    <input type="text" class="form-control" value="{{ $tomador->cidade }}" disabled readonly>
 
-                <label for="">Complemento</label>
-                <input type="text" class="form-control" value="{{ $tomador->complemento }}" disabled readonly>
-            </form>
+                    <label for="">Bairro</label>
+                    <input type="text" class="form-control" value="{{ $tomador->bairro }}" disabled readonly>
+
+                    <label for="">Logradouro</label>
+                    <input type="text" class="form-control" value="{{ $tomador->logradouro }}" disabled readonly>
+
+                    <label for="">Número</label>
+                    <input type="text" class="form-control" value="{{ $tomador->numero }}" disabled readonly>
+
+                    <label for="">Complemento</label>
+                    <input type="text" class="form-control" value="{{ $tomador->complemento }}" disabled readonly>
+                </form>
+            </div>
+
+
         </div>
+    @endif
 
 
-    </div>
 
     <!-- Popup para Alterar Senha -->
     <div class="popup-overlay" id="alterarSenhaPopup">
