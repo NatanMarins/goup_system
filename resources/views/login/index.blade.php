@@ -224,13 +224,6 @@
                             <span class="toggle-password" onclick="togglePasswordVisibility()">👁️</span>
                         </div>
                     </div>
-
-               
-                    <!-- Checkbox de Permanecer Logado -->
-                    <div class="form-group remember-me">
-                        <input type="checkbox" id="remember-me">
-                        <label for="remember-me">Permanecer logado</label>
-                    </div>
                     
                     <!-- Botão de Login e link Esqueceu a Senha -->
                     <div class="form-actions">

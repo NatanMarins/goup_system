@@ -13,7 +13,7 @@
         <div class="ms-md-auto py-2 py-md-0 text-left">
             <div class="btn-group" role="group" aria-label="Basic example">
                 <!-- botao voltar -->
-                <a href="3" class="btn btn btn-primary btn-sm" title="Voltar">
+                <a href="#" class="btn btn btn-primary btn-sm" title="Voltar">
                     <i class="fa-solid fa-arrow-left btn-icon-append"></i> 
                 </a>
                 <!-- botao voltar -->
@@ -40,22 +40,33 @@
                                 <thead>
                                     <tr>	
                                         <th scope="col"  style="width: 5%"> </th>
-                                        <th scope="col"  style="width: 5%">Tipo</th>
-                                        <th scope="col"  class="fw-bold ">Descrição</th>
-                                        <th scope="col"  class="fw-bold">Size</th>
+                                        <th scope="col"  class="fw-bold">Tipo</th>
+                                        <th scope="col"  class="fw-bold">Descrição</th>
                                         <th scope="col" style="width: 5%"></th>
                                     </tr>
                                 </thead>
                                 <tbody class="files-table-row">
                                     @forelse($documentos as $documento)
                                         <tr>
-                                            <td class=""> <i class="fa-solid fas fa-file-alt" style='font-size:25px; color:#01c592;'></i></td>
+                                            <td class=""> <i class="fa-solid fas fa-file-alt" style='font-size:20px; color:#01c592;'></i></td>
                                             <td> {{ $documento->tipo }}</td>
                                             <td> {{ $documento->descricao }}</td>
+                                            
                                             <td>
-                                                <a href="{{ asset('storage/' . $documento->caminho) }}" target="_blank"  class="btn btn btn-primary btn-sm" title="Baixar">
-                                                    <i class="fa-solid fas fa-download btn-icon-append"></i>
-                                                </a>
+                                                <div class="btn-group" role="group" aria-label="Basic example">
+                                                    <a href="{{ asset('storage/' . $documento->caminho) }}" target="_blank"  class="btn btn-primary btn-sm" title="Baixar">
+                                                        <i class="fa-solid fas fa-download btn-icon-append"></i>
+                                                    </a>
+                                                    <!-- Botão de Exclusão -->
+                                                    <form action="{{ route('empresas.tomador.documentosDestroy', $documento->id) }}" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir este documento?');">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-primary btn-sm" title="Excluir">
+                                                            <i class="fa-solid fas fa-trash-alt"></i>
+                                                        </button>
+                                                    </form>
+                                                    <!-- Botão de Exclusão -->
+                                                </div>
                                             </td>
                                         </tr>
                                     @empty
