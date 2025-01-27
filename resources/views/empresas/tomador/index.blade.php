@@ -18,6 +18,7 @@
                     <div class="row">
                         <div class="col-md-12 col-lg-12">
                             <form action="{{ route('empresas.tomador.index') }}" method="GET" class="mb-4">
+                                @csrf
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
