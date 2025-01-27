@@ -126,7 +126,7 @@
                                 </div>
                                 <div class="col-md-6 mb-2">
                                     <label for="cpf_responsavel" class="form-label">CPF</label>
-                                    <input type="text" class="form-control" id="cpf_responsavel" name="cpf_responsavel" value="{{ old('cpf_responsavel') }}" required>
+                                    <input type="text" class="form-control" id="cpf" name="cpf_responsavel" value="{{ old('cpf_responsavel') }}" required>
                                 </div>
                             </div>
 

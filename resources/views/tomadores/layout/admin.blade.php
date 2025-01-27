@@ -109,6 +109,7 @@
                     </li>
                     <!-- data-->                    
                     <!-- mensagens-->
+                    <!--
                     <li class="nav-item dropdown">
                         <a class="nav-link count-indicator dropdown-toggle d-flex justify-content-center align-items-center" title="Mensagens"   id="messageDropdown" href="#" data-bs-toggle="dropdown">
                             <i class="fa-regular fa-envelope mx-0"></i>
@@ -119,7 +120,7 @@
                             <p class="mb-0 fw-normal float-start dropdown-header">Mensagens</p>
                             <a class="dropdown-item preview-item">
                                 <div class="preview-thumbnail">
-                                    <img src="{{ asset('imagens/faces/face4.jpg') }}" alt="nome da pessoa"  class="profile-pic">
+                                    <img src="#" alt="nome da pessoa"  class="profile-pic">
                                 </div>
                                 <div class="preview-item-content flex-grow">
                                     <h6 class="preview-subject ellipsis fw-normal">David Grey
@@ -131,8 +132,7 @@
                             </a>
                         </div>
                     </li>
-                    <!-- mensagens-->                    
-                    <!-- notificacoes -->                    
+                                      
                     <li class="nav-item dropdown me-0">
                         <a class="nav-link count-indicator dropdown-toggle d-flex align-items-center justify-content-center" title="Notificações"  id="notificationDropdown" href="#" data-bs-toggle="dropdown">
                             <i class="fa-regular fa-bell mx-0"></i>
@@ -156,7 +156,7 @@
 
                         </div>
                     </li>
-                    <!-- notificacoes -->
+                     notificacoes -->
                     <!-- perfil -->
                     <li class="nav-item dropdown me-0">
                         <a class="nav-link count-indicator dropdown-toggle d-flex align-items-center justify-content-center" title="Perfil"  id="notificationDropdown" href="{{ route('tomadores.profile.show') }}">
@@ -195,7 +195,7 @@
                     <a href="javascript:;"><i class="fa-regular fa-document mx-0"></i></a>
                 </div>
             </div>
-            <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
+            <div class="navbar-menu-wrapper d-flex align-items-center justify-content-left">
                 <ul class="navbar-nav me-lg-2">
                     <li class="nav-item ms-0">
                         <h4 class="mb-0">GO UP Contabilidade Online</h4>
@@ -209,6 +209,7 @@
                         </div>
                     </li> -->
                 </ul>
+                <!--
                 <ul class="navbar-nav navbar-nav-right">
                     <li class="nav-item nav-search d-none d-md-block me-0">
                         <div class="input-group">
@@ -222,6 +223,7 @@
                         </div>
                     </li>
                 </ul>
+                -->
             </div>
         </nav>
 
@@ -233,7 +235,6 @@
                         <a class="nav-link" href="{{ route('tomadores.dashboard.dashboard') }}">
                             <i class="fa-solid fa-chart-line espaco menu-icon" style="color:#01c592;"></i>
                             <span class="menu-title">Dashboard</span>
-                            <div class="badge badge-danger">new</div>
                         </a>
                     </li>
 
@@ -260,6 +261,13 @@
                                         Minha Assinatura </a></li>
                             </ul>
                         </div>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('tomadores.impostos.index') }}">
+                            <i class="fa-regular fas fa-dollar-sign espaco menu-icon" style="color:#01c592;"></i>
+                            <span class="menu-title">Guias e Impostos</span>
+                        </a>
                     </li>
 
                      <!--
@@ -302,7 +310,7 @@
                             </ul>
                         </div>
                     </li>
-                    -->
+                    
                     <li class="nav-item">
                         <a class="nav-link" href="../../../docs/documentation.html">
                             <i class="fa-regular fas fa-file-alt espaco menu-icon" style="color:#01c592;"></i>
@@ -310,6 +318,7 @@
                         </a>
                     </li>
                 </ul>
+                -->
             </nav>
             <!-- partial -->
 

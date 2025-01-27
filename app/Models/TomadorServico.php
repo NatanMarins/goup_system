@@ -74,7 +74,7 @@ class TomadorServico extends Authenticatable
     protected $casts = [
         'last_login_at' => 'datetime', // Converte automaticamente em Carbon
     ];
-    
+
 
     /**
      * Get the empresa that owns the tomador de servico.
@@ -103,5 +103,9 @@ class TomadorServico extends Authenticatable
     {
         return $this->hasOne(TomadoresPagamento::class, 'tomador_servico_id');
     }
-}
 
+    public function guias()
+    {
+        return $this->hasMany(GuiaImposto::class);
+    }
+}

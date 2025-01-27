@@ -5,6 +5,7 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\EmpresaPerfilController;
+use App\Http\Controllers\GuiaImpostoController;
 use App\Http\Controllers\HoldingController;
 use App\Http\Controllers\HoldingUserController;
 use App\Http\Controllers\LoginController;
@@ -115,11 +116,8 @@ Route::group(['middleware' => 'auth:web,holding,tomador'], function () {
 
     // Perfil
     Route::get('/empresas/show-profile', [ProfileController::class, 'showEmpresa'])->name('empresas.profile.show');
-    Route::get('/empresas/edit-profile', [ProfileController::class, 'editEmpresa'])->name('empresas.profile.edit');
     Route::put('/empresas/update-profile', [ProfileController::class, 'updateEmpresa'])->name('empresas.profile.update');
-    Route::get('/empresas/edit-profile-foto', [ProfileController::class, 'editFotoEmpresa'])->name('empresas.profile.edit-foto');
     Route::put('/empresas/update-profile-foto', [ProfileController::class, 'updateFotoEmpresa'])->name('empresas.profile.update-foto');
-    Route::get('/empresas/edit-profile-password', [ProfileController::class, 'editPasswordEmpresa'])->name('empresas.profile.edit-password');
     Route::put('/empresas/update-profile-password', [ProfileController::class, 'updatePasswordEmpresa'])->name('empresas.profile.update-password');
 
     // Perfil Empresa
@@ -143,6 +141,7 @@ Route::group(['middleware' => 'auth:web,holding,tomador'], function () {
     Route::put('/empresas/update-tomador-servico/{tomadorservico}', [TomadorServicoController::class, 'update'])->name('empresas.tomador.update');
     Route::delete('/empresas/destroy-tomador-servico/{tomadorservico}', [TomadorServicoController::class, 'destroy'])->name('empresas.tomador.destroy');
     Route::get('/empresas/tomador-documentos/{tomadorservico}', [TomadorServicoController::class, 'documentos'])->name('empresas.tomador.documentos');
+    Route::post('/tomadores/store-documentos/{tomadorservico}', [TomadorServicoController::class, 'storeDocumentos'])->name('empresas.tomador.storeDocumentos');
     Route::delete('/empresas/excluir-documentos/{tomadorservico}', [TomadorServicoController::class, 'destroyDocumento'])->name('empresas.tomador.documentosDestroy');
 
 
@@ -153,6 +152,9 @@ Route::group(['middleware' => 'auth:web,holding,tomador'], function () {
     // Assinaturas
     Route::get('/empresas/configuracao-assinatura', [AssinaturaController::class, 'config'])->name('empresas.assinatura.configuracao');
     Route::post('/empresas/update', [AssinaturaController::class, 'update'])->name('empresas.assinatura.update');
+    
+    // Guias e Impostos
+    Route::get('/empresas/guias_impostos_create/{tomadorservico}', [GuiaImpostoController::class, 'create'])->name('empresas.impostos.create');
 
 
 
@@ -187,4 +189,7 @@ Route::group(['middleware' => 'auth:web,holding,tomador'], function () {
     Route::put('/tomadores/update-profile/{tomador}', [TomadorPerfilController::class, 'updateTomador'])->name('tomadores.profile.update');
     Route::get('tomadores/adicionar_socio', [TomadorPerfilController::class, 'addSocio'])->name('tomadores.profile.addSocios');
     Route::post('tomadores/store_socio', [TomadorPerfilController::class, 'storeSocio'])->name('tomadores.profile.storeSocios');
+
+    // Guias e Impostos
+    Route::get('tomadores/guias_impostos_index', [GuiaImpostoController::class, 'index'])->name('tomadores.impostos.index');
 });

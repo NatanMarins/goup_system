@@ -13,11 +13,11 @@
         <div class="ms-md-auto py-2 py-md-0 text-left">
             <div class="btn-group" role="group" aria-label="Basic example">
                 <!-- botao voltar -->
-                <a href="#" class="btn btn btn-primary btn-sm" title="Voltar">
+                <a href="{{ route('empresas.tomador.show', $tomadorId) }}" class="btn btn btn-primary btn-sm" title="Voltar">
                     <i class="fa-solid fa-arrow-left btn-icon-append"></i> 
                 </a>
-                <!-- botao voltar -->
-                <a href="#" class="btn btn btn-primary btn-sm" title="Dados de Pagamento">
+                <!-- botao Pagamento -->
+                <a href="" class="btn btn btn-primary btn-sm" title="Dados de Pagamento">
                     <i class="fa-solid fas fa-dollar-sign btn-icon-append"></i>
                 </a>
 
@@ -57,15 +57,6 @@
                                                     <a href="{{ asset('storage/' . $documento->caminho) }}" target="_blank"  class="btn btn-primary btn-sm" title="Baixar">
                                                         <i class="fa-solid fas fa-download btn-icon-append"></i>
                                                     </a>
-                                                    <!-- Botão de Exclusão -->
-                                                    <form action="{{ route('empresas.tomador.documentosDestroy', $documento->id) }}" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir este documento?');">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-primary btn-sm" title="Excluir">
-                                                            <i class="fa-solid fas fa-trash-alt"></i>
-                                                        </button>
-                                                    </form>
-                                                    <!-- Botão de Exclusão -->
                                                 </div>
                                             </td>
                                         </tr>

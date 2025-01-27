@@ -35,6 +35,8 @@
         }
     </style>
 
+    <x-alert />
+
     <!-- Cabeçalho -->
     <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-3">
         <div>
@@ -48,11 +50,6 @@
                     class="btn btn-primary btn-sm" title="Voltar">
                     <i class="fa-solid fa-arrow-left btn-icon-append"></i>
                 </a>
-                <!-- botao voltar -->
-                <a href="#" class="btn btn-primary btn-sm" title="Dados de Pagamento">
-                    <i class="fa-solid fas fa-dollar-sign btn-icon-append"></i>
-                </a>
-
             </div>
         </div>
         <!-- botao -->
@@ -78,22 +75,28 @@
                                     <tbody class="files-table-row">
                                         @forelse($tomador->documentos as $documento)
                                             <tr>
-                                                <td class=""> 
-                                                    <i class="fa-solid fas fa-file-alt" style='font-size:20px; color:#01c592;'></i>
+                                                <td class="">
+                                                    <i class="fa-solid fas fa-file-alt"
+                                                        style='font-size:20px; color:#01c592;'></i>
                                                 </td>
-                                                <td> {{ $documento->Tipo }}</td>
+                                                <td> {{ $documento->tipo }}</td>
                                                 <td> {{ $documento->descricao }}</td>
-                                   
+
                                                 <td>
                                                     <div class="btn-group" role="group" aria-label="Basic example">
-                                                        <a href="{{ asset('storage/' . $documento->path) }}" target="_blank" class="btn btn-primary btn-sm" title="Baixar">
+                                                        <a href="{{ asset('storage/' . $documento->path) }}" target="_blank"
+                                                            class="btn btn-primary btn-sm" title="Baixar">
                                                             <i class="fa-solid fas fa-download btn-icon-append"></i>
                                                         </a>
                                                         <!-- Botão de Exclusão -->
-                                                        <form action="{{ route('empresas.tomador.documentosDestroy', $documento->id) }}" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir este documento?');">
+                                                        <form
+                                                            action="{{ route('empresas.tomador.documentosDestroy', $documento->id) }}"
+                                                            method="POST"
+                                                            onsubmit="return confirm('Tem certeza que deseja excluir este documento?');">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button type="submit" class="btn btn-primary btn-sm" title="Excluir">
+                                                            <button type="submit" class="btn btn-primary btn-sm"
+                                                                title="Excluir">
                                                                 <i class="fa-solid fas fa-trash-alt"></i>
                                                             </button>
                                                         </form>
@@ -132,8 +135,8 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <!-- Formulário de Upload -->
-                            <form id="uploadForm" action="{{ route('tomadores.profile.storeDocumentos') }}" method="POST"
-                                enctype="multipart/form-data">
+                            <form id="uploadForm" action="{{ route('empresas.tomador.storeDocumentos', $tomador->id) }}"
+                                method="POST" enctype="multipart/form-data">
                                 @csrf
                                 @method('POST')
                                 <div class="row">
@@ -178,7 +181,7 @@
                                         <button type="submit" class="btn btn-primary">Enviar Documentos</button>
                                     </div>
                                 </div>
-                                
+
                             </form>
                             <!-- Formulário de Upload -->
                         </div>

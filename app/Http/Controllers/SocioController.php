@@ -18,10 +18,12 @@ class SocioController extends Controller
 
     public function sociosDocumentos($tomadorservico, $socio)
     {
+        $tomadorId = $tomadorservico;
+
         $socio = Socio::findOrFail($socio);
 
         $documentos = SociosDocumento::where('socio_id', $socio->id)->get();
 
-        return view('empresas.tomador.sociosDocumentos', compact('socio', 'documentos'));
+        return view('empresas.tomador.sociosDocumentos', compact('tomadorId', 'socio', 'documentos'));
     }
 }

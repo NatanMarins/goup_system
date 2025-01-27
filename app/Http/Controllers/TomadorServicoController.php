@@ -63,27 +63,66 @@ class TomadorServicoController extends Controller
         return view('empresas.tomador.documentos', compact('tomador'));
     }
 
-    public function destroyDocumento($id)
-{
-    try {
-        // Encontre o documento pelo ID
-        $documento = Documento::findOrFail($id);
+    public function storeDocumentos(Request $request, $tomadorservico)
+    {
+        // Validar os arquivos enviados
+        $request->validate([
+            'contrato_social.*' => 'file|mimes:pdf,jpeg,png',
+            'alvara_funcionamento.*' => 'file|mimes:pdf,jpeg,png',
+            'inscricao_estadual.*' => 'file|mimes:pdf,jpeg,png',
+        ]);
 
-        // Exclua o arquivo físico do storage
-        if (Storage::exists($documento->path)) {
-            Storage::delete($documento->path);
+        // Array para armazenar os dados a serem inseridos
+        $documentos = [];
+
+        // Iterar sobre os campos de arquivos
+        foreach (['contrato_social', 'alvara_funcionamento', 'inscricao_estadual'] as $tipo) {
+            if ($request->hasFile($tipo)) {
+                foreach ($request->file($tipo) as $file) {
+                    // Gerar um identificador único para o arquivo
+                    $filename = uniqid() . '_' . $file->getClientOriginalName();
+                    $path = $file->storeAs('documentos', $filename);
+
+                    // Adicionar os dados ao array
+                    $documentos[] = [
+                        'tipo' => ucfirst(str_replace('_', ' ', $tipo)), // Converte para "Contrato Social", etc.
+                        'path' => $path,
+                        'descricao' => $file->getClientOriginalName(),
+                        'tomador_servico_id' => $tomadorservico,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                }
+            }
         }
 
-        // Exclua o registro no banco de dados
-        $documento->delete();
+        // Inserir os dados no banco de dados
+        \Illuminate\Support\Facades\DB::table('documentos')->insert($documentos);
 
-        // Redirecione com sucesso
-        return redirect()->back()->with('success', 'Documento excluído com sucesso.');
-    } catch (\Exception $e) {
-        // Redirecione com erro
-        return redirect()->back()->with('error', 'Erro ao excluir documento: ' . $e->getMessage());
+        return redirect()->back()->with('success', 'Documentos adicionados com sucesso!');
     }
-}
+
+    public function destroyDocumento($id)
+    {
+        try {
+            // Encontre o documento pelo ID
+            $documento = Documento::findOrFail($id);
+
+            // Exclua o arquivo físico do storage
+            if (Storage::exists($documento->path)) {
+                Storage::delete($documento->path);
+            }
+
+            // Exclua o registro no banco de dados
+            $documento->delete();
+
+            // Redirecione com sucesso
+            return redirect()->back()->with('success', 'Documento excluído com sucesso.');
+        } catch (\Exception $e) {
+            // Redirecione com erro
+            return redirect()->back()->with('error', 'Erro ao excluir documento: ' . $e->getMessage());
+        }
+    }
 
     public function create()
     {
@@ -167,9 +206,52 @@ class TomadorServicoController extends Controller
 
     public function edit($tomadorservico)
     {
-        $cliente = TomadorServico::findOrFail($tomadorservico);
+        $tomador = TomadorServico::findOrFail($tomadorservico);
 
-        return view('empresas.tomador.edit', compact('cliente'));
+        return view('empresas.tomador.edit', compact('tomador'));
+    }
+
+    public function update(Request $request, $tomadorservico)
+    {
+        // Validação dos dados recebidos
+        $validated = $request->validate([
+            'responsavel' => 'nullable|string|max:255',
+            'cpf_responsavel' => 'nullable|cpf',
+            'nome_fantasia' => 'nullable|string|max:255',
+            'razao_social' => 'nullable|string|max:255',
+            'cnpj' => 'nullable|cnpj',
+            'telefone' => 'nullable|string|max:20',
+            'cep' => 'nullable|string|max:9',
+            'estado' => 'nullable|string|max:2',
+            'cidade' => 'nullable|string|max:255',
+            'bairro' => 'nullable|string|max:255',
+            'logradouro' => 'nullable|string|max:255',
+            'numero' => 'nullable|string|max:20',
+            'complemento' => 'nullable|string|max:255',
+        ]);
+
+        // Encontrar o tomador pelo ID
+        $tomador = TomadorServico::findOrFail($tomadorservico);
+
+        // Atualizar os dados do tomador
+        $tomador->update([
+            'responsavel' => $validated['responsavel'],
+            'cpf_responsavel' => $validated['cpf_responsavel'],
+            'nome_fantasia' => $validated['nome_fantasia'],
+            'razao_social' => $validated['razao_social'],
+            'cnpj' => $validated['cnpj'],
+            'telefone' => $validated['telefone'],
+            'cep' => $validated['cep'],
+            'estado' => $validated['estado'],
+            'cidade' => $validated['cidade'],
+            'bairro' => $validated['bairro'],
+            'logradouro' => $validated['logradouro'],
+            'numero' => $validated['numero'],
+            'complemento' => $validated['complemento'],
+        ]);
+
+        // Redirecionar com mensagem de sucesso
+        return redirect()->route('empresas.tomador.index')->with('success', 'tomador atualizado com sucesso!');
     }
 
     public function planos()
@@ -271,7 +353,7 @@ class TomadorServicoController extends Controller
                 'numero',
                 'complemento',
             ]),
-            ['empresa_id' => 1, 'password' => Hash::make('123456a', ['rounds' => 12])]
+            ['empresa_id' => 1, 'password' => Hash::make('123456a', ['rounds' => 12]), 'condicao' => 'abertura de empresa']
         ));
 
         // Cadastrar informações na tabela tomadores_pagamento
@@ -668,6 +750,5 @@ class TomadorServicoController extends Controller
     public function welcomeVideo()
     {
         return view('tomadores.planos.welcomeVideo');
-        
     }
 }

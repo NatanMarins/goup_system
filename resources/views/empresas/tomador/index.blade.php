@@ -1,6 +1,9 @@
 @extends('empresas.layout.admin')
 
 @section('content')
+
+    <x-alert />
+
     <!-- Cabeçalho -->
     <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
         <div>
@@ -127,6 +130,10 @@
                                                             <a href="{{ route('empresas.tomador.show', $cliente->id) }}"
                                                                 class="btn btn btn-primary btn-sm" title="Visualizar">
                                                                 <i class="fa-solid fa-eye btn-icon-append"></i>
+                                                            </a>
+                                                            <a href="{{ route('empresas.tomador.edit', $cliente->id) }}"
+                                                                class="btn btn btn-primary btn-sm" title="editar">
+                                                                <i class="fa-solid fa-pen-to-square btn-icon-append"></i>
                                                             </a>
                                                         </div>
                                                     </td>

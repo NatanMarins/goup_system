@@ -158,17 +158,6 @@ class ProfileController extends Controller
     }
 
 
-    public function editEmpresa()
-    {
-
-        // Recuperar do banco de dados as informações do usuário logado
-        $usuario = User::where('id', Auth::id())->first();
-
-        // Carrega a view
-        return view('empresas.profile.edit', ['user' => $usuario]);
-    }
-
-
     public function updateEmpresa(Request $request, User $usuario)
     {
 
@@ -194,18 +183,6 @@ class ProfileController extends Controller
         return redirect()->route('empresas.profile.show')->with('success', 'Perfil editado com sucesso!');
     }
 
-
-    public function editFotoEmpresa()
-    {
-
-        // Recuperar do banco de dados as informações do usuário logado
-        $usuario = User::where('id', Auth::id())->first();
-
-        // Carrega a view
-        return view('empresas.profile.edit-foto', ['user' => $usuario]);
-    }
-
-
     public function updateFotoEmpresa(Request $request)
     {
 
@@ -213,7 +190,7 @@ class ProfileController extends Controller
 
         // Validar o upload
         $request->validate([
-            'foto_perfil' => 'nullable|image|mimes:jpeg,png,jpg,gif',
+            'foto_perfil' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         if ($request->hasFile('foto_perfil')) {
@@ -225,52 +202,40 @@ class ProfileController extends Controller
             // Armazenar a nova foto de perfil
             $file = $request->file('foto_perfil');
             $fileName = time() . '-' . $file->getClientOriginalName();
-            $path = $file->storeAs('uploads', $fileName, 'public');
+            $path = $file->storeAs('foto_perfil', $fileName, 'public');
 
             // Atualizar o caminho da foto de perfil no banco de dados
             $usuario->foto_perfil = $path;
             $usuario->save();
         }
 
-        return redirect()->route('empresas.profile.show')->with('success', 'Foto de perfil atualizada com sucesso!');
-    }
-
-
-    public function editPasswordEmpresa()
-    {
-        // Recuperar do banco de dados as informações do usuário logado
-        $usuario = User::where('id', Auth::id())->first();
-
-        // Carrega a view
-        return view('empresas.profile.edit-password', ['user' => $usuario]);
+        return redirect()->back()->with('success', 'Foto de perfil atualizada com sucesso!');
     }
 
     public function updatePasswordEmpresa(Request $request)
     {
-        // Recuperar do banco de dados as informações do usuário logado
-        $usuario = User::where('id', Auth::id())->first();
-
-
-        // Validar o upload
-        $request->validate([
-            'senha_atual' => 'required',
-            'password' => 'required|min:6',
+        $validated = $request->validate([
+            'current_password' => 'required',
+            'new_password' => 'required|min:6|confirmed',
         ], [
-            'senha_atual.required' => 'Você precisa informar sua senha atual.',
-            'nova_senha.required' => 'Você precisa informar uma nova senha.',
-            'password.min' => 'A senha deve conter no mínimo :min caracteres.'
+            'current_password.required' => 'Você precisa informar sua senha atual.',
+            'new_password.required' => 'Você precisa informar uma nova senha.',
+            'new_password.min' => 'A senha deve conter no mínimo :min caracteres.',
+            'new_password.confirmed' => 'As senhas não coincidem.',
         ]);
-
+    
+        $user = Auth::user();
+    
         // Verifica se a senha atual está correta
-        if (!Hash::check($request->senha_atual, Auth::user()->password)) {
-            return back()->withErrors(['senha_atual' => 'A senha atual está incorreta.']);
+        if (!Hash::check($validated['current_password'], $user->password)) {
+            return redirect()->back()->withErrors(['current_password' => 'A senha atual está incorreta.']);
         }
-
-        // Editar as informações no banco de dados
-        $usuario->update([
-            'password' => $request->password,
+    
+        // Atualiza a senha
+        $user->update([
+            'password' => Hash::make($validated['new_password']),
         ]);
-
-        return redirect()->route('empresas.profile.show')->with('success', 'Senha atualizada com sucesso!');
+    
+        return redirect()->back()->with('success', 'Senha alterada com sucesso!');
     }
 }

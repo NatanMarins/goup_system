@@ -45,17 +45,20 @@
 
         <div class="container mt-5">
 
-            <h1>Dados do Tomador</h1>
+            <h1>{{ $tomador->nome_fantasia }}</h1>
 
             <div class="mb-3">
                 <button class="btn btn-primary" id="alterarSenhaBtn">Alterar Senha</button>
                 <a href="{{ route('tomadores.profile.addSocios') }}">
                     <button class="btn btn-secondary">Adicionar Sócios</button>
                 </a>
+                <a href="#">
+                    <button class="btn btn-danger">Contrato</button>
+                </a>
             </div>
 
             <div class="card p-3 mb-4">
-                <h5>Informações do Tomador</h5>
+                <h5>Meus Dados</h5>
 
                 <form>
                     <label>Responsável</label>
@@ -107,7 +110,7 @@
 
         <div class="container mt-5">
 
-            <h1>Dados do Tomador</h1>
+            <h1>{{ $tomador->nome_fantasia }}</h1>
 
             <div class="mb-3">
                 <button class="btn btn-primary" id="alterarSenhaBtn">Alterar Senha</button>
@@ -120,10 +123,13 @@
                 <a href="{{ route('tomadores.profile.edit') }}">
                     <button class="btn btn-success">Atualizar Dados</button>
                 </a>
+                <a href="#">
+                    <button class="btn btn-danger">Contrato</button>
+                </a>
             </div>
 
             <div class="card p-3 mb-4">
-                <h5>Informações do Tomador</h5>
+                <h5>Meus Dados</h5>
 
                 <form>
                     <label>Nome Fantasia</label>
