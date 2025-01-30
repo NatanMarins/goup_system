@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Assinatura;
+use App\Models\cupom;
 use App\Models\Documento;
 use App\Models\Socio;
 use App\Models\TomadoresAbertura;
@@ -315,6 +316,8 @@ class TomadorServicoController extends Controller
             'cidade' => 'required',
             'estado' => 'required',
             'complemento' => 'nullable',
+            'plano' => 'required|in:empreendedor,visionario,lider',
+            'cupom' => 'nullable|string|exists:cupons,codigo',
         ], [
             // Mensagens de erro
             'razao_social.required' => 'O campo Razão social 1 é obrigatório.',
@@ -332,6 +335,9 @@ class TomadorServicoController extends Controller
             'bairro.required' => 'O campo Bairro é obrigatório.',
             'cidade.required' => 'O campo Cidade é obrigatório.',
             'estado.required' => 'O campo Estado é obrigatório.',
+            'plano.required' => 'Você deve selecionar um plano antes de continuar.',
+            'plano.in' => 'O plano selecionado é inválido.',
+            'cupom.exists' => 'O cupom informado não é válido.',
         ]);
 
         // Criar o tomador de serviço principal
@@ -356,35 +362,88 @@ class TomadorServicoController extends Controller
             ['empresa_id' => 1, 'password' => Hash::make('123456a', ['rounds' => 12]), 'condicao' => 'abertura de empresa']
         ));
 
-        // Cadastrar informações na tabela tomadores_pagamento
-        $paymentCiclo = $request->cycle;
+        // Recuperando os dados do cupom adicionado
+        $cupom = cupom::where('codigo', $request->cupom)->first();
+        $cupom_percentual = $cupom->percentual;
 
-        if ($request->plano == 'lider') {
-            if ($paymentCiclo == 'YEARLY') {
-                $valor = 299.99;
-                $descricao = 'Plano Líder';
-            } else {
-                $valor = 29.99;
-                $descricao = 'Plano Líder';
+        // Recuperando os dados da assinatura
+        $assinaturas = Assinatura::all();
+        foreach ($assinaturas as $assinatura) {
+            if ($assinatura->planos == 'Empreendedor') {
+                $empreendedorMensal = $assinatura->valor_mensal;
+                $empreendedorAnual = $assinatura->valor_anual;
             }
-        } elseif ($request->plano == 'visionario') {
-            if ($paymentCiclo == 'YEARLY') {
-                $valor = 199.99;
-                $descricao = 'Plano Visionário';
-            } else {
-                $valor = 19.99;
-                $descricao = 'Plano Visionário';
+            if ($assinatura->planos == 'Visionário') {
+                $visionarioMensal = $assinatura->valor_mensal;
+                $visionarioAnual = $assinatura->valor_anual;
             }
-        } elseif ($request->plano == 'empreendedor') {
-            if ($paymentCiclo == 'YEARLY') {
-                $valor = 99.99;
-                $descricao = 'Plano Empreendedor';
-            } else {
-                $valor = 9.99;
-                $descricao = 'Plano Empreendedor';
+            if ($assinatura->planos == 'Líder') {
+                $liderMensal = $assinatura->valor_mensal;
+                $liderAnual = $assinatura->valor_anual;
             }
         }
 
+        $paymentCiclo = $request->cycle;
+
+        // Calculando o valor com base no cupom adicionado
+        if (!$request->filled('cupom')) {
+            // O cupom não foi preenchido ou é uma string vazia
+            if ($request->plano == 'lider') {
+                if ($paymentCiclo == 'YEARLY') {
+                    $valor = $liderAnual;
+                    $descricao = 'Plano Líder';
+                } else {
+                    $valor = $liderMensal;
+                    $descricao = 'Plano Líder';
+                }
+            } elseif ($request->plano == 'visionario') {
+                if ($paymentCiclo == 'YEARLY') {
+                    $valor = $visionarioAnual;
+                    $descricao = 'Plano Visionário';
+                } else {
+                    $valor = $visionarioMensal;
+                    $descricao = 'Plano Visionário';
+                }
+            } elseif ($request->plano == 'empreendedor') {
+                if ($paymentCiclo == 'YEARLY') {
+                    $valor = $empreendedorAnual;
+                    $descricao = 'Plano Empreendedor';
+                } else {
+                    $valor = $empreendedorMensal;
+                    $descricao = 'Plano Empreendedor';
+                }
+            }
+        } else {
+            // O cupom foi preenchido
+            if ($request->plano == 'lider') {
+                if ($paymentCiclo == 'YEARLY') {
+                    $valor = $liderAnual - ($liderAnual * $cupom_percentual) / 100;
+                    $descricao = 'Plano Líder';
+                } else {
+                    $valor = $liderMensal - ($liderMensal * $cupom_percentual) / 100;
+                    $descricao = 'Plano Líder';
+                }
+            } elseif ($request->plano == 'visionario') {
+                if ($paymentCiclo == 'YEARLY') {
+                    $valor = $visionarioAnual - ($visionarioAnual * $cupom_percentual) / 100;
+                    $descricao = 'Plano Visionário';
+                } else {
+                    $valor = $visionarioMensal - ($visionarioMensal * $cupom_percentual) / 100;;
+                    $descricao = 'Plano Visionário';
+                }
+            } elseif ($request->plano == 'empreendedor') {
+                if ($paymentCiclo == 'YEARLY') {
+                    $valor = $empreendedorAnual - ($empreendedorAnual * $cupom_percentual) / 100;;
+                    $descricao = 'Plano Empreendedor';
+                } else {
+                    $valor = $empreendedorMensal - ($empreendedorMensal * $cupom_percentual) / 100;;
+                    $descricao = 'Plano Empreendedor';
+                }
+            }
+        }
+
+
+        // Cadastrar informações na tabela tomadores_pagamento
         TomadoresPagamento::create([
             'tomador_servico_id' => $tomador->id,
             'billingType' => $request->billingType,
@@ -392,6 +451,7 @@ class TomadorServicoController extends Controller
             'nextDueDate' => Carbon::now()->addDay()->format('Y-m-d'), // Adiciona 1 dia à data atual,
             'cycle' => $paymentCiclo,
             'description' => $descricao,
+            'cupom' => $request->cupom,
         ]);
 
         // Enviar os dados para a API do Asaas
@@ -545,6 +605,28 @@ class TomadorServicoController extends Controller
             'cidade' => 'required',
             'estado' => 'required',
             'complemento' => 'nullable',
+            'plano' => 'required|in:empreendedor,visionario,lider',
+            'cupom' => 'nullable|string|exists:cupons,codigo',
+        ], [
+            // Mensagens de erro
+            'razao_social.required' => 'O campo Razão social 1 é obrigatório.',
+            'nome_fantasia.required' => 'O campo Nome Fantasia é obrigatório.',
+            'cnpj.required' => 'O campo Nome Fantasia é obrigatório.',
+            'cnpj.cnpj' => 'Informe um CNPJ válido.',
+            'email.required' => 'O campo Nome E-mail é obrigatório.',
+            'email.email' => 'Informe um E-Mail válido.',
+            'telefone.required' => 'O campo Nome Telefone é obrigatório.',
+            'responsavel.required' => 'O campo Nome Responsável é obrigatório.',
+            'cpf_responsavel.required' => 'O campo CPF é obrigatório.',
+            'cep.required' => 'O campo CEP é obrigatório.',
+            'logradouro.required' => 'O campo Logradouro é obrigatório.',
+            'numero.required' => 'O campo Número é obrigatório.',
+            'bairro.required' => 'O campo Bairro é obrigatório.',
+            'cidade.required' => 'O campo Cidade é obrigatório.',
+            'estado.required' => 'O campo Estado é obrigatório.',
+            'plano.required' => 'Você deve selecionar um plano antes de continuar.',
+            'plano.in' => 'O plano selecionado é inválido.',
+            'cupom.exists' => 'O cupom informado não é válido.',
         ]);
 
         // Criar o tomador de serviço principal
@@ -568,32 +650,83 @@ class TomadorServicoController extends Controller
             ['empresa_id' => 1, 'password' => Hash::make('123456a', ['rounds' => 12])]
         ));
 
-        // Cadastrar informações na tabela tomadores_pagamento
+        // Recuperando os dados do cupom adicionado
+        $cupom = cupom::where('codigo', $request->cupom)->first();
+        $cupom_percentual = $cupom->percentual;
+
+        // Recuperando os dados da assinatura
+        $assinaturas = Assinatura::all();
+        foreach ($assinaturas as $assinatura) {
+            if ($assinatura->planos == 'Empreendedor') {
+                $empreendedorMensal = $assinatura->valor_mensal;
+                $empreendedorAnual = $assinatura->valor_anual;
+            }
+            if ($assinatura->planos == 'Visionário') {
+                $visionarioMensal = $assinatura->valor_mensal;
+                $visionarioAnual = $assinatura->valor_anual;
+            }
+            if ($assinatura->planos == 'Líder') {
+                $liderMensal = $assinatura->valor_mensal;
+                $liderAnual = $assinatura->valor_anual;
+            }
+        }
+
         $paymentCiclo = $request->cycle;
 
-        if ($request->plano == 'lider') {
-            if ($paymentCiclo == 'YEARLY') {
-                $valor = 299.99;
-                $descricao = 'Plano Líder';
-            } else {
-                $valor = 29.99;
-                $descricao = 'Plano Líder';
+        // Calculando o valor com base no cupom adicionado
+        if (!$request->filled('cupom')) {
+            // O cupom não foi preenchido ou é uma string vazia
+            if ($request->plano == 'lider') {
+                if ($paymentCiclo == 'YEARLY') {
+                    $valor = $liderAnual;
+                    $descricao = 'Plano Líder';
+                } else {
+                    $valor = $liderMensal;
+                    $descricao = 'Plano Líder';
+                }
+            } elseif ($request->plano == 'visionario') {
+                if ($paymentCiclo == 'YEARLY') {
+                    $valor = $visionarioAnual;
+                    $descricao = 'Plano Visionário';
+                } else {
+                    $valor = $visionarioMensal;
+                    $descricao = 'Plano Visionário';
+                }
+            } elseif ($request->plano == 'empreendedor') {
+                if ($paymentCiclo == 'YEARLY') {
+                    $valor = $empreendedorAnual;
+                    $descricao = 'Plano Empreendedor';
+                } else {
+                    $valor = $empreendedorMensal;
+                    $descricao = 'Plano Empreendedor';
+                }
             }
-        } elseif ($request->plano == 'visionario') {
-            if ($paymentCiclo == 'YEARLY') {
-                $valor = 199.99;
-                $descricao = 'Plano Visionário';
-            } else {
-                $valor = 19.99;
-                $descricao = 'Plano Visionário';
-            }
-        } elseif ($request->plano == 'empreendedor') {
-            if ($paymentCiclo == 'YEARLY') {
-                $valor = 99.99;
-                $descricao = 'Plano Empreendedor';
-            } else {
-                $valor = 9.99;
-                $descricao = 'Plano Empreendedor';
+        } else {
+            // O cupom foi preenchido
+            if ($request->plano == 'lider') {
+                if ($paymentCiclo == 'YEARLY') {
+                    $valor = $liderAnual - ($liderAnual * $cupom_percentual) / 100;
+                    $descricao = 'Plano Líder';
+                } else {
+                    $valor = $liderMensal - ($liderMensal * $cupom_percentual) / 100;
+                    $descricao = 'Plano Líder';
+                }
+            } elseif ($request->plano == 'visionario') {
+                if ($paymentCiclo == 'YEARLY') {
+                    $valor = $visionarioAnual - ($visionarioAnual * $cupom_percentual) / 100;
+                    $descricao = 'Plano Visionário';
+                } else {
+                    $valor = $visionarioMensal - ($visionarioMensal * $cupom_percentual) / 100;;
+                    $descricao = 'Plano Visionário';
+                }
+            } elseif ($request->plano == 'empreendedor') {
+                if ($paymentCiclo == 'YEARLY') {
+                    $valor = $empreendedorAnual - ($empreendedorAnual * $cupom_percentual) / 100;;
+                    $descricao = 'Plano Empreendedor';
+                } else {
+                    $valor = $empreendedorMensal - ($empreendedorMensal * $cupom_percentual) / 100;;
+                    $descricao = 'Plano Empreendedor';
+                }
             }
         }
 
@@ -604,6 +737,7 @@ class TomadorServicoController extends Controller
             'nextDueDate' => Carbon::now()->addDay()->format('Y-m-d'), // Adiciona 1 dia à data atual,
             'cycle' => $paymentCiclo,
             'description' => $descricao,
+            'cupom' => $request->cupom,
         ]);
 
 

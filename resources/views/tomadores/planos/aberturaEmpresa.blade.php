@@ -90,43 +90,49 @@
                             <div class="row">
                                 <div class="col-md-6 mb-2">
                                     <label for="razao_social" class="form-label">Razão Social 1</label>
-                                    <input type="text" class="form-control" id="razao_social" name="razao_social" value="{{ old('razao_social') }}"
-                                        required>
+                                    <input type="text" class="form-control" id="razao_social" name="razao_social"
+                                        value="{{ old('razao_social') }}" required>
                                 </div>
                                 <div class="col-md-6 mb-2">
                                     <label for="razao_social2" class="form-label">Razão Social 2</label>
-                                    <input type="text" class="form-control" id="razao_social2" name="razao_social2" value="{{ old('razao_social2') }}">
+                                    <input type="text" class="form-control" id="razao_social2" name="razao_social2"
+                                        value="{{ old('razao_social2') }}">
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6 mb-2">
                                     <label for="razao_social3" class="form-label">Razão Social 3</label>
-                                    <input type="text" class="form-control" id="razao_social3" name="razao_social3" value="{{ old('razao_social3') }}">
+                                    <input type="text" class="form-control" id="razao_social3" name="razao_social3"
+                                        value="{{ old('razao_social3') }}">
                                 </div>
                                 <div class="col-md-6 mb-2">
                                     <label for="nome_fantasia" class="form-label">Nome Fantasia</label>
-                                    <input type="text" class="form-control" id="nome_fantasia" name="nome_fantasia" value="{{ old('nome_fantasia') }}"
-                                        required>
+                                    <input type="text" class="form-control" id="nome_fantasia" name="nome_fantasia"
+                                        value="{{ old('nome_fantasia') }}" required>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6 mb-2">
                                     <label for="email" class="form-label">E-Mail</label>
-                                    <input type="text" class="form-control" id="email" name="email" value="{{ old('email') }}" required>
+                                    <input type="text" class="form-control" id="email" name="email"
+                                        value="{{ old('email') }}" required>
                                 </div>
                                 <div class="col-md-6 mb-2">
                                     <label for="telefone" class="form-label">Telefone</label>
-                                    <input type="text" class="form-control" id="telefone" name="telefone" value="{{ old('telefone') }}" required>
+                                    <input type="text" class="form-control" id="telefone" name="telefone"
+                                        value="{{ old('telefone') }}" required>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6 mb-2">
                                     <label for="responsavel" class="form-label">Responsável</label>
-                                    <input type="text" class="form-control" id="responsavel" name="responsavel" value="{{ old('responsavel') }}" required>
+                                    <input type="text" class="form-control" id="responsavel" name="responsavel"
+                                        value="{{ old('responsavel') }}" required>
                                 </div>
                                 <div class="col-md-6 mb-2">
                                     <label for="cpf_responsavel" class="form-label">CPF</label>
-                                    <input type="text" class="form-control" id="cpf" name="cpf_responsavel" value="{{ old('cpf_responsavel') }}" required>
+                                    <input type="text" class="form-control" id="cpf" name="cpf_responsavel"
+                                        value="{{ old('cpf_responsavel') }}" required>
                                 </div>
                             </div>
 
@@ -135,34 +141,40 @@
                             <div class="row pt-2">
                                 <div class="col-md-4 mb-3">
                                     <label for="cep" class="form-label">CEP</label>
-                                    <input type="text" class="form-control" id="cep" name="cep" value="{{ old('cep') }}" required>
+                                    <input type="text" class="form-control" id="cep" name="cep"
+                                        value="{{ old('cep') }}" required>
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <label for="estado" class="form-label">Estado</label>
-                                    <input type="text" class="form-control" id="estado" name="estado" value="{{ old('estado') }}" required>
+                                    <input type="text" class="form-control" id="estado" name="estado"
+                                        value="{{ old('estado') }}" required>
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <label for="cidade" class="form-label">Cidade</label>
-                                    <input type="text" class="form-control" id="cidade" name="cidade" value="{{ old('cidade') }}" required>
+                                    <input type="text" class="form-control" id="cidade" name="cidade"
+                                        value="{{ old('cidade') }}" required>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-4 mb-3">
                                     <label for="bairro" class="form-label">Bairro</label>
-                                    <input type="text" class="form-control" id="bairro" name="bairro" value="{{ old('bairro') }}" required>
+                                    <input type="text" class="form-control" id="bairro" name="bairro"
+                                        value="{{ old('bairro') }}" required>
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <label for="logradouro" class="form-label">Logradouro</label>
-                                    <input type="text" class="form-control" id="logradouro" name="logradouro" value="{{ old('logradouro') }}"
-                                        required>
+                                    <input type="text" class="form-control" id="logradouro" name="logradouro"
+                                        value="{{ old('logradouro') }}" required>
                                 </div>
                                 <div class="col-md-2 mb-3">
                                     <label for="numero" class="form-label">Número</label>
-                                    <input type="text" class="form-control" id="numero" name="numero" value="{{ old('numero') }}" required>
+                                    <input type="text" class="form-control" id="numero" name="numero"
+                                        value="{{ old('numero') }}" required>
                                 </div>
                                 <div class="col-md-2 mb-3">
                                     <label for="complemento" class="form-label">Complemento</label>
-                                    <input type="text" class="form-control" id="complemento" name="complemento" value="{{ old('complemento') }}">
+                                    <input type="text" class="form-control" id="complemento" name="complemento"
+                                        value="{{ old('complemento') }}">
                                 </div>
                             </div>
 
@@ -261,6 +273,11 @@
                                         <option value="MONTHLY">Mensal</option>
                                     </select>
                                 </div>
+
+                                <div class="col-md-3 mb-2">
+                                    <label for="cupom" class="form-label">Cupom</label>
+                                    <input class="form-control" type="text" name="cupom" id="cupom">
+                                </div>
                             </div>
 
                             <!-- Politicas -->
@@ -291,4 +308,15 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.querySelector("form").addEventListener("submit", function(event) {
+            const selectedPlan = document.querySelector('input[name="plano"]:checked');
+
+            if (!selectedPlan) {
+                alert("Por favor, selecione um plano antes de continuar.");
+                event.preventDefault(); // Impede o envio do formulário
+            }
+        });
+    </script>
 @endsection

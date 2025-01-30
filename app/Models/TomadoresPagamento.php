@@ -18,6 +18,8 @@ class TomadoresPagamento extends Model
         'nextDueDate',
         'cycle',
         'description',
+        'cupom',
+        'valor_completo'
     ];
 
     public function tomadorServico()

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AssinaturaController;
 use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\CupomController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\EmpresaPerfilController;
@@ -9,16 +10,12 @@ use App\Http\Controllers\GuiaImpostoController;
 use App\Http\Controllers\HoldingController;
 use App\Http\Controllers\HoldingUserController;
 use App\Http\Controllers\LoginController;
-use App\Http\Controllers\PagSeguroController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SocioController;
 use App\Http\Controllers\TarefaController;
 use App\Http\Controllers\TomadorPerfilController;
 use App\Http\Controllers\TomadorServicoController;
 use App\Http\Controllers\UsuarioController;
-use App\Models\HoldingUser;
-use App\Models\Socio;
-use App\Models\TomadorServico;
 use Illuminate\Support\Facades\Route;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
@@ -151,7 +148,10 @@ Route::group(['middleware' => 'auth:web,holding,tomador'], function () {
 
     // Assinaturas
     Route::get('/empresas/configuracao-assinatura', [AssinaturaController::class, 'config'])->name('empresas.assinatura.configuracao');
-    Route::post('/empresas/update', [AssinaturaController::class, 'update'])->name('empresas.assinatura.update');
+    Route::post('/empresas/assinatura-update', [AssinaturaController::class, 'update'])->name('empresas.assinatura.update');
+    Route::get('/empresas/cupons', [CupomController::class, 'indexCupom'])->name('empresas.assinatura.cupom');
+    Route::post('/empresas/cupoms-store', [CupomController::class, 'storeCupom'])->name('empresas.assinatura.storeCupom');
+    Route::delete('/empresas/cupons-delete/{cupom}', [CupomController::class, 'deleteCupom'])->name('empresas.assinatura.deleteCupom');
     
     // Guias e Impostos
     Route::get('/empresas/guias_impostos_create/{tomadorservico}', [GuiaImpostoController::class, 'create'])->name('empresas.impostos.create');

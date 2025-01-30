@@ -273,10 +273,19 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('empresas.assinatura.configuracao') }}">
+                        <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="false"
+                            aria-controls="ui-basic">
                             <i class="fa-regular fas fa-users espaco menu-icon" style="color:#00464D;"></i>
-                            <span class="menu-title">Assinaturas</span>
+                            <span class="menu-title">Assinatura</span>
                         </a>
+                        <div class="collapse" id="ui-basic">
+                            <ul class="nav flex-column sub-menu">
+                                <li class="nav-item"> <a class="nav-link"
+                                        href="{{ route('empresas.assinatura.configuracao') }}">Editar Valores</a></li>
+                                <li class="nav-item"> <a class="nav-link"
+                                        href="{{ route('empresas.assinatura.cupom') }}">Cupom</a></li>
+                            </ul>
+                        </div>
                     </li>
                 </ul>
             </nav>

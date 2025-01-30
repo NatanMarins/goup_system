@@ -268,6 +268,11 @@
                                         <option value="MONTHLY">Mensal</option>
                                     </select>
                                 </div>
+
+                                <div class="col-md-3 mb-2">
+                                    <label for="cupom" class="form-label">Cupom</label>
+                                    <input class="form-control" type="text" name="cupom" id="cupom">
+                                </div>
                             </div>
 
                             <!-- Politicas -->
@@ -305,6 +310,17 @@
     <!-- jQuery e jQuery Mask -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+
+    <script>
+        document.querySelector("form").addEventListener("submit", function(event) {
+            const selectedPlan = document.querySelector('input[name="plano"]:checked');
+
+            if (!selectedPlan) {
+                alert("Por favor, selecione um plano antes de continuar.");
+                event.preventDefault(); // Impede o envio do formulário
+            }
+        });
+    </script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
