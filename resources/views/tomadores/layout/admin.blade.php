@@ -183,7 +183,7 @@
         <nav class="navbar-breadcrumb col-xl-12 col-12 d-flex flex-row p-0">
             <div class="navbar-links-wrapper d-flex align-items-stretch">
                 <div class="nav-link">
-                    <a href="#" title="Agenda"><i class="fa-regular fa-calendar-days mx-0"></i></a>
+                    <a href="{{ route('tomadores.tarefas.index') }}" title="Agenda"><i class="fa-regular fa-calendar-days mx-0"></i></a>
                 </div>
                 <div class="nav-link">
                     <a href="javascript:;"><i class="fa-regular fa-envelope-days mx-0"></i></a>

@@ -11,8 +11,9 @@ class TarefaController extends Controller
 {
     public function index(Request $request)
     {
-        // Verifica se há um mês fornecido na requisição, caso contrário usa o mês atual
-        $mesSelecionado = $request->input('mes') ? Carbon::parse($request->input('mes')) : now();
+        $mesSelecionado = $request->input('mes') ? Carbon::createFromFormat('Y-m', $request->input('mes')) : Carbon::now();
+        $mesAnterior = $mesSelecionado->copy()->subMonth();
+        $mesProximo = $mesSelecionado->copy()->addMonth();
 
         // Obter todas as tarefas agrupadas por data, junto com a contagem de tarefas para cada dia no mês selecionado
         $tarefasPorData = Tarefa::whereYear('data', $mesSelecionado->year)
@@ -24,12 +25,7 @@ class TarefaController extends Controller
             ->toArray();
 
         // Renderizar a view completa (incluindo layout) com o calendário do mês selecionado
-        return view('empresas.tarefa.index', [
-            'tarefasPorData' => $tarefasPorData,
-            'mesSelecionado' => $mesSelecionado,
-            'mesAnterior' => $mesSelecionado->copy()->subMonth(),
-            'mesProximo' => $mesSelecionado->copy()->addMonth(),
-        ]);
+        return view('empresas.tarefa.index', compact('mesSelecionado', 'mesAnterior', 'mesProximo', 'tarefasPorData'));
     }
 
     public function create($data)
@@ -62,5 +58,32 @@ class TarefaController extends Controller
         $tarefas = Tarefa::where('data', $data)->get();
 
         return view('empresas.tarefa.show', compact('tarefas', 'data'));
+    }
+
+    // Agenda Tomador
+
+    public function indexTomador(Request $request)
+    {
+        $mesSelecionado = $request->input('mes') ? Carbon::createFromFormat('Y-m', $request->input('mes')) : Carbon::now();
+        $mesAnterior = $mesSelecionado->copy()->subMonth();
+        $mesProximo = $mesSelecionado->copy()->addMonth();
+
+        // Obter todas as tarefas agrupadas por data, junto com a contagem de tarefas para cada dia no mês selecionado
+        $tarefasPorData = Tarefa::whereYear('data', $mesSelecionado->year)
+            ->whereMonth('data', $mesSelecionado->month)
+            ->select('data', DB::raw('count(*) as total'))
+            ->groupBy('data')
+            ->get()
+            ->pluck('total', 'data')
+            ->toArray();
+
+        // Renderizar a view completa (incluindo layout) com o calendário do mês selecionado
+        return view('tomadores.tarefas.index', compact('mesSelecionado', 'mesAnterior', 'mesProximo', 'tarefasPorData'));
+    }
+
+    public function showTomador($data)
+    {
+        $tarefas = Tarefa::whereDate('data', $data)->get(['descricao']);
+        return response()->json($tarefas);
     }
 }

@@ -192,4 +192,9 @@ Route::group(['middleware' => 'auth:web,holding,tomador'], function () {
 
     // Guias e Impostos
     Route::get('tomadores/guias_impostos_index', [GuiaImpostoController::class, 'index'])->name('tomadores.impostos.index');
+
+    // Agenda
+    Route::get('/tomadores/agenda', [TarefaController::class, 'indexTomador'])->name('tomadores.tarefas.index');
+    Route::get('tomadores/tarefa/show/{data}', [TarefaController::class, 'showTomador'])->name('tomadores.tarefa.show');
+
 });
