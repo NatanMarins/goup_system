@@ -42,7 +42,7 @@ class TomadorServicoController extends Controller
         }
 
         // Ordena e carrega os resultados
-        $clientes = $query->orderBy('nome_fantasia', 'asc')->paginate(10); // com paginação
+        $clientes = $query->orderBy('nome_fantasia', 'asc')->paginate(20); // com paginação
 
         // Retorna a view com os dados e os filtros ativos
         return view('empresas.tomador.index', compact('clientes', 'request'));

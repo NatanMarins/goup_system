@@ -37,8 +37,8 @@
                                             <label>Condição</label>
                                             <select name="condicao" id="condicao" class="form-control">
                                                 <option value="">Todas</option>
-                                                <option value="cliente_regular" {{ request('condicao') == 'cliente regular' ? 'selected' : '' }}>Cliente Regular</option>
-                                                <option value="abertura_de_empresa" {{ request('condicao') == 'abertura de empresa' ? 'selected' : '' }}>Abertura de Empresa</option>
+                                                <option value="cliente regular" {{ request('condicao') == 'cliente regular' ? 'selected' : '' }}>Cliente Regular</option>
+                                                <option value="abertura de empresa" {{ request('condicao') == 'abertura de empresa' ? 'selected' : '' }}>Abertura de Empresa</option>
                                             </select>
                                         </div>
                                     </div>
@@ -51,7 +51,7 @@
                                                 <option value="">Todas</option>
                                                 <option value="inadimplente" {{ request('situacao') == 'inadimplente' ? 'selected' : '' }}>Inadimplente</option>
                                                 <option value="adimplente" {{ request('situacao') == 'adimplente' ? 'selected' : '' }}>Adimplente</option>
-                                                <option value="abandono_de_carrinho" {{ request('situacao') == 'abandono de carrinho' ? 'selected' : '' }}>Abandono de Carrinho</option>
+                                                <option value="abandono de carrinho" {{ request('situacao') == 'abandono de carrinho' ? 'selected' : '' }}>Abandono de Carrinho</option>
                                                 <option value="pendente" {{ request('situacao') == 'pendente' ? 'selected' : '' }}>Pendente</option>
                                             </select>
                                         </div>
