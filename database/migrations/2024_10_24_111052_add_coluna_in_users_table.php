@@ -17,7 +17,6 @@ return new class extends Migration
             $table->date('data_nascimento');
             $table->string('telefone');
             $table->string('cargo');
-            $table->string('departamento');
             $table->boolean('status')->default(true);
         });
     }
@@ -33,7 +32,6 @@ return new class extends Migration
             $table->dropColumn('data_nascimento');
             $table->dropColumn('telefone');
             $table->dropColumn('cargo');
-            $table->dropColumn('departamento');
             $table->dropColumn('status');
         });
     }

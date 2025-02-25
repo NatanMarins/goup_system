@@ -2,6 +2,7 @@
 
 @section('content')
 
+
     <div class="container">
         <h2 class="text-center">Adicionar Tarefa Dia: {{ \Carbon\Carbon::parse($data)->format('d/m/Y') }}</h2>
 
@@ -18,11 +19,6 @@
             <div class="mb-3">
                 <label for="descricao" class="form-label">Descrição</label>
                 <textarea class="form-control" id="descricao" name="descricao"></textarea>
-            </div>
-
-            <div class="mb-3">
-                <label for="hora" class="form-label">Hora</label>
-                <input type="time" class="form-control" id="hora" name="hora" required>
             </div>
 
             <button type="submit" class="btn btn-primary">Adicionar Tarefa</button>

@@ -28,7 +28,6 @@
 </head>
 
 <style>
-    
     .user-row {
         padding: 10px;
         margin-bottom: 10px;
@@ -57,8 +56,6 @@
     .user-last-login {
         color: #6c757d;
     }
-   
-    
 </style>
 
 <body>
@@ -68,9 +65,11 @@
             <div class="navbar-brand-wrapper d-flex justify-content-center">
                 <div class="navbar-brand-inner-wrapper d-flex justify-content-between align-items-center w-100">
                     <a class="navbar-brand brand-logo logo" href="{{ route('tomadores.dashboard.dashboard') }}"><img
-                            src="{{ asset('https://www.dinerb.com.br/goup/wp-content/uploads/2024/12/2-1.png') }}" alt="Logo da Empresa"></a>
+                            src="{{ asset('https://www.dinerb.com.br/goup/wp-content/uploads/2024/12/2-1.png') }}"
+                            alt="Logo da Empresa"></a>
                     <a class="navbar-brand brand-logo-mini" href="{{ route('tomadores.dashboard.dashboard') }}"><img
-                            src="{{ asset('https://www.dinerb.com.br/goup/wp-content/uploads/2024/12/3-1.png') }}" alt="Logo da Empresa"></a>
+                            src="{{ asset('https://www.dinerb.com.br/goup/wp-content/uploads/2024/12/3-1.png') }}"
+                            alt="Logo da Empresa"></a>
                     <button class="navbar-toggler navbar-toggler align-self-center" type="button"
                         data-toggle="minimize">
                         <i class="fa-solid fa-bars mx-0"></i>
@@ -80,7 +79,7 @@
             <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
                 <ul class="navbar-nav me-lg-2">
                     <li class="nav-item nav-profile dropdown">
-                        
+
                         <!-- Usuário  -->
                         <div class="user-row">
                             <div class="user-info">
@@ -88,7 +87,7 @@
                                     <strong>{{ auth()->user()->nome_fantasia }}</strong>
                                     <div class="user-last-login">
                                         @if (Auth::user()->last_login_at)
-                                        <p>Último login: {{ Auth::user()->last_login_at->diffForHumans() }}</p>
+                                            <p>Último login: {{ Auth::user()->last_login_at->diffForHumans() }}</p>
                                         @else
                                             <p class="texto">Você ainda não fez login anteriormente.</p>
                                         @endif
@@ -100,14 +99,14 @@
                     </li>
                 </ul>
                 <ul class="navbar-nav navbar-nav-right">
-                    <!-- data-->                    
+                    <!-- data-->
                     <li class="nav-item nav-date dropdown">
                         <a class="nav-link d-flex justify-content-center align-items-center" href="javascript:;">
                             <h6 class="date mb-0">{{ now()->format('d/m/Y') }}</h6>
                             <i class="typcn "></i> <i class="fa-regular far fa-calendar-alt"></i>
                         </a>
                     </li>
-                    <!-- data-->                    
+                    <!-- data-->
                     <!-- mensagens-->
                     <!--
                     <li class="nav-item dropdown">
@@ -159,7 +158,8 @@
                      notificacoes -->
                     <!-- perfil -->
                     <li class="nav-item dropdown me-0">
-                        <a class="nav-link count-indicator dropdown-toggle d-flex align-items-center justify-content-center" title="Perfil"  id="notificationDropdown" href="{{ route('tomadores.profile.show') }}">
+                        <a class="nav-link count-indicator dropdown-toggle d-flex align-items-center justify-content-center"
+                            title="Perfil" id="notificationDropdown" href="{{ route('tomadores.profile.show') }}">
                             <i class="fa-regular fas fa-user-cog mx-0" style="color: #00464D;"></i>
                         </a>
                     </li>
@@ -167,7 +167,8 @@
 
                     <!-- Sair-->
                     <li class="nav-item dropdown me-0">
-                        <a class="nav-link count-indicator dropdown-toggle d-flex align-items-center justify-content-center" title="Sair do Sistema"  id="notificationDropdown" href="{{ route('login.destroy') }}">
+                        <a class="nav-link count-indicator dropdown-toggle d-flex align-items-center justify-content-center"
+                            title="Sair do Sistema" id="notificationDropdown" href="{{ route('login.destroy') }}">
                             <i class="fa-regular fas fa-sign-out-alt mx-0" style="color: #00464D;"></i>
                         </a>
                     </li>
@@ -183,7 +184,8 @@
         <nav class="navbar-breadcrumb col-xl-12 col-12 d-flex flex-row p-0">
             <div class="navbar-links-wrapper d-flex align-items-stretch">
                 <div class="nav-link">
-                    <a href="{{ route('tomadores.tarefas.index') }}" title="Agenda"><i class="fa-regular fa-calendar-days mx-0"></i></a>
+                    <a href="{{ route('tomadores.tarefas.index') }}" title="Agenda"><i
+                            class="fa-regular fa-calendar-days mx-0"></i></a>
                 </div>
                 <div class="nav-link">
                     <a href="javascript:;"><i class="fa-regular fa-envelope-days mx-0"></i></a>
@@ -200,7 +202,7 @@
                     <li class="nav-item ms-0">
                         <h4 class="mb-0">GO UP Contabilidade Online</h4>
                     </li>
-                     <!-- 
+                    <!--
                     <li class="nav-item">
                         <div class="d-flex align-items-baseline">
                             <p class="mb-0">Home</p>
@@ -250,14 +252,14 @@
                             aria-controls="auth">
                             <i class="fa-regular fas fa-dollar-sign espaco menu-icon" style="color:#01c592;"></i>
                             <span class="menu-title">Assinatura</span>
-                            <i class="menu-arrow"></i>
                         </a>
                         <div class="collapse" id="auth">
                             <ul class="nav flex-column sub-menu">
                                 <li class="nav-item"> <a class="nav-link"
                                         href="{{ route('tomadores.planos.index') }}">
                                         Planos </a></li>
-                                <li class="nav-item"> <a class="nav-link" href="#">
+                                <li class="nav-item"> <a class="nav-link"
+                                        href="{{ route('tomadores.assinatura.showAssinatura') }}">
                                         Minha Assinatura </a></li>
                             </ul>
                         </div>
@@ -270,7 +272,7 @@
                         </a>
                     </li>
 
-                     <!--
+                    <!--
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="false"
                             aria-controls="ui-basic">

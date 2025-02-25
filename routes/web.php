@@ -6,6 +6,7 @@ use App\Http\Controllers\CupomController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\EmpresaPerfilController;
+use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\GuiaImpostoController;
 use App\Http\Controllers\HoldingController;
 use App\Http\Controllers\HoldingUserController;
@@ -36,6 +37,12 @@ Route::get('/tomadores/boas-vindas', [TomadorServicoController::class, 'welcomeV
 Route::get('/', [LoginController::class, 'index'])->name('login.index');
 Route::post('/login', [LoginController::class, 'loginProcess'])->name('login.process');
 Route::get('/logout', [LoginController::class, 'destroy'])->name('login.destroy');
+
+// Recuperar a Senha
+Route::get('/forgot-password',  [ForgotPasswordController::class, 'forgotPassword'])->name('login.forgotPassword');
+Route::post('/forgot-password', [ForgotPasswordController::class, 'forgotPasswordSubmit'])->name('login.forgotPasswordSubmit');
+Route::get('/reset-password/{token}',  [ForgotPasswordController::class, 'resetPassword'])->name('password.reset');
+
 
 
 Route::group(['middleware' => 'auth:web,holding,tomador'], function () {
@@ -121,7 +128,6 @@ Route::group(['middleware' => 'auth:web,holding,tomador'], function () {
     Route::get('/empresas/show-profile-empresa', [EmpresaPerfilController::class, 'showEmpresa'])->name('empresas.empresa_profile.show');
     Route::get('/empresas/edit-profile-empresa', [EmpresaPerfilController::class, 'editEmpresa'])->name('empresas.empresa_profile.edit');
     Route::put('/empresas/update-profile-empresa', [EmpresaPerfilController::class, 'updateEmpresa'])->name('empresas.empresa_profile.update');
-    Route::get('/empresas/show-colaboradores-empresa', [EmpresaPerfilController::class, 'colaboradoresEmpresa'])->name('empresas.empresa_profile.colaboradores');
 
     // Agenda
     Route::get('/empresas/agenda', [TarefaController::class, 'index'])->name('empresas.tarefa.index');
@@ -140,7 +146,7 @@ Route::group(['middleware' => 'auth:web,holding,tomador'], function () {
     Route::get('/empresas/tomador-documentos/{tomadorservico}', [TomadorServicoController::class, 'documentos'])->name('empresas.tomador.documentos');
     Route::post('/tomadores/store-documentos/{tomadorservico}', [TomadorServicoController::class, 'storeDocumentos'])->name('empresas.tomador.storeDocumentos');
     Route::delete('/empresas/excluir-documentos/{tomadorservico}', [TomadorServicoController::class, 'destroyDocumento'])->name('empresas.tomador.documentosDestroy');
-
+    Route::get('/empresas/gerarPDF/{tomadorservico}', [TomadorServicoController::class, 'pdfDados'])->name('empresas.tomador.pdfDados');
 
     // Sócios
     Route::get('/empresas/tomadores/sociosShow/{tomadorservico}/{socio}', [SocioController::class, 'sociosShow'])->name('empresas.tomador.sociosShow');
@@ -176,6 +182,9 @@ Route::group(['middleware' => 'auth:web,holding,tomador'], function () {
     Route::get('/tomadores/edit-clientes-cnpj/{cliente}', [ClienteController::class, 'editClienteCnpj'])->name('tomadores.clientes.editCnpj');
     Route::put('/tomadores/update-clientes-cnpj/{cliente}', [ClienteController::class, 'updateClienteCnpj'])->name('tomadores.clientes.updateCnpj');
     Route::delete('/tomadores/destroy-clientes/{cliente}', [ClienteController::class, 'destroyCliente'])->name('tomadores.clientes.destroy');
+
+    // Assinatura
+    Route::get('/tomadores/minhaAssinatura', [AssinaturaController::class, 'showAssinatura'])->name('tomadores.assinatura.showAssinatura');
     
     // Planos
     Route::get('/tomadores/planos', [TomadorServicoController::class, 'planos'])->name('tomadores.planos.index');

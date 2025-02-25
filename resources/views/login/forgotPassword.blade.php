@@ -191,8 +191,6 @@
 
 
     </style>
-
-
 <body>
     <div class="login-container">
         <!-- Lateral com a imagem -->
@@ -206,29 +204,19 @@
                 </div>
 
                 <x-alert />
-                <form action="{{ route('login.process') }}" method="POST" class="pt-3">
+                <form action="{{ route('login.forgotPasswordSubmit') }}" method="POST" class="pt-3">
                     @csrf
                     @method('POST')
                 
                     <!-- Campo de Email -->
                     <div class="form-group">
                         <label for="email">Email</label>
-                        <input type="email" id="email" name="email" placeholder="E-mail" value="{{ old('email') }}">
+                        <input type="email" id="email" name="email" placeholder="E-mail">
                     </div>
-                    
-                    <!-- Campo de Senha com ícone de visualização -->
-                    <div class="form-group password-group">
-                        <label for="password">Senha</label>
-                        <div class="password-wrapper">
-                            <input type="password" id="password" name="password" placeholder="Digite sua senha" required>
-                            <span class="toggle-password" onclick="togglePasswordVisibility()">👁️</span>
-                        </div>
-                    </div>
-                    
+
                     <!-- Botão de Login e link Esqueceu a Senha -->
                     <div class="form-actions">
-                        <button type="submit" class="login-btn">Entrar</button>
-                        <a href="{{ route('login.forgotPassword') }}" class="forgot-password">Esqueceu sua senha?</a>
+                        <button type="submit" class="login-btn">Recuperar</button>
                     </div>
                 </form>
             </div>
@@ -236,20 +224,3 @@
     </div>
 </body>
 </html>
-
-
-<script>
-    // Alternar visibilidade da senha
-function togglePasswordVisibility() {
-    const passwordInput = document.getElementById('password');
-    const passwordToggle = document.querySelector('.toggle-password');
-
-    if (passwordInput.type === 'password') {
-        passwordInput.type = 'text';
-        passwordToggle.textContent = '🙈'; // Ícone para senha visível
-    } else {
-        passwordInput.type = 'password';
-        passwordToggle.textContent = '👁️'; // Ícone para senha oculta
-    }
-}
-</script>

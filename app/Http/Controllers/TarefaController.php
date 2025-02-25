@@ -43,7 +43,6 @@ class TarefaController extends Controller
             'titulo' => 'required|string|max:255',
             'descricao' => 'nullable|string',
             'data' => 'required|date',
-            'hora' => 'required|date_format:H:i',
         ]);
 
         // Cria a tarefa

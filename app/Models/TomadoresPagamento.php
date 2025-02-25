@@ -19,7 +19,8 @@ class TomadoresPagamento extends Model
         'cycle',
         'description',
         'cupom',
-        'valor_completo'
+        'valor_completo',
+        'codigo_assinatura'
     ];
 
     public function tomadorServico()

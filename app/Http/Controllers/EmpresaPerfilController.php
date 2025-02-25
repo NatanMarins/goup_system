@@ -149,22 +149,4 @@ class EmpresaPerfilController extends Controller
 
         return redirect()->route('empresas.empresa_profile.show', ['empresa' => $empresa])->with('success', 'Perfil editado com sucesso!');
     }
-
-    public function colaboradoresEmpresa()
-    {
-
-        // Recuperar do banco de dados as informações do usuário logado
-        $empresaId = Auth::user()->empresa_id;
-        $empresa = Empresa::where('id', $empresaId)->get()->first();
-
-        $userId = Auth::user()->id;
-
-        // Recupera os usuários da holding, ordenando o usuário logado como o primeiro
-        $colaboradores = User::where('empresa_id', $empresaId)
-            ->orderByRaw("id = $userId DESC")
-            ->get();
-
-        // Carrega a view
-        return view('empresas.empresa_profile.colaboradores', ['empresa' => $empresa, 'colaboradores' => $colaboradores]);
-    }
 }

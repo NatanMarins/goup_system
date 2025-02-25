@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Assinatura;
+use App\Models\TomadoresPagamento;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AssinaturaController extends Controller
 {
@@ -33,5 +35,14 @@ class AssinaturaController extends Controller
         }
 
         return redirect()->back()->with('success', 'Planos atualizados com sucesso!');
+    }
+
+    public function showAssinatura()
+    {
+        $tomador = Auth::user();
+
+        $assinatura = TomadoresPagamento::where('tomador_servico_id', $tomador->id)->get()->first();
+
+        return view('tomadores.assinatura.showAssinatura', compact('assinatura', 'tomador'));
     }
 }

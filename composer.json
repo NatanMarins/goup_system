@@ -6,12 +6,13 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "barryvdh/laravel-dompdf": "^3.0",
+        "barryvdh/laravel-dompdf": "^3.1",
         "geekcom/validator-docs": "^3.10",
         "guzzlehttp/guzzle": "^7.9",
         "laravel/framework": "^11.9",
         "laravel/sanctum": "^4.0",
-        "laravel/tinker": "^2.9"
+        "laravel/tinker": "^2.9",
+        "symfony/mailer": "^7.2"
     },
     "require-dev": {
         "fakerphp/faker": "^1.24",

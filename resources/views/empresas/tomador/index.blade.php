@@ -1,7 +1,6 @@
 @extends('empresas.layout.admin')
 
 @section('content')
-
     <x-alert />
 
     <!-- Cabeçalho -->
@@ -25,9 +24,13 @@
                                             <label>Status</label>
                                             <select name="status" id="status" class="form-control">
                                                 <option value="">Todos</option>
-                                                <option value="ativo" {{ request('status') == 'ativo' ? 'selected' : '' }}>Ativo</option>
-                                                <option value="inativo" {{ request('status') == 'inativo' ? 'selected' : '' }}>Inativo</option>
-                                                <option value="pendente" {{ request('status') == 'pendente' ? 'selected' : '' }}>Pendente</option>
+                                                <option value="ativo" {{ request('status') == 'ativo' ? 'selected' : '' }}>
+                                                    Ativo</option>
+                                                <option value="inativo"
+                                                    {{ request('status') == 'inativo' ? 'selected' : '' }}>Inativo</option>
+                                                <option value="pendente"
+                                                    {{ request('status') == 'pendente' ? 'selected' : '' }}>Pendente
+                                                </option>
                                             </select>
                                         </div>
                                     </div>
@@ -37,22 +40,34 @@
                                             <label>Condição</label>
                                             <select name="condicao" id="condicao" class="form-control">
                                                 <option value="">Todas</option>
-                                                <option value="cliente regular" {{ request('condicao') == 'cliente regular' ? 'selected' : '' }}>Cliente Regular</option>
-                                                <option value="abertura de empresa" {{ request('condicao') == 'abertura de empresa' ? 'selected' : '' }}>Abertura de Empresa</option>
+                                                <option value="cliente regular"
+                                                    {{ request('condicao') == 'cliente regular' ? 'selected' : '' }}>Cliente
+                                                    Regular</option>
+                                                <option value="abertura de empresa"
+                                                    {{ request('condicao') == 'abertura de empresa' ? 'selected' : '' }}>
+                                                    Abertura de Empresa</option>
                                             </select>
                                         </div>
                                     </div>
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                        <!-- Filtro por Situação -->
+                                            <!-- Filtro por Situação -->
                                             <label>Situação</label>
                                             <select name="situacao" id="situacao" class="form-control">
                                                 <option value="">Todas</option>
-                                                <option value="inadimplente" {{ request('situacao') == 'inadimplente' ? 'selected' : '' }}>Inadimplente</option>
-                                                <option value="adimplente" {{ request('situacao') == 'adimplente' ? 'selected' : '' }}>Adimplente</option>
-                                                <option value="abandono de carrinho" {{ request('situacao') == 'abandono de carrinho' ? 'selected' : '' }}>Abandono de Carrinho</option>
-                                                <option value="pendente" {{ request('situacao') == 'pendente' ? 'selected' : '' }}>Pendente</option>
+                                                <option value="inadimplente"
+                                                    {{ request('situacao') == 'inadimplente' ? 'selected' : '' }}>
+                                                    Inadimplente</option>
+                                                <option value="adimplente"
+                                                    {{ request('situacao') == 'adimplente' ? 'selected' : '' }}>Adimplente
+                                                </option>
+                                                <option value="abandono de carrinho"
+                                                    {{ request('situacao') == 'abandono de carrinho' ? 'selected' : '' }}>
+                                                    Abandono de Carrinho</option>
+                                                <option value="pendente"
+                                                    {{ request('situacao') == 'pendente' ? 'selected' : '' }}>Pendente
+                                                </option>
                                             </select>
                                         </div>
                                     </div>
@@ -62,7 +77,8 @@
                                         <div class="form-group">
                                             <!-- Campo de Busca -->
                                             <label>Nome</label>
-                                            <input type="text" name="nome" id="nome" class="form-control" value="{{ request('nome') }}"  placeholder="Digite o nome">
+                                            <input type="text" name="nome" id="nome" class="form-control"
+                                                value="{{ request('nome') }}" placeholder="Digite o nome">
                                         </div>
                                     </div>
                                 </div>
@@ -70,7 +86,8 @@
                                     <!-- Botão de Buscar -->
                                     <div class="col-md-12 mt-3 text-center">
                                         <button type="submit" class="btn btn-primary btn-sm">Filtrar</button>
-                                        <a href="{{ route('empresas.tomador.index') }}" class="btn btn-primary btn-sm">Limpar Filtros</a>
+                                        <a href="{{ route('empresas.tomador.index') }}"
+                                            class="btn btn-primary btn-sm">Limpar Filtros</a>
                                     </div>
                                 </div>
                             </form>
@@ -79,15 +96,15 @@
                 </div>
             </div>
         </div>
-    </div>        
-        
+    </div>
+
     <div class="row pt-2">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-12 col-lg-12">
-            
+
                             <!--tabela -->
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover">
@@ -102,43 +119,41 @@
                                     </thead>
                                     <tbody>
                                         @forelse ($clientes as $cliente)
-                                            @if ($cliente->situacao === 'inadimplente')
-                                                <tr>
-                                                    <td>{{ $cliente->nome_fantasia }}</td>
-                                                    <td>{{ $cliente->email }}</td>
-                                                    <td class="text-center"><i class='fa-solid fas fa-circle-exclamation'
+                                            <tr>
+                                                <td>{{ $cliente->nome_fantasia }}</td>
+                                                <td>{{ $cliente->email }}</td>
+                                                @if ($cliente->situacao === 'inadimplente')
+                                                    <td class="text-center"><i class='fa-solid fas fa-circle-xmark'
                                                             style='font-size:20px; color:#C42F02;'></i></td>
-                                                    <td>{{ $cliente->condicao }}</td>
-                                                    <td class="text-center">
-                                                        <div class="btn-group" role="group" aria-label="Basic example">
-                                                            <a href="{{ route('empresas.tomador.show', $cliente->id) }}"
-                                                                class="btn btn btn-primary btn-sm" title="Visualizar">
-                                                                <i class="fa-solid fa-eye btn-icon-append"></i>
-                                                            </a>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            @else
-                                                <tr>
-                                                    <td>{{ $cliente->nome_fantasia }}</td>
-                                                    <td>{{ $cliente->email }}</td>
+                                                @elseif ($cliente->situacao === 'adimplente')
                                                     <td class="text-center"><i class='fa-solid fas fa-circle-check'
                                                             style='font-size:20px; color:#01c592;'></i></td>
-                                                    <td>{{ $cliente->condicao }}</td>
-                                                    <td class="text-center">
-                                                        <div class="btn-group" role="group" aria-label="Basic example">
-                                                            <a href="{{ route('empresas.tomador.show', $cliente->id) }}"
-                                                                class="btn btn btn-primary btn-sm" title="Visualizar">
-                                                                <i class="fa-solid fa-eye btn-icon-append"></i>
-                                                            </a>
-                                                            <a href="{{ route('empresas.tomador.edit', $cliente->id) }}"
-                                                                class="btn btn btn-primary btn-sm" title="editar">
-                                                                <i class="fa-solid fa-pen-to-square btn-icon-append"></i>
-                                                            </a>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            @endif
+                                                @elseif ($cliente->situacao === 'pendente')
+                                                    <td class="text-center"><i class='fa-solid fas fa-spinner'
+                                                            style='font-size:20px; color:#239fe7;'></i></td>
+                                                @elseif ($cliente->situacao === 'abandono de carrinho')
+                                                    <td class="text-center"><i class='fa-solid fas fa-circle-exclamation'
+                                                            style='font-size:20px; color:#FFD700;'></i></td>
+                                                @endif
+                                                <td>{{ $cliente->condicao }}</td>
+                                                <td class="text-center">
+                                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                                        <a href="{{ route('empresas.tomador.show', $cliente->id) }}"
+                                                            class="btn btn btn-primary btn-sm" title="Visualizar">
+                                                            <i class="fa-solid fa-eye btn-icon-append"></i>
+                                                        </a>
+                                                        <a href="{{ route('empresas.tomador.edit', $cliente->id) }}"
+                                                            class="btn btn btn-primary btn-sm" title="editar">
+                                                            <i class="fa-solid fa-pen-to-square btn-icon-append"></i>
+                                                        </a>
+                                                        <a href="{{ route('empresas.tomador.pdfDados', $cliente->id) }}"
+                                                            class="btn btn btn-primary btn-sm" title="PDF Dados">
+                                                            <i class="fa-solid fa-file"></i>
+                                                        </a>
+
+                                                    </div>
+                                                </td>
+                                            </tr>
 
                                         @empty
                                             <tr>
@@ -164,6 +179,4 @@
             </div>
         </div>
     </div>
-            
-            
 @endsection

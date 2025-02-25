@@ -8,6 +8,7 @@ use App\Models\Empresa;
 use App\Models\Holding;
 use App\Models\HoldingUser;
 use App\Models\User;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -34,7 +35,9 @@ class UsuarioController extends Controller
         $empresaId = Auth::user()->empresa_id;
         $empresa = Empresa::where('id', $empresaId)->get()->first();
 
-        return view('empresas.usuario.show', compact('empresa'), ['user' => $usuario]);
+        $dataFormatada = Carbon::parse($usuario->data_nascimento)->format('d/m/Y');
+
+        return view('empresas.usuario.show', compact('empresa', 'dataFormatada'), ['user' => $usuario]);
     }
 
 
@@ -53,13 +56,35 @@ class UsuarioController extends Controller
 
         $validated = $request->validate([
             'name' => 'required',
+            'nome_completo' => 'required',
+            'cpf' => 'required|cpf',
+            'data_nascimento' => 'required',
+            'cargo' => 'required',
             'email' => 'required|email|unique:users',
+            'telefone' => 'required',
             'password' => 'required|min:6',
+        ], [
+            'name.required' => 'Campo Nome de Usuário é obrigatório.',
+            'nome_completo.required' => 'Campo Nome Completo é obrigatório.',
+            'cpf.required' => 'Campo CPF é obrigatório.',
+            'cpf.cpf' => 'Informe um CPF válido.',
+            'data_nascimento.required' => 'Campo Data de Nascimento é obrigatório.',
+            'cargo.required' => 'Campo Cargo é obrigatório.',
+            'email.required' => 'Campo E-mail é obrigatório.',
+            'email.email' => 'Informe um E-mail válido.',
+            'email.unique' => 'Esse E-mail já está sendo usado.',
+            'password.required' => 'Campo Senha é obrigatório.',
+            'password.min' => 'Senha deve conter minimo de 6 caracteres.',
         ]);
 
         $usuario = User::create([
             'name' => $validated['name'],
+            'nome_completo' => $validated['nome_completo'],
+            'cpf' => $validated['cpf'],
+            'data_nascimento' => $validated['data_nascimento'],
+            'cargo' => $validated['cargo'],
             'email' => $validated['email'],
+            'telefone' => $validated['telefone'],
             'password' => $validated['password'],
             'empresa_id' => $empresaId,
         ]);

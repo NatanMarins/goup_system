@@ -1,53 +1,119 @@
 @extends('empresas.layout.admin')
 
 @section('content')
-    <x-alert />
 
-    <h1>Perfil {{ $empresa->nome }}</h1>
+<x-alert />
 
-    <div class="container mt-5">
-        <div class="row">
-            <div class="col-md-12">
-                <!-- Informações do Usuário -->
-                <div class="card">
-                    <div class="card-header">
+ <!-- Cabeçalho -->
+ <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
+    <div>
+        <h4 class="fw-bold">Perfil {{ $empresa->nome }}</h4>
+    </div>
+</div>
+<!-- Cabeçalho -->
+
+<div class="row pt-2">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12 col-lg-12">
+    
                         <h4>Informações {{ $empresa->nome }}</h4>
-                    </div>
-                    <div class="card-body">
+                        <hr />
+                    
                         <form>
-                            <label class="form-label">Nome</label>
-                            <input type="text" class="form-control" id="name" value="{{ $empresa->nome }}" readonly>
 
-                            <label class="form-label">CNPJ</label>
-                            <input type="text" class="form-control" id="email" value="{{ $empresa->cnpj }}" readonly>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Nome Fantasia</label>
+                                        <input type="text" class="form-control" value="{{ $empresa->nome_fantasia }}" disabled readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="">Razao Social</label>
+                                        <input type="text" class="form-control" value="{{ $empresa->razao_social }}" disabled readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="">CNPJ</label>
+                                        <input type="text" class="form-control" value="{{ $empresa->cnpj }}" disabled readonly>  
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="">Email</label>
+                                        <input type="text" class="form-control" value="{{ $empresa->email }}" disabled readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="">Telefone</label>
+                                        <input type="text" class="form-control" value="{{ $empresa->telefone }}" disabled readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="">CEP</label>
+                                        <input type="text" class="form-control" value="{{ $empresa->cep }}" disabled readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label for="">Logradouro</label>
+                                        <input type="text" class="form-control" value="{{ $empresa->logradouro }}" disabled readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="">Número</label>
+                                        <input type="text" class="form-control" value="{{ $empresa->numero }}" disabled readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="">Bairro</label>
+                                        <input type="text" class="form-control" value="{{ $empresa->bairro }}" disabled readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="">Cidade</label>
+                                        <input type="text" class="form-control" value="{{ $empresa->cidade }}" disabled readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="">Estado</label>
+                                        <input type="text" class="form-control" value="{{ $empresa->estado }}" disabled readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="">Complemento</label>
+                                        <input type="text" class="form-control" value="{{ $empresa->complemento }}" disabled readonly>
+                                    </div>
+                                </div>
+                            </div>
 
-                            <label for="role" class="form-label">E-mail</label>
-                            <input type="email" class="form-control" id="role" value="{{ $empresa->email }}"
-                                readonly>
-
-                            <label class="form-label">telefone</label>
-                            <input type="text" class="form-control" id="role" value="{{ $empresa->telefone }}"
-                                readonly>
-
-                            <label class="form-label">Colaboradores</label>
-                            <input type="text" class="form-control" id="email"
-                                value="{{ $colaboradores->usuarios->count() }}" readonly>
-
-
-                            <label class="form-label">Endereço</label>
-                            <input type="text" class="form-control" id="cep"
-                                value="{{ $empresa->endereco }}"readonly>
+                            <div class="row">
+                                <!-- Botão  -->
+                                <div class="col-md-12 mt-3 text-center">
+                                    <a href="{{ route('empresas.empresa_profile.edit') }}">
+                                        <button class="btn btn-primary">Editar Dados</button>
+                                    </a>
+                                </div>
+                            </div>
+                             
                         </form>
-                    </div>
 
-                    <a href="{{ route('empresas.empresa_profile.edit') }}">
-                        <button class="btn btn-primary">Editar Perfil</button>
-                    </a>
-                    <a href="{{ route('empresas.empresa_profile.colaboradores') }}">
-                        <button class="btn btn-primary">Colaboradores</button>
-                    </a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 @endsection

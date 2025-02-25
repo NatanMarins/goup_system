@@ -66,44 +66,33 @@ class EmpresaSeeder extends Seeder
             // Cadastrando 5 empresas para cada holding
             for ($k = 1; $k <= 1; $k++) {
                 $empresa = Empresa::create([
-                    'nome' => 'GoUp',
+                    'razao_social' => 'GoUp',
                     'cnpj' => $faker->cnpj,
                     'telefone' => $faker->phoneNumber,
                     'site' => 'https://goupcontabilidade.com.br/',
                     'email' => $faker->companyEmail,
                     'nome_fantasia' => $faker->companySuffix,
-                    'data_abertura' => $faker->date,
-                    'inscricao_municipal' => $faker->randomNumber(8, true),
                     'cep' => '24440560',
                     'logradouro' => 'rua cirilo branco',
                     'numero' => '396',
                     'bairro' => 'porto da pedra',
                     'cidade' => 'são gonçalo',
                     'estado' => 'rio de janeiro',
-                    'cnae' => $faker->randomNumber(5, true),
-                    'capital_social' => $faker->randomFloat(2, 10000, 500000),
-                    'faturamento_anual' => $faker->randomFloat(2, 50000, 1000000),
-                    'responsavel_contabil' => $faker->name,
-                    'codigo_tributacao' => $faker->randomNumber(4, true),
-                    'aliquota_fiscais' => $faker->randomFloat(2, 0, 30),
-                    'natureza_juridica' => 'EI',
-                    'regime_tributario' => 'Simples Nacional',
                     'holding_id' => $holding->id,
                 ]);
 
                 // Cadastrando 10 usuários para cada empresa
                 for ($l = 1; $l <= 1; $l++) {
                     User::create([
-                        'name' => 'Natan',
-                        'email' => 'natan@teste.com.br',
+                        'name' => 'Teste GoUp',
+                        'email' => 'goup@teste.com.br',
                         'password' => Hash::make('123456a', ['rounds' => 12]),
                         'empresa_id' => $empresa->id,
-                        'nome_completo' => 'Natan Barbosa de Marins',
-                        'cpf' => '16615420775',
+                        'nome_completo' => 'GoUp teste',
+                        'cpf' => '00000000000',
                         'data_nascimento' => $faker->date,
                         'telefone' => $faker->phoneNumber,
-                        'cargo' => $faker->jobTitle,
-                        'departamento' => $faker->word,
+                        'cargo' => 'CEO',
                     ]);
                 }
             }

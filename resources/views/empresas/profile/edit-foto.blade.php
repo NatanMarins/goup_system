@@ -3,7 +3,11 @@
 @section('content')
     <x-alert />
     
-    <h1>Editar Foto Perfil</h1>
+    <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
+        <div>
+            <h4 class="fw-bold">Editar Foto Perfil </h4>
+        </div>
+    </div>
 
     <form action="{{ route('empresas.profile.update-foto') }}" method="POST" enctype="multipart/form-data">
         @csrf

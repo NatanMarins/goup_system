@@ -11,7 +11,7 @@
         @else
             <ul>
                 @foreach ($tarefas as $tarefa)
-                    <li>{{ $tarefa->hora }} - {{ $tarefa->titulo }}: {{ $tarefa->descricao }}</li>
+                    <li>{{ $tarefa->titulo }}: {{ $tarefa->descricao }}</li>
                 @endforeach
             </ul>
         @endif

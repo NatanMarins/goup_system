@@ -71,9 +71,6 @@
                                                             <a href="{{ route('empresas.usuario.show', ['usuario' => $usuario->id]) }}" class="btn btn btn-primary btn-sm" title="Visualizar Usuário">
                                                                 <i class="fa-solid fa-eye btn-icon-append"></i>
                                                             </a>
-                                                            <a href="{{ route('empresas.usuario.edit', ['usuario' => $usuario->id]) }}" class="btn btn btn-primary btn-sm" title="Editar Usuário">
-                                                                <i class="fa-solid fa-edit btn-icon-append"></i>
-                                                            </a>
                                                         </div>
                                                     </td>
 

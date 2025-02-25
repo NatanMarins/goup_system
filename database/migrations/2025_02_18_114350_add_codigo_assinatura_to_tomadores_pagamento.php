@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tarefas', function (Blueprint $table) {
-            $table->id();
-            $table->string('titulo'); // Título da tarefa
-            $table->text('descricao')->nullable(); // Descrição da tarefa
-            $table->date('data'); // Data específica da tarefa
-            $table->timestamps();
+        Schema::table('tomadores_pagamento', function (Blueprint $table) {
+            $table->string('codigo_assinatura')->nullable()->after('description');
         });
     }
 
@@ -25,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tarefas');
+        Schema::table('tomadores_pagamento', function (Blueprint $table) {
+            $table->dropColumn('codigo_assinatura');
+        });
     }
 };

@@ -10,6 +10,7 @@ use App\Models\Socio;
 use App\Models\TomadoresAbertura;
 use App\Models\TomadoresPagamento;
 use App\Models\TomadorServico;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,6 +22,13 @@ class TomadorServicoController extends Controller
 {
     public function index(Request $request)
     {
+        $assinaturas = TomadoresPagamento::whereNotNull('codigo_assinatura')->pluck('codigo_assinatura');
+
+        $assinaturasDetalhadas = [];
+        foreach ($assinaturas as $codigo) {
+            $assinaturasDetalhadas[] = $this->getSubscriptionById($codigo);
+        }
+
         // Inicia a query base
         $query = TomadorServico::query();
 
@@ -46,6 +54,37 @@ class TomadorServicoController extends Controller
 
         // Retorna a view com os dados e os filtros ativos
         return view('empresas.tomador.index', compact('clientes', 'request'));
+    }
+
+    private function getSubscriptionById($id)
+    {
+        $client = new Client();
+
+        try {
+            $response = $client->request('GET', "https://api-sandbox.asaas.com/v3/subscriptions/{$id}", [
+                'headers' => [
+                    'Accept' => 'application/json',
+                    'access_token' => env('ASAAS_ACCESS_TOKEN'), // Pegando do .env
+                ],
+            ]);
+
+            return json_decode($response->getBody()->getContents(), true);
+        } catch (\GuzzleHttp\Exception\ClientException $e) {
+            return ['error' => 'Erro na API: ' . $e->getResponse()->getBody()->getContents()];
+        } catch (\Exception $e) {
+            return ['error' => 'Erro inesperado: ' . $e->getMessage()];
+        }
+    }
+
+    public function pdfDados($tomadorservico)
+    {
+        $tomador = TomadorServico::with('socios')->findOrFail($tomadorservico);
+
+        $socios = $tomador->socios;
+
+        $pdf = Pdf::loadView('empresas.tomador.pdfDados', compact('tomador', 'socios'));
+
+        return $pdf->download('pdfDados.pdf');
     }
 
     public function show($tomadorservico)
@@ -362,9 +401,12 @@ class TomadorServicoController extends Controller
             ['empresa_id' => 1, 'password' => Hash::make('123456a', ['rounds' => 12]), 'condicao' => 'abertura de empresa']
         ));
 
-        // Recuperando os dados do cupom adicionado
-        $cupom = cupom::where('codigo', $request->cupom)->first();
-        $cupom_percentual = $cupom->percentual;
+        if ($request->cupom) {
+            // Recuperando os dados do cupom adicionado
+            $cupom = cupom::where('codigo', $request->cupom)->first();
+            $cupom_percentual = $cupom->percentual;
+        }
+
 
         // Recuperando os dados da assinatura
         $assinaturas = Assinatura::all();
@@ -444,7 +486,7 @@ class TomadorServicoController extends Controller
 
 
         // Cadastrar informações na tabela tomadores_pagamento
-        TomadoresPagamento::create([
+        $tomadorPagamento = TomadoresPagamento::create([
             'tomador_servico_id' => $tomador->id,
             'billingType' => $request->billingType,
             'value' => $valor,
@@ -473,7 +515,7 @@ class TomadorServicoController extends Controller
         $description = $descricao; // Descrição do plano
 
         // Chama a função para criar a assinatura
-        $subscriptionResponse = $this->createSubscription($billingType, $cycle, $customerId, $value, $nextDueDate, $description);
+        $subscriptionResponse = $this->createSubscription($billingType, $cycle, $customerId, $value, $nextDueDate, $description, $tomadorPagamento);
 
         if (isset($subscriptionResponse['error'])) {
             return redirect()->back()->with('error', 'Erro ao criar a assinatura: ' . $subscriptionResponse['error']);
@@ -650,9 +692,11 @@ class TomadorServicoController extends Controller
             ['empresa_id' => 1, 'password' => Hash::make('123456a', ['rounds' => 12])]
         ));
 
-        // Recuperando os dados do cupom adicionado
-        $cupom = cupom::where('codigo', $request->cupom)->first();
-        $cupom_percentual = $cupom->percentual;
+        if ($request->cupom) {
+            // Recuperando os dados do cupom adicionado
+            $cupom = cupom::where('codigo', $request->cupom)->first();
+            $cupom_percentual = $cupom->percentual;
+        }
 
         // Recuperando os dados da assinatura
         $assinaturas = Assinatura::all();
@@ -730,7 +774,7 @@ class TomadorServicoController extends Controller
             }
         }
 
-        TomadoresPagamento::create([
+        $tomadorPagamento = TomadoresPagamento::create([
             'tomador_servico_id' => $tomador->id,
             'billingType' => $request->billingType,
             'value' => $valor,
@@ -761,7 +805,7 @@ class TomadorServicoController extends Controller
         $description = $descricao; // Descrição do plano
 
         // Chama a função para criar a assinatura
-        $subscriptionResponse = $this->createSubscription($billingType, $cycle, $customerId, $value, $nextDueDate, $description);
+        $subscriptionResponse = $this->createSubscription($billingType, $cycle, $customerId, $value, $nextDueDate, $description, $tomadorPagamento);
 
         if (isset($subscriptionResponse['error'])) {
             return redirect()->back()->with('error', 'Erro ao criar a assinatura: ' . $subscriptionResponse['error']);
@@ -853,7 +897,7 @@ class TomadorServicoController extends Controller
         }
     }
 
-    private function createSubscription($billingType, $cycle, $customerId, $value, $nextDueDate, $description)
+    private function createSubscription($billingType, $cycle, $customerId, $value, $nextDueDate, $description, $tomadorPagamento)
     {
         $client = new Client();
 
@@ -874,7 +918,21 @@ class TomadorServicoController extends Controller
                 ],
             ]);
 
-            return json_decode($response->getBody(), true); // Retorna o JSON como array associativo
+            $responseBody = json_decode($response->getBody()->getContents(), true);
+
+            // Verifica se a API retornou uma assinatura válida
+            if (isset($responseBody['id'])) {
+                $assinaturaId = $responseBody['id']; // ID correto da assinatura
+
+                // Salva o ID na tabela tomadores_pagamento
+                $tomadorPagamento->codigo_assinatura = $assinaturaId;
+                $tomadorPagamento->save();
+
+                return json_decode($response->getBody(), true); // Retorna o JSON como array associativo
+
+            } else {
+                return response()->json(['status' => 'error', 'message' => 'Assinatura não encontrada.'], 404);
+            }
         } catch (\Exception $e) {
             // Trate possíveis erros
             return ['error' => $e->getMessage()];

@@ -169,10 +169,11 @@
                     </li>
                     <!-- perfil -->
 
+
                     <!-- perfil empresa-->
                     <li class="nav-item dropdown me-0">
                         <a class="nav-link count-indicator dropdown-toggle d-flex align-items-center justify-content-center"
-                            title="Perfil da Empresa" id="notificationDropdown"
+                            title="Perfil {{ Auth::user()->empresa->nome }}" id="notificationDropdown"
                             href="{{ route('empresas.empresa_profile.show') }}">
                             <i class="fa-regular 	fas fa-city mx-0" style="color: #00464D;"></i>
                         </a>

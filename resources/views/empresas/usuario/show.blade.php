@@ -1,29 +1,26 @@
 @extends('empresas.layout.admin')
 
 @section('content')
+
     <x-alert />
 
-
-<!-- Cabeçalho -->
- <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2">
-    <div>
-        <h4><strong>Usuário</strong> <br /><small>{{ $empresa->nome }}</small></h4>
-    </div>
-    <!-- botao -->
-    <div class="ms-md-auto py-2 py-md-0">
-        <div class="btn-group" role="group" aria-label="Basic example">
-            <a href="{{ route('empresas.usuario.create') }}" class="btn btn-primary btn-sm" title="Cadastrar Usuário">
-                <i class="fa-solid fas fa-user-plus"></i>
-            </a>
-            <a href="{{ route('empresas.usuario.index') }}" class="btn btn-primary btn-sm" title="Listar Usuários">
-                <i class="fa-solid fa-list"></i>
-            </a>
+    <!-- Cabeçalho -->
+    <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2">
+        <!-- botao -->
+        <div class="ms-md-auto py-2 py-md-0">
+            <div class="btn-group" role="group" aria-label="Basic example">
+                <a href="{{ route('empresas.usuario.create') }}" class="btn btn-primary btn-sm" title="Cadastrar Usuário">
+                    <i class="fa-solid fas fa-user-plus"></i>
+                </a>
+                <a href="{{ route('empresas.usuario.index') }}" class="btn btn-primary btn-sm" title="Listar Usuários">
+                    <i class="fa-solid fa-list"></i>
+                </a>
+            </div>
         </div>
+        <!-- botao -->
     </div>
-    <!-- botao -->
-</div>
-<!-- Cabeçalho -->
-     
+    <!-- Cabeçalho -->
+
 
     <div class="container mt-2">
         <div class="row">
@@ -79,8 +76,8 @@
                                         method="POST">
                                         @csrf
                                         @method('delete')
-                                        <button type="submit" class="btn btn-primary btn-sm" title="Excluir Produto"
-                                            onclick="return confirm('Deseja excluir o item permanentemente?')"><i
+                                        <button type="submit" class="btn btn-primary btn-sm" title="Excluir Usuário"
+                                            onclick="return confirm('Deseja excluir usuário permanentemente?')"><i
                                                 class="fa-solid fa-trash"></i></button>
                                     </form>
                                 </div>
@@ -92,9 +89,27 @@
                         <form>
                             <div class="row">
                                 <div class="form-group col-md-12">
-                                    <label>Nome</label>
-                                    <input type="text" class="form-control" id="name"
-                                        value="{{ $user->name }}"readonly>
+                                    <label>Nome Completo</label>
+                                    <input type="text" class="form-control" id="nome_completo"
+                                        value="{{ $user->nome_completo }}"readonly>
+                                </div>
+
+                                <div class="form-group col-md-12">
+                                    <label>CPF</label>
+                                    <input type="text" class="form-control" id="cpf"
+                                        value="{{ $user->cpf }}"readonly>
+                                </div>
+
+                                <div class="form-group col-md-12">
+                                    <label>Data Nascimento</label>
+                                    <input type="text" class="form-control" id="data_nascimento" value="{{ $dataFormatada }}"
+                                        readonly>
+                                </div>
+
+                                <div class="form-group col-md-12">
+                                    <label>Cardo</label>
+                                    <input type="text" class="form-control" id="cargo" value="{{ $user->cargo }}"
+                                        readonly>
                                 </div>
 
                                 <div class="form-group col-md-12">
@@ -102,25 +117,14 @@
                                     <input type="email" class="form-control" id="email" value="{{ $user->email }}"
                                         readonly>
                                 </div>
-                            </div>
-                        </form>
 
-                        <div class="row pt-4">
-                            <div class="col-md-12">
-                                <div class="text-center">
-                                    <div class="d-flex gap-3">
-                                        <a href="{{ route('empresas.usuario.edit', ['usuario' => $user->id]) }}" class="btn btn-primary btn-sm">
-                                            <i class="fa-solid fas fa-user-edit btn-icon-append"></i> Editar Perfil
-                                        </a>
-                
-                                        <a href="{{ route('empresas.usuario.edit-password', ['usuario' => $user->id]) }}" class="btn btn-primary btn-sm">
-                                            <i class="fa-solid fas fa-edit btn-icon-append"></i> Alterar Senha
-                                        </a>
-                                    </div>
+                                <div class="form-group col-md-12">
+                                    <label>Telefone</label>
+                                    <input type="email" class="form-control" id="telefone" value="{{ $user->telefone }}"
+                                        readonly>
                                 </div>
                             </div>
-                        </div>
-                       
+                        </form>
                     </div>
                 </div>
             </div>
