@@ -241,6 +241,21 @@
                     </li>
 
                     <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="collapse" href="#auth" aria-expanded="false"
+                            aria-controls="auth">
+                            <i class="fa-regular fas fa-dollar-sign espaco menu-icon" style="color:#01c592;"></i>
+                            <span class="menu-title">Contabilidade</span>
+                        </a>
+                        <div class="collapse" id="auth">
+                            <ul class="nav flex-column sub-menu">
+                                <li class="nav-item"> <a class="nav-link"
+                                        href="{{ route('tomadores.contabilidade.uploadCsv') }}">
+                                        Enviar CSV </a></li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
                         <a class="nav-link" href="{{ route('tomadores.clientes.index') }}">
                             <i class="fa-solid fa-users espaco menu-icon" style="color:#01c592;"></i>
                             <span class="menu-title">Clientes</span>

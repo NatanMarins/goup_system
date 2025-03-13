@@ -15,8 +15,6 @@ class LoginController extends Controller
         return view('login.index');
     }
 
-
-
     public function loginProcess(LoginRequest $request)
     {
 
@@ -44,7 +42,6 @@ class LoginController extends Controller
         // Se ambas as tentativas falharem, redireciona de volta com erro
         return redirect()->back()->withInput($request->only('email', 'remember'))
             ->withErrors(['email' => 'As credenciais fornecidas não correspondem aos nossos registros.']);
-
     }
 
     public function destroy(Request $request)
@@ -56,12 +53,31 @@ class LoginController extends Controller
             Auth::guard('holding')->logout();
         } elseif (Auth::guard('tomador')->check()) {
             Auth::guard('tomador')->logout();
-        } 
+        }
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect(url('/').'/')->with('success', 'Deslogado com sucesso!');
+        return redirect(url('/') . '/')->with('success', 'Deslogado com sucesso!');
     }
 
+
+    public function showAdminLogin()
+    {
+        return view('empresas.admin.login');
+    }
+
+    public function adminLogin(Request $request)
+    {
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|min:6',
+        ]);
+
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password, 'is_admin' => true])) {
+            return redirect()->route('empresas.admin.dashboard');
+        }
+
+        return back()->withErrors(['error' => 'Credenciais inválidas ou sem permissão!']);
+    }
 }

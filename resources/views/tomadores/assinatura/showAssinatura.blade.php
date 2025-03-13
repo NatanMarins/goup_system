@@ -40,8 +40,9 @@
                     </ul>
                 @endif
 
-                <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#detalhesModal">Ver Mais
-                    Detalhes</button>
+                <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#detalhesModal">
+                    Pagamentos
+                </button>
             </div>
         </div>
     </div>

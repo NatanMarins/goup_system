@@ -15,14 +15,10 @@ return new class extends Migration
             $table->id(); // Chave primária
             $table->string('path'); // Caminho do documento
             $table->string('descricao')->nullable(); // Descrição do documento
-            $table->unsignedBigInteger('tomador_servico_id'); // Chave estrangeira
+            $table->unsignedBigInteger('tomador_servico_id')->nullable();
             $table->timestamps(); // Colunas created_at e updated_at
 
-            // Relacionamento com a tabela tomadores_servico
-            $table->foreign('tomador_servico_id')
-                  ->references('id')
-                  ->on('tomadores_servicos')
-                  ->onDelete('cascade'); // Exclui os documentos se o tomador for excluído
+            $table->foreign('tomador_servico_id')->references('id')->on('tomadores_servicos')->onDelete('set null');
         });
     }
 

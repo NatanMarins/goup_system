@@ -35,6 +35,20 @@ class AssinaturaSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            [
+                'planos' => 'MEI',
+                'valor_mensal' => 19.99,
+                'valor_anual' => 150.00,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'planos' => 'E-Social',
+                'valor_mensal' => 19.99,
+                'valor_anual' => 150.00,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
         ]);
     }
 }

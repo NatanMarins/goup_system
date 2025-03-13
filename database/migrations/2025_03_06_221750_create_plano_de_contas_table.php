@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('balancetes', function (Blueprint $table) {
+        Schema::create('plano_de_contas', function (Blueprint $table) {
             $table->id();
-            $table->date('data_inicio');
-            $table->date('data_fim');
-            $table->decimal('saldo_inicial', 15, 2)->default(0);
-            $table->decimal('saldo_final', 15, 2)->default(0);
-            $table->foreignId('empresa_id')->constrained('empresas')->onDelete('cascade');
+            $table->string('classificacao', 50)->unique(); // Código da classificação (único)
+            $table->string('descricao', 255); // Descrição do plano de contas
             $table->timestamps();
         });
     }
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('balancetes');
+        Schema::dropIfExists('plano_de_contas');
     }
 };

@@ -89,15 +89,15 @@
                             @method('POST')
 
                             <div class="row">
-                                <div class="col-md-8 mb-2">
-                                    <label for="razao_social" class="form-label">Razão Social <small>*</small> </label>
-                                    <input type="text" class="form-control" id="razao_social" name="razao_social"
-                                        value="{{ old('razao_social') }}">
-                                </div>
                                 <div class="col-md-4 mb-2">
                                     <label for="cnpj" class="form-label">CNPJ <small>*</small> </label>
                                     <input type="text" class="form-control" id="cnpj" name="cnpj"
                                         value="{{ old('cnpj') }}" required>
+                                </div>
+                                <div class="col-md-8 mb-2">
+                                    <label for="razao_social" class="form-label">Razão Social <small>*</small> </label>
+                                    <input type="text" class="form-control" id="razao_social" name="razao_social"
+                                        value="{{ old('razao_social') }}">
                                 </div>
                             </div>
                             <div class="row">
@@ -327,6 +327,50 @@
             // Aplicar máscara aos campos
             $('#telefone').mask('(00) 00000-0000');
             $('#cep').mask('00000-000');
+        });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById("cnpj").addEventListener("blur", function() {
+                let cnpj = document.getElementById("cnpj").value.replace(/\D/g,
+                ""); // Remove caracteres não numéricos
+
+                if (cnpj.length === 14) {
+                    fetch(`https://api.cnpja.com/office/${cnpj}`, {
+                            method: "GET",
+                            headers: {
+                                "accept": "application/json",
+                                "Authorization": "981a9092-25e3-448f-bf96-cd740b644baf-e6b1d918-6e5d-4000-8b51-769771a0885c",
+                            }
+                        })
+
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.code === 401) {
+                                alert("Erro: Chave de API inválida!");
+                            } else if (data.code === 404) {
+                                alert("Erro: CNPJ não encontrado!");
+                            } else {
+                                document.getElementById("razao_social").value = data.company.name ?? '';
+                                document.getElementById("nome_fantasia").value = data.alias ?? '';
+                                document.getElementById("email").value = data.emails?.length > 0 ? data
+                                    .emails[0].address : '';
+                                document.getElementById("telefone").value = data.phones?.length > 0 ?
+                                    `(${data.phones[0].area}) ${data.phones[0].number}` : '';
+                                document.getElementById("cep").value = data.address.zip ?? '';
+                                document.getElementById("estado").value = data.address.state ?? '';
+                                document.getElementById("cidade").value = data.address.city ?? '';
+                                document.getElementById("bairro").value = data.address.district ?? '';
+                                document.getElementById("logradouro").value = data.address.street ?? '';
+                            }
+                        })
+                        .catch(error => {
+                            console.error("Erro ao consultar CNPJ:", error);
+                            alert("Erro ao buscar dados do CNPJ.");
+                        });
+                }
+            });
         });
     </script>
 @endsection

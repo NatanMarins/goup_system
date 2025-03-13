@@ -27,6 +27,10 @@
 
 </head>
 <style>
+    body {
+        background: #1e1e1f;
+    }
+
     .user-row {
         padding: 10px;
         margin-bottom: 10px;
@@ -61,7 +65,7 @@
     <div class="container-scroller">
         <!-- partial:partials/_navbar.html -->
         <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
-            <div class="navbar-brand-wrapper d-flex justify-content-center" style="background:#00464D;">
+            <div class="navbar-brand-wrapper d-flex justify-content-center" style="background:#1e1f1f;">
                 <div class="navbar-brand-inner-wrapper d-flex justify-content-between align-items-center w-100">
                     <a class="navbar-brand brand-logo" href="{{ route('empresas.dashboard.dashboard') }}"><img
                             src="{{ asset('https://www.dinerb.com.br/goup/wp-content/uploads/2024/12/2-1.png') }}"
@@ -75,11 +79,9 @@
                     </button>
                 </div>
             </div>
-            <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end" style="background: #F0F1F5;">
-
+            <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end" style="background: #4b4b4d;">
                 <ul class="navbar-nav me-lg-2">
                     <li class="nav-item nav-profile dropdown pt-2">
-
                         <!-- Usuário  -->
                         <div class="user-row">
                             <div class="user-info">
@@ -88,10 +90,10 @@
                                         alt="Avatar" class="user-avatar">
                                 @endif
                                 <div class="user-details  pt-2">
-                                    <strong>{{ auth()->user()->name }}</strong>
+                                    <strong style="color: #ffffff">{{ auth()->user()->name }}</strong>
                                     <div class="user-last-login">
                                         @if (Auth::user()->last_login_at)
-                                            <p>Último login: {{ Auth::user()->last_login_at->diffForHumans() }}</p>
+                                            <p style="color: #ffffff">Último login: {{ Auth::user()->last_login_at->diffForHumans() }}</p>
                                         @else
                                             <p class="texto">Você ainda não fez login anteriormente.</p>
                                         @endif
@@ -100,105 +102,26 @@
                             </div>
                         </div>
                         <!-- Usuário  -->
-
                     </li>
-
                 </ul>
                 <ul class="navbar-nav navbar-nav-right">
                     <!-- data-->
                     <li class="nav-item nav-date dropdown">
-                        <a class="nav-link d-flex justify-content-center align-items-center" href="javascript:;">
-                            <h6 class="date mb-0">{{ now()->format('d/m/Y') }}</h6>
-                            <i class="typcn "></i> <i class="fa-regular fa-calendar-days" style="color: #00464D;"></i>
+                        <a class="nav-link d-flex justify-content-center align-items-center" href="#">
+                            <h6 class="date mb-0" style="color: #ffffff">{{ now()->format('d/m/Y') }}</h6>
+                            <i class="typcn "></i> <i class="fa-regular fa-calendar-days" style="color: #ffffff;"></i>
                         </a>
                     </li>
                     <!-- data-->
-                    <!-- mensagens-->
-                    <!--
-                    <li class="nav-item dropdown">
-                        <a class="nav-link count-indicator dropdown-toggle d-flex justify-content-center align-items-center" title="Mensagens" id="messageDropdown" href="#" data-bs-toggle="dropdown">
-                            <i class="fa-regular fas fa-envelope-open mx-0" style="color: #00464D;"></i>
-                            <span class="count"></span>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list"  aria-labelledby="messageDropdown">
-                            <p class="mb-0 fw-normal float-start dropdown-header">Mensagens</p>
-                            <a class="dropdown-item preview-item">
-                                <div class="preview-thumbnail">
-                                    <img src="#" alt="nome da pessoa" class="profile-pic">
-                                </div>
-                                <div class="preview-item-content flex-grow">
-                                    <h6 class="preview-subject ellipsis fw-normal">David Grey </h6>
-                                    <p class="fw-light small-text text-muted mb-0">
-                                        The meeting is cancelled
-                                    </p>
-                                </div>
-                            </a>
-                        </div>
-                    </li>
-
-                    <li class="nav-item dropdown me-0">
-                        <a class="nav-link count-indicator dropdown-toggle d-flex align-items-center justify-content-center" title="Notificações"  id="notificationDropdown" href="#" data-bs-toggle="dropdown">
-                            <i class="fa-regular fas fa-bell mx-0" style="color: #00464D;"></i> <span class="count"></span>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
-                            <p class="mb-0 fw-normal float-start dropdown-header">Notificações</p>
-                            <a class="dropdown-item preview-item">
-                                <div class="preview-thumbnail">
-                                    <div class="preview-icon bg-success">
-                                        <i class="fa-solid fa-info" ></i>
-                                    </div>
-                                </div>
-                                <div class="preview-item-content">
-                                    <h6 class="preview-subject fw-normal">Application Error</h6>
-                                    <p class="fw-light small-text mb-0 text-muted">
-                                        Just now
-                                    </p>
-                                </div>
-                            </a>
-
-                        </div>
-                    </li>
-                    -->
-
-                    <!-- perfil -->
-                    <li class="nav-item dropdown me-0">
-                        <a class="nav-link count-indicator dropdown-toggle d-flex align-items-center justify-content-center"
-                            title="Perfil" id="notificationDropdown" href="{{ route('empresas.profile.show') }}">
-                            <i class="fa-regular fas fa-user-cog mx-0" style="color: #00464D;"></i>
-                        </a>
-                    </li>
-                    <!-- perfil -->
-
-
-                    <!-- perfil empresa-->
-                    <li class="nav-item dropdown me-0">
-                        <a class="nav-link count-indicator dropdown-toggle d-flex align-items-center justify-content-center"
-                            title="Perfil {{ Auth::user()->empresa->nome }}" id="notificationDropdown"
-                            href="{{ route('empresas.empresa_profile.show') }}">
-                            <i class="fa-regular 	fas fa-city mx-0" style="color: #00464D;"></i>
-                        </a>
-                    </li>
-                    <!-- perfil empresa -->
-
-                    <!-- Área Administrativa-->
-                    <li class="nav-item dropdown me-0">
-                        <a class="nav-link count-indicator dropdown-toggle d-flex align-items-center justify-content-center"
-                            title="Área Administrativa" id="notificationDropdown"
-                            href="{{ route('empresas.admin.login') }}">
-                            <i class="fa-solid fa-lock mx-0" style="color: #00464D;"></i>
-                        </a>
-                    </li>
-                    <!-- Área Administrativa -->
 
                     <!-- Sair-->
                     <li class="nav-item dropdown me-0">
                         <a class="nav-link count-indicator dropdown-toggle d-flex align-items-center justify-content-center"
-                            title="Sair do Sistema" id="notificationDropdown" href="{{ route('login.destroy') }}">
-                            <i class="fa-regular fas fa-sign-out-alt mx-0" style="color: #00464D;"></i>
+                            title="Sair do Sistema" id="notificationDropdown" href="{{ route('empresas.admin.logout') }}">
+                            <i class="fa-regular fas fa-sign-out-alt mx-0" style="color: #ffffff;"></i>
                         </a>
                     </li>
                     <!-- Sair -->
-
                 </ul>
                 <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button"
                     data-toggle="offcanvas">
@@ -206,59 +129,11 @@
                 </button>
             </div>
         </nav>
-        <!-- partial -->
-        <nav class="navbar-breadcrumb col-xl-12 col-12 d-flex flex-row p-0" style="background: #01c592;">
-            <div class="navbar-links-wrapper d-flex align-items-stretch">
-                <div class="nav-link">
-                    <a href="{{ route('empresas.tarefa.index') }}" title="Agenda"><i
-                            class="fa-regular fa-calendar-days mx-0"></i></a>
-                </div>
-                <div class="nav-link">
-                    <a href="javascript:;"><i class="fa-regular fa-envelope-days mx-0"></i></a>
-                </div>
-                <div class="nav-link">
-                    <a href="javascript:;"><i class="fa-regular fa-folder mx-0"></i></a>
-                </div>
-                <div class="nav-link">
-                    <a href="javascript:;"><i class="fa-regular fa-document mx-0"></i></a>
-                </div>
-            </div>
-            <div class="navbar-menu-wrapper d-flex align-items-center justify-content-left">
-                <ul class="navbar-nav me-lg-2">
-                    <li class="nav-item ms-0">
-                        <h4 class="mb-0">GO UP Contabilidade Online</h4>
-                    </li>
-                    <!--
-                    <li class="nav-item">
-                        <div class="d-flex align-items-baseline">
-                            <p class="mb-0">Home</p>
-                            &nbsp;<small><i class="fa-solid fa-arrow-right"></i></small> &nbsp;
-                            <p class="mb-0"> Dahboard</p>
-                        </div>
-                    </li> -->
-                </ul>
-                <!--
-                <ul class="navbar-nav navbar-nav-right">
-                    <li class="nav-item nav-search d-none d-md-block me-0">
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Buscar..." aria-label="search"
-                                aria-describedby="search">
-                            <div class="input-group-prepend d-flex">
-                                <span class="input-group-text" id="search">
-                                    <i class="fa-solid fa-magnifying-glass"></i>
-                                </span>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
-                -->
-            </div>
-        </nav>
 
-        <div class="container-fluid page-body-wrapper">
+        <div class="container-fluid page-body-wrapper" >
 
             <!-- partial:../../partials/_sidebar.html -->
-            <nav class="sidebar sidebar-offcanvas" id="sidebar">
+            <nav class="sidebar sidebar-offcanvas" id="sidebar" >
                 <ul class="nav">
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('empresas.dashboard.dashboard') }}">

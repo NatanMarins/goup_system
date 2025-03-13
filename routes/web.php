@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AssinaturaController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\CupomController;
@@ -14,6 +15,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SocioController;
 use App\Http\Controllers\TarefaController;
+use App\Http\Controllers\TomadorContabilidadeController;
 use App\Http\Controllers\TomadorPerfilController;
 use App\Http\Controllers\TomadorServicoController;
 use App\Http\Controllers\UsuarioController;
@@ -24,12 +26,16 @@ use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 // Rotas Públicas
 
 // Contratação plano para tomadores
-Route::get('/tomadores/planos-contratacao', [TomadorServicoController::class, 'planosInicial'])->name('tomadores.planos.planosInicial');
+Route::get('/tomadores/planos-contratacao', [TomadorServicoController::class, 'planosInicial'])->name('tomadores.planos.planosInicial'); //apagar
 Route::get('/tomadores/contratacao', [TomadorServicoController::class, 'contratacaoInicial'])->name('tomadores.planos.contratacaoInicial');
 Route::get('/tomadores/contratacao-abertura', [TomadorServicoController::class, 'aberturaEmpresa'])->name('tomadores.planos.aberturaEmpresa');
 Route::post('/tomadores/contratacao-abertura-store', [TomadorServicoController::class, 'storeAbertura'])->name('tomadores.planos.storeAbertura');
 Route::get('/tomadores/contratacao-troca-contador', [TomadorServicoController::class, 'trocaContador'])->name('tomadores.planos.trocaContador');
 Route::post('/tomadores/contratacao-troca-store', [TomadorServicoController::class, 'storeTroca'])->name('tomadores.planos.storeTroca');
+Route::get('/tomadores/contratacao-MEI', [TomadorServicoController::class, 'regularizaMei'])->name('tomadores.planos.regularizaMei');
+Route::post('/tomadores/contratacao-MEI-store', [TomadorServicoController::class, 'storeMei'])->name('tomadores.planos.storeMei');
+Route::get('/tomadores/contratacao-eSocial', [TomadorServicoController::class, 'regularizaEsocial'])->name('tomadores.planos.regularizaEsocial');
+Route::post('/tomadores/contratacao-eSocial-store', [TomadorServicoController::class, 'storeEsocial'])->name('tomadores.planos.storeEsocial');
 Route::get('/tomadores/boas-vindas', [TomadorServicoController::class, 'welcomeVideo'])->name('tomadores.planos.welcomeVideo');
 
 
@@ -104,6 +110,16 @@ Route::group(['middleware' => 'auth:web,holding,tomador'], function () {
 
     // Rotas para as Empresas
 
+    //Login admin
+    Route::get('/empresas/admin-login', [LoginController::class, 'showAdminLogin'])->name('empresas.admin.login');
+    Route::post('/empresas/admin-login', [LoginController::class, 'adminLogin'])->name('empresas.admin.loginProcess');
+    Route::get('/empresas/admin-logout', [AdminController::class, 'adminLogout'])->name('empresas.admin.logout');
+
+    // Rotas admin (Protegidas)
+    Route::middleware(['auth', 'admin'])->group(function () {
+        Route::get('/empresas/index-admin', [AdminController::class, 'index'])->name('empresas.admin.dashboard');
+    });
+
     // Dashboard
     Route::get('/empresas/dashboard', [DashboardController::class, 'empresaDashboard'])->name('empresas.dashboard.dashboard');
 
@@ -158,11 +174,14 @@ Route::group(['middleware' => 'auth:web,holding,tomador'], function () {
     Route::get('/empresas/cupons', [CupomController::class, 'indexCupom'])->name('empresas.assinatura.cupom');
     Route::post('/empresas/cupoms-store', [CupomController::class, 'storeCupom'])->name('empresas.assinatura.storeCupom');
     Route::delete('/empresas/cupons-delete/{cupom}', [CupomController::class, 'deleteCupom'])->name('empresas.assinatura.deleteCupom');
-    
+
     // Guias e Impostos
     Route::get('/empresas/guias_impostos_create/{tomadorservico}', [GuiaImpostoController::class, 'create'])->name('empresas.impostos.create');
 
-
+    // Contabilidade
+    Route::get('/empresas/balancete/{tomadorservico}', [TomadorContabilidadeController::class, 'balancete'])->name('empresas.contabilidade.balancete');
+    Route::post('/empresa/gerar-balancete/{tomadorservico}', [TomadorContabilidadeController::class, 'gerarBalancete'])->name('empresas.contabilidade.gerarBalancete');
+    Route::get('/empresa/balancete/{tomadorservico}/pdf/{mes}/{ano}', [TomadorContabilidadeController::class, 'downloadPdf'])->name('empresas.contabilidade.balancetePdf');
 
     // Rotas para os Tomadores de Serviço
 
@@ -185,10 +204,10 @@ Route::group(['middleware' => 'auth:web,holding,tomador'], function () {
 
     // Assinatura
     Route::get('/tomadores/minhaAssinatura', [AssinaturaController::class, 'showAssinatura'])->name('tomadores.assinatura.showAssinatura');
-    
+
     // Planos
     Route::get('/tomadores/planos', [TomadorServicoController::class, 'planos'])->name('tomadores.planos.index');
-    
+
     // Perfil
     Route::get('/tomadores/show-profile', [TomadorPerfilController::class, 'showTomador'])->name('tomadores.profile.show');
     Route::put('tomadores/update-password', [TomadorPerfilController::class, 'updatePassword'])->name('tomadores.profile.update-password');
@@ -206,4 +225,7 @@ Route::group(['middleware' => 'auth:web,holding,tomador'], function () {
     Route::get('/tomadores/agenda', [TarefaController::class, 'indexTomador'])->name('tomadores.tarefas.index');
     Route::get('tomadores/tarefa/show/{data}', [TarefaController::class, 'showTomador'])->name('tomadores.tarefa.show');
 
+    // Contabilidade
+    Route::get('tomadores/upload-csv', [TomadorContabilidadeController::class, 'uploadCsv'])->name('tomadores.contabilidade.uploadCsv');
+    Route::post('tomadores/processar-csv', [TomadorContabilidadeController::class, 'processarCsv'])->name('tomadores.contabilidade.processarCsv');
 });

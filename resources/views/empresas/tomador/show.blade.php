@@ -36,6 +36,9 @@
         <!-- botao -->
         <div class="ms-md-auto py-2 py-md-0">
             <div class="btn-group" role="group" aria-label="Basic example">
+                <a href="{{ route('empresas.contabilidade.balancete', ['tomadorservico' => $tomador->id]) }}" class="btn btn-primary btn-sm" title="Gerar Balancete">
+                    <i class="fa-solid fas fa-dollar-sign btn-icon-append"></i>
+                </a>
                 <a href="{{ route('empresas.impostos.create', ['tomadorservico' => $tomador->id]) }}" class="btn btn-primary btn-sm" title="Guias e Impostos">
                     <i class="fa-solid fas fa-dollar-sign btn-icon-append"></i>
                 </a>

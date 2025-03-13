@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('tomadores_servicos', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('empresa_id');
-            $table->string('nome_fantasia');
+            $table->string('nome_fantasia')->nullable();
             $table->string('razao_social')->nullable();
             $table->string('cnpj')->nullable();
             $table->string('email')->nullable();;

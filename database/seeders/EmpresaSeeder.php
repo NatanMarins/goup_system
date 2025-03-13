@@ -84,8 +84,8 @@ class EmpresaSeeder extends Seeder
                 // Cadastrando 10 usuários para cada empresa
                 for ($l = 1; $l <= 1; $l++) {
                     User::create([
-                        'name' => 'Teste GoUp',
-                        'email' => 'goup@teste.com.br',
+                        'name' => 'Natan Barbosa',
+                        'email' => 'natan@barbosa.com.br',
                         'password' => Hash::make('123456a', ['rounds' => 12]),
                         'empresa_id' => $empresa->id,
                         'nome_completo' => 'GoUp teste',
@@ -93,6 +93,7 @@ class EmpresaSeeder extends Seeder
                         'data_nascimento' => $faker->date,
                         'telefone' => $faker->phoneNumber,
                         'cargo' => 'CEO',
+                        'is_admin' => true
                     ]);
                 }
             }

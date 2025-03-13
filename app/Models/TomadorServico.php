@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
 
 class TomadorServico extends Authenticatable
@@ -26,6 +27,7 @@ class TomadorServico extends Authenticatable
     protected $fillable = [
         'empresa_id',
         'nome',
+        'sobrenome',
         'razao_social',
         'razao_social2',
         'razao_social3',
@@ -107,5 +109,10 @@ class TomadorServico extends Authenticatable
     public function guias()
     {
         return $this->hasMany(GuiaImposto::class);
+    }
+
+    public function contasContabeis(): HasMany
+    {
+        return $this->hasMany(ContasContabeis::class, 'tomador_id');
     }
 }
