@@ -17,8 +17,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Mockery\Generator\StringManipulation\Pass\Pass;
+use NFe_Company;
+use NFe_CompanyTest;
+use NFe_io;
 
 class TomadorServicoController extends Controller
 {
@@ -554,10 +558,15 @@ class TomadorServicoController extends Controller
         return view('tomadores.planos.trocaContador', compact('tomadorservico', 'empreendedorMensal', 'empreendedorAnual', 'visionarioMensal', 'visionarioAnual', 'liderMensal', 'liderAnual'));
     }
 
+    public function __construct()
+    {
+        NFe_io::setApiKey(env('NFE_API_KEY')); // Definir chave da API a partir do .env
+    }
+
     public function storeTroca(Request $request)
     {
         // Validação dos campos
-        $request->validate([
+        $validated = $request->validate([
             'razao_social' => 'required|string|max:255',
             'nome_fantasia' => 'required|string|max:255',
             'cnpj' => 'required|cnpj',
@@ -621,11 +630,11 @@ class TomadorServicoController extends Controller
         // Verifica se esses IDs existem na tabela 'cnae'
         $cnaesEncontrados = Cnae::whereIn('cnae', $cnaeIds)->pluck('cnae')->toArray();
 
-        return response()->json([
-            'cnaeIdsRecebidos' => $cnaeIds,
-            'cnaesEncontrados' => $cnaesEncontrados,
-            'cnaesNaoEncontrados' => array_diff($cnaeIds, $cnaesEncontrados)
-        ]);
+        //return response()->json([
+        //'cnaeIdsRecebidos' => $cnaeIds,
+        //'cnaesEncontrados' => $cnaesEncontrados,
+        //'cnaesNaoEncontrados' => array_diff($cnaeIds, $cnaesEncontrados)
+        //]);
 
         // Criar o tomador de serviço principal
         $tomador = TomadorServico::create(array_merge(
@@ -740,7 +749,11 @@ class TomadorServicoController extends Controller
             'cupom' => $request->cupom,
         ]);
 
+        $company = $this->createCompany($validated);
 
+        if ($company instanceof \Illuminate\Http\JsonResponse) {
+            return $company; // Retorna erro caso ocorra
+        }
 
         // Enviar os dados para a API do Asaas
         $asaasResponse = $this->createCustomer($request);
@@ -1324,4 +1337,59 @@ class TomadorServicoController extends Controller
             return ['error' => 'Erro ao consultar CNPJ: ' . $e->getMessage()];
         }
     }
+
+    private function getIbgeCityCode($city, $state)
+    {
+        $response = Http::get("https://servicodados.ibge.gov.br/api/v1/localidades/estados/{$state}/municipios");
+        //dd($response->json());
+
+        if ($response->successful()) {
+            $cities = $response->json();
+            foreach ($cities as $c) {
+                if (strtolower($c['nome']) == strtolower($city)) {
+                    return $c['id']; // Retorna o código IBGE da cidade
+                }
+            }
+        }
+
+        return null; // Retorna null se a cidade não for encontrada
+    }
+
+    private function createCompany(array $data)
+    {
+        $cityCode = $this->getIbgeCityCode($data['cidade'], $data['estado']);
+
+
+        if (!$cityCode) {
+            return response()->json(['error' => 'Cidade não encontrada no IBGE'], 404);
+        }
+
+        $companyData = [
+            'federalTaxNumber' => $data['cnpj'],
+            'name'             => $data['razao_social'],
+            'tradeName'        => $data['nome_fantasia'],
+            'email'            => $data['email'],
+            'address'          => [
+                'country'               => 'BRA',
+                'postalCode'            => $data['cep'],
+                'street'                => $data['logradouro'],
+                'number'                => $data['numero'],
+                'additionalInformation' => $data['complemento'] ?? '', // Caso não tenha complemento
+                'district'              => $data['bairro'],
+                'city' => [
+                    'code' => $cityCode, // Certifique-se de definir essa variável antes
+                    'name' => $data['cidade']
+                ],
+                'state' => $data['estado']
+            ]
+        ];
+
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . env('NFE_IO_API_KEY'),
+        ])->post('https://api.nfe.io/v1/companies', $companyData);
+
+        return response()->json($response->json(), $response->status());
+    }
+
+    
 }

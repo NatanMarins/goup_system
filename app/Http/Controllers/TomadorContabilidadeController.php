@@ -127,22 +127,21 @@ class TomadorContabilidadeController extends Controller
             ->where('tomador_id', $tomadorservico)
             ->get();
 
-        // Estrutura para armazenar os lançamentos com informações do plano de contas
+        // Carregar plano de contas em memória
+        $planoDeContas = \Illuminate\Support\Facades\Cache::remember('plano_de_contas', 3600, fn() => PlanoDeContas::all(['classificacao', 'descricao'])->toArray());
+
+        // Processar lançamentos e cruzar com plano de contas
         $lancamentosComPlano = [];
-
-        // Percorrer os lançamentos e relacionar com plano_de_contas
         foreach ($lancamentos as $lancamento) {
-
-            // Buscar correspondência em plano_de_contas
-            $plano = $this->encontrarPlanoDeContas($lancamento->historico);
+            $match = $this->cruzarComPlanoDeContas($lancamento->historico, $planoDeContas);
 
             $lancamentosComPlano[] = [
                 'data_lancamento' => $lancamento->data_lancamento,
                 'historico' => $lancamento->historico,
-                'descricao' => $lancamento->descricao,
+                'descricao_lancamento' => $lancamento->descricao,
                 'valor' => $lancamento->valor,
-                'classificacao' => $plano['classificacao'],
-                'descricao_plano' => $plano['descricao'],
+                'classificacao' => $match['classificacao'],
+                'descricao_plano' => $match['descricao'],
             ];
         }
 
@@ -167,32 +166,35 @@ class TomadorContabilidadeController extends Controller
         return view('empresas.contabilidade.balanceteResultado', compact('lancamentosComPlano', 'totalEntradas', 'totalSaidas', 'saldo', 'mes', 'ano', 'tomadorservico'));
     }
 
-    /**
-     * Regra de negócio para encontrar o plano de contas correspondente
-     */
-    private function encontrarPlanoDeContas($historico)
+    private function cruzarComPlanoDeContas($historico, $planoDeContas)
     {
-        // Busca exata
-        $plano = PlanoDeContas::where('descricao', $historico)->first();
+        $historico = strtolower(trim($historico));
+        $planoMap = array_column($planoDeContas, null, 'descricao'); // Indexar por descrição
 
-        if ($plano) {
+        if (str_contains($historico, 'recebid')) {
+            $key = 'RECEITA BRUTA COM VENDAS E SERVIÇOS';
+            if (isset($planoMap[$key])) {
+                return [
+                    'classificacao' => $planoMap[$key]['classificacao'],
+                    'descricao' => $planoMap[$key]['descricao'],
+                ];
+            }
             return [
-                'classificacao' => $plano->classificacao,
-                'descricao' => $plano->descricao,
+                'classificacao' => 'Receita',
+                'descricao' => 'RECEITA BRUTA COM VENDAS E SERVIÇOS',
             ];
         }
 
-        // Busca parcial (historico contido na descricao)
-        $plano = PlanoDeContas::where('descricao', 'LIKE', "%{$historico}%")->first();
-
-        if ($plano) {
-            return [
-                'classificacao' => $plano->classificacao,
-                'descricao' => $plano->descricao,
-            ];
+        foreach ($planoDeContas as $plano) {
+            $descricaoPlano = strtolower(trim($plano['descricao']));
+            if ($historico === $descricaoPlano || str_contains($descricaoPlano, $historico) || str_contains($historico, $descricaoPlano)) {
+                return [
+                    'classificacao' => $plano['classificacao'],
+                    'descricao' => $plano['descricao'],
+                ];
+            }
         }
 
-        // Valor padrão se não encontrar correspondência
         return [
             'classificacao' => 'Não classificado',
             'descricao' => 'Não classificado',
@@ -204,10 +206,12 @@ class TomadorContabilidadeController extends Controller
         // Verificar se os dados estão na sessão e correspondem aos parâmetros
         $balanceteData = session('balancete_data');
 
-        if (!$balanceteData || 
-            $balanceteData['tomadorservico'] != $tomadorservico || 
-            $balanceteData['mes'] != str_pad($mes, 2, '0', STR_PAD_LEFT) || 
-            $balanceteData['ano'] != $ano) {
+        if (
+            !$balanceteData ||
+            $balanceteData['tomadorservico'] != $tomadorservico ||
+            $balanceteData['mes'] != str_pad($mes, 2, '0', STR_PAD_LEFT) ||
+            $balanceteData['ano'] != $ano
+        ) {
             // Se os dados não estão na sessão ou não correspondem, redirecionar ou gerar novamente (fallback)
             return redirect()->route('empresas.contabilidade.balancete', $tomadorservico)
                 ->with('error', 'Dados do balancete não encontrados. Gere o balancete novamente.');

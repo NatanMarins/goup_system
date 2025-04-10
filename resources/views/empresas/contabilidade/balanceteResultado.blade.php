@@ -20,7 +20,7 @@
                     <tr>
                         <td>{{ \Carbon\Carbon::parse($lancamento['data_lancamento'])->format('d/m/Y') }}</td>
                         <td>{{ $lancamento['historico'] }}</td>
-                        <td>{{ $lancamento['descricao'] }}</td>
+                        <td>{{ $lancamento['descricao_lancamento'] }}</td>
                         <td>{{ $lancamento['classificacao'] }}</td>
                         <td>{{ $lancamento['descricao_plano'] }}</td>
                         <td>{{ number_format($lancamento['valor'], 2, ',', '.') }}</td>
