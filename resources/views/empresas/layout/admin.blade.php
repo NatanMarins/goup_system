@@ -175,10 +175,20 @@
                         <a class="nav-link count-indicator dropdown-toggle d-flex align-items-center justify-content-center"
                             title="Perfil {{ Auth::user()->empresa->nome }}" id="notificationDropdown"
                             href="{{ route('empresas.empresa_profile.show') }}">
-                            <i class="fa-regular 	fas fa-city mx-0" style="color: #00464D;"></i>
+                            <i class="fa-regular fas fa-city mx-0" style="color: #00464D;"></i>
                         </a>
                     </li>
                     <!-- perfil empresa -->
+
+                    <!-- calendário -->
+                    <li class="nav-item dropdown me-0">
+                        <a class="nav-link count-indicator dropdown-toggle d-flex align-items-center justify-content-center"
+                            title="Caledário" id="notificationDropdown"
+                            href="{{ route('empresas.tarefa.index') }}">
+                            <i class="fa-regular fa-calendar-days mx-0" style="color: #00464D;"></i>
+                        </a>
+                    </li>
+                    <!-- calendário -->
 
                     <!-- Área Administrativa-->
                     <li class="nav-item dropdown me-0">
@@ -223,6 +233,7 @@
                     <a href="javascript:;"><i class="fa-regular fa-document mx-0"></i></a>
                 </div>
             </div>
+            
             <div class="navbar-menu-wrapper d-flex align-items-center justify-content-left">
                 <ul class="navbar-nav me-lg-2">
                     <li class="nav-item ms-0">

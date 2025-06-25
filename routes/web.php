@@ -148,7 +148,10 @@ Route::group(['middleware' => 'auth:web,holding,tomador'], function () {
     // Agenda
     Route::get('/empresas/agenda', [TarefaController::class, 'index'])->name('empresas.tarefa.index');
     Route::get('/empresas/agenda/create/{data}', [TarefaController::class, 'create'])->name('empresas.tarefa.create');
-    Route::post('/empresas/agenda/tarefa', [TarefaController::class, 'store'])->name('empresas.tarefa.store');
+    Route::post('/empresas/agenda/store', [TarefaController::class, 'store'])->name('empresas.tarefa.store');
+    Route::get('/empresas/agenda/edit/{tarefa}', [TarefaController::class, 'edit'])->name('empresas.tarefa.edit');
+    Route::put('/empresas/agenda/update/{tarefa}', [TarefaController::class, 'update'])->name('empresas.tarefa.update');
+    Route::delete('/empresas/agenda/destroy/{tarefa}', [TarefaController::class, 'destroy'])->name('empresas.tarefa.destroy');
     Route::get('/empresas/agenda/tarefas/{data}', [TarefaController::class, 'showTarefas'])->name('empresas.tarefa.show');
 
     // Tomador de serviço

@@ -3,86 +3,104 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tarefa;
-use Illuminate\Http\Request;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 
 class TarefaController extends Controller
 {
     public function index(Request $request)
     {
-        $mesSelecionado = $request->input('mes') ? Carbon::createFromFormat('Y-m', $request->input('mes')) : Carbon::now();
-        $mesAnterior = $mesSelecionado->copy()->subMonth();
-        $mesProximo = $mesSelecionado->copy()->addMonth();
+        $mesSelecionado = Carbon::now();
+        
+        if ($request->has('mes')) {
+            $mesSelecionado = Carbon::createFromFormat('Y-m', $request->mes);
+        }
 
-        // Obter todas as tarefas agrupadas por data, junto com a contagem de tarefas para cada dia no mês selecionado
-        $tarefasPorData = Tarefa::whereYear('data', $mesSelecionado->year)
-            ->whereMonth('data', $mesSelecionado->month)
-            ->select('data', DB::raw('count(*) as total'))
-            ->groupBy('data')
-            ->get()
-            ->pluck('total', 'data')
-            ->toArray();
+        $tarefas = Tarefa::whereMonth('data', $mesSelecionado->month)
+            ->whereYear('data', $mesSelecionado->year)
+            ->get();
 
-        // Renderizar a view completa (incluindo layout) com o calendário do mês selecionado
-        return view('empresas.tarefa.index', compact('mesSelecionado', 'mesAnterior', 'mesProximo', 'tarefasPorData'));
+        $tarefasPorData = [];
+        foreach ($tarefas as $tarefa) {
+            $data = Carbon::parse($tarefa->data)->format('Y-m-d');
+            $tarefasPorData[$data][] = [
+                'id' => $tarefa->id,
+                'titulo' => $tarefa->titulo,
+                'descricao' => $tarefa->descricao,
+            ];
+        }
+
+        return view('empresas.tarefa.index', compact('mesSelecionado', 'tarefasPorData'));
     }
 
     public function create($data)
     {
-        // Buscar todas as tarefas para um dia específico
-        $tarefas = Tarefa::where('data', $data)->get();
-
-        return view('empresas.tarefa.create', compact('tarefas', 'data'));
+        return view('empresas.tarefa.create', compact('data'));
     }
 
     public function store(Request $request)
     {
-        // Valida os dados
-        $request->validate([
-            'titulo' => 'required|string|max:255',
-            'descricao' => 'nullable|string',
+        $validated = $request->validate([
+            'titulo' => 'required|max:255',
+            'descricao' => 'nullable',
             'data' => 'required|date',
         ]);
 
-        // Cria a tarefa
-        Tarefa::create($request->all());
+        Tarefa::create($validated);
 
-        return redirect()->route('empresas.tarefa.index')->with('success', 'Tarefa adicionada com sucesso!');
+        return redirect()->route('empresas.tarefa.index')
+            ->with('success', 'Tarefa criada com sucesso!');
     }
 
-    public function showTarefas($data)
+    public function edit(Tarefa $tarefa)
     {
-        // Buscar todas as tarefas para um dia específico
-        $tarefas = Tarefa::where('data', $data)->get();
-
-        return view('empresas.tarefa.show', compact('tarefas', 'data'));
+        return view('empresas.tarefa.edit', compact('tarefa'));
     }
 
-    // Agenda Tomador
+    public function update(Request $request, Tarefa $tarefa)
+    {
+        $validated = $request->validate([
+            'titulo' => 'required|max:255',
+            'descricao' => 'nullable',
+            'data' => 'required|date',
+        ]);
+
+        $tarefa->update($validated);
+
+        return redirect()->route('empresas.tarefa.index')
+            ->with('success', 'Tarefa atualizada com sucesso!');
+    }
+
+    public function destroy(Tarefa $tarefa)
+    {
+        $tarefa->delete();
+
+        return redirect()->route('empresas.tarefa.index')
+            ->with('success', 'Tarefa excluída com sucesso!');
+    }
 
     public function indexTomador(Request $request)
     {
-        $mesSelecionado = $request->input('mes') ? Carbon::createFromFormat('Y-m', $request->input('mes')) : Carbon::now();
-        $mesAnterior = $mesSelecionado->copy()->subMonth();
-        $mesProximo = $mesSelecionado->copy()->addMonth();
+        $mesSelecionado = Carbon::now();
+        
+        if ($request->has('mes')) {
+            $mesSelecionado = Carbon::createFromFormat('Y-m', $request->mes);
+        }
 
-        // Obter todas as tarefas agrupadas por data, junto com a contagem de tarefas para cada dia no mês selecionado
-        $tarefasPorData = Tarefa::whereYear('data', $mesSelecionado->year)
-            ->whereMonth('data', $mesSelecionado->month)
-            ->select('data', DB::raw('count(*) as total'))
-            ->groupBy('data')
-            ->get()
-            ->pluck('total', 'data')
-            ->toArray();
+        $tarefas = Tarefa::whereMonth('data', $mesSelecionado->month)
+            ->whereYear('data', $mesSelecionado->year)
+            ->get();
 
-        // Renderizar a view completa (incluindo layout) com o calendário do mês selecionado
-        return view('tomadores.tarefas.index', compact('mesSelecionado', 'mesAnterior', 'mesProximo', 'tarefasPorData'));
-    }
+        $tarefasPorData = [];
+        foreach ($tarefas as $tarefa) {
+            $data = Carbon::parse($tarefa->data)->format('Y-m-d');
+            $tarefasPorData[$data][] = [
+                'id' => $tarefa->id,
+                'titulo' => $tarefa->titulo,
+                'descricao' => $tarefa->descricao,
+            ];
+        }
 
-    public function showTomador($data)
-    {
-        $tarefas = Tarefa::whereDate('data', $data)->get(['descricao']);
-        return response()->json($tarefas);
+        return view('tomadores.tarefas.index', compact('mesSelecionado', 'tarefasPorData'));
     }
 }

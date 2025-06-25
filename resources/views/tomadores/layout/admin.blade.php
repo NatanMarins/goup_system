@@ -164,6 +164,14 @@
                         </a>
                     </li>
                     <!-- perfil -->
+                    <!-- calendário -->
+                    <li class="nav-item dropdown me-0">
+                        <a class="nav-link count-indicator dropdown-toggle d-flex align-items-center justify-content-center"
+                            title="Calendário" id="notificationDropdown" href="{{ route('tomadores.tarefas.index') }}">
+                            <i class="fa-regular fa-calendar-days mx-0" style="color: #00464D;"></i>
+                        </a>
+                    </li>
+                    <!-- calendário -->
 
                     <!-- Sair-->
                     <li class="nav-item dropdown me-0">
@@ -408,6 +416,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <!-- jQuery Mask Plugin -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+
+    <!-- No seu arquivo de layout -->
+    @stack('scripts')
 
     <!-- Aplicar a máscara globalmente -->
     <script>
